@@ -8,6 +8,7 @@
  *************************************************/
 
 #include "mbed.h" 
+#include "display.h"
 #include <cstdint>
 
  /*************************************************
@@ -147,6 +148,26 @@ uint8_t instrumentNote[] = {
     CRASH_R_CHOKED,        /**< Platillo Crash derecho muteado*/
     CHINA,                 /**< Platillo China */
     SPLASH                 /**< Platillo Splash */
+};
+
+char* instrumentNoteName[] = {
+    (char*)"KICK",                  /**< Bombo */
+    (char*)"SNARE",                 /**< Caja */
+    (char*)"SIDE_STICK",            /**< Golpe en el aro */
+    (char*)"HI_HAT_CLOSED",         /**< Hi-Hat cerrado */
+    (char*)"HI_HAT_HALF_OPEN",      /**< Hi-Hat medio abierto */
+    (char*)"HI_HAT_OPEN",           /**< Hi-Hat abierto */
+    (char*)"HH_Pedal_CHICK",        /**< Pedal de Hi-Hat */
+    (char*)"TOM_HI",                /**< Tom alto */
+    (char*)"TOM_MID",               /**< Tom medio */
+    (char*)"TOM_LOW",               /**< Tom bajo */
+    (char*)"RIDE",                  /**< Platillo Ride */
+    (char*)"BELL",                  /**< Campana */
+    (char*)"CRASH_L",               /**< Platillo Crash izquierdo */
+    (char*)"CRASH_R",               /**< Platillo Crash derecho */
+    (char*)"CRASH_R_CHOKED",        /**< Platillo Crash derecho muteado*/
+    (char*)"CHINA",                 /**< Platillo China */
+    (char*)"SPLASH"                 /**< Platillo Splash */
 };
 
 uint8_t numOfInstrumentNotes = 0;       /**< Número total de notas de instrumentos disponibles */
@@ -306,7 +327,11 @@ int main(void)
 
     outputsInit();                  //Inicializo el led del drum pad
     calculateSlopeIntercept();      //Calculo la pendiente y la ordenada al origen de la recta de conversion de voltaje a velocity
-    
+   
+    displayInit( DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER );
+    displayCharPositionWrite ( 0,0 );
+    displayStringWrite( "MIDI Drum Pad v0" );
+   
     uint8_t numOfInstrumentNotes = sizeof(instrumentNote) / sizeof(instrumentNote[0]);  //Calculo el número total de notas midi de instrumentos percusivos disponibles
 
     while (true)
@@ -320,18 +345,25 @@ int main(void)
             midiSendNoteOn(&midiMessageStruct);                         //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
             ledPad = LED_OFF;                                           //Apago el Led para indicar que se envió el mensaje correspondiente
         }
-        else{}
 
         if(buttonUpdate(&upButtonStruct) == BUTTON_PRESSED)             //Verifico si el pulsador upButton fué presionado
         {
             noteIndex++;                                                //Incremento el indice de navegación de notas
             if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;       //Controlo que el indice no se vaya de rango
+            displayCharPositionWrite ( 0,1 );
+            displayStringWrite( "                " );
+            displayCharPositionWrite ( 0,1 );
+            displayStringWrite( instrumentNoteName[noteIndex] );
         }
 
         if(buttonUpdate(&downButtonStruct) == BUTTON_PRESSED)           //Verifico si el pulsador downButton fué presionado
         {
             noteIndex--;                                                //Decremento el indice de navegación de notas
             if (noteIndex < 0) noteIndex = numOfInstrumentNotes - 1;    //Controlo que el indice no se vaya de rango
+            displayCharPositionWrite ( 0,1 );
+            displayStringWrite( "                " );
+            displayCharPositionWrite ( 0,1 );
+            displayStringWrite( instrumentNoteName[noteIndex] );
         }
 
     }
