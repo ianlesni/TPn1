@@ -320,7 +320,7 @@ int main(void)
     *  software Hariless MIDI<->Serial Bridge
     *  (9600-8-N-1).
     */
-    serialPort.baud(9600);
+    serialPort.baud(38400);
     serialPort.format(8,SerialBase::None,1);
 
     midiMessage_t midiMessageStruct{0x00,0x00,0x00};
