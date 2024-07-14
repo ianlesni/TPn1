@@ -1,34 +1,6 @@
-#include <cstdint>
-/*!
- * \enum INSTRUMENT_NOTES
- * \brief Enumeración notas midi
- *
- *Enumeración de las notas midi correspondientes a los instrumentos percusivos
- *para el correcto mapeo en el plugin PowerDrumKit instalado en Reaper
- */
-typedef enum{
+#include "instrument.h"
 
-    KICK = 36,              /**< Bombo */
-    SNARE = 38,             /**< Caja */
-    SIDE_STICK = 37,        /**< Golpe en el aro */
-    HI_HAT_CLOSED = 42,     /**< Hi-Hat cerrado */
-    HI_HAT_HALF_OPEN = 44,  /**< Hi-Hat medio abierto */
-    HI_HAT_OPEN = 46,       /**< Hi-Hat abierto */
-    HH_Pedal_CHICK = 65,    /**< Pedal de Hi-Hat */
-    TOM_HI = 48,            /**< Tom alto */
-    TOM_MID = 45,           /**< Tom medio */
-    TOM_LOW = 41,           /**< Tom bajo */
-    RIDE = 51,              /**< Platillo Ride */
-    BELL = 53,              /**< Campana */
-    CRASH_L = 49,           /**< Platillo Crash izquierdo */
-    CRASH_R = 57,           /**< Platillo Crash derecho */
-    CRASH_R_CHOKED = 58,    /**< Platillo Crash derecho muteado */
-    CHINA = 52,             /**< Platillo China */
-    SPLASH = 55             /**< Platillo Splash */
-
-} INSTRUMENT_NOTES; 
-
-
+//=====[Declaration of external public global variables]=======================
 /*!
  * \brief Arreglo que contiene las notas de diferentes instrumentos.
  *
@@ -37,7 +9,7 @@ typedef enum{
  * Cada valor corresponde a una constante que representa
  * una nota de un instrumento específico.
  */
-uint8_t instrumentNote[] = {
+const uint8_t instrumentNote[] = {
 
     KICK,                  /**< Bombo */
     SNARE,                 /**< Caja */
@@ -65,7 +37,7 @@ uint8_t instrumentNote[] = {
  * Este arreglo almacena los nombres para imprimir sobre un display 
  * 
  */
-char * instrumentNoteName[] = {
+const char * instrumentNoteName[] = {
 
     (char * )"KICK",                  /**< Bombo */
     (char * )"SNARE",                 /**< Caja */
@@ -86,3 +58,10 @@ char * instrumentNoteName[] = {
     (char * )"SPLASH"                 /**< Platillo Splash */
 
 };
+
+
+uint8_t  getNumOfInstrumentNotes()
+{
+    uint8_t numOfInstrumentNotes = sizeof(instrumentNote) / sizeof(instrumentNote[0]);  //Calculo el número total de notas midi de instrumentos percusivos disponibles
+    return numOfInstrumentNotes;
+}

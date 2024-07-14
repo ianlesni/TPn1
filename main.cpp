@@ -9,7 +9,7 @@
 #include "mbed.h" 
 #include "display.h"
 #include "midi_uart.h"
-#include "midi_note_atributes.h"
+#include "instrument.h"
 #include <cstdint>
 
  /*************************************************
@@ -160,7 +160,6 @@ float piezoSearchMax (piezo_t * piezo);
 uint8_t piezoConvertVoltToVel (float piezoMaxValue);
 
 
-
 /**
  * Actualizción del estado del transductor piezoeléctrico y envío de mensajes MIDI si se detecta un golpe.
  * 
@@ -218,7 +217,7 @@ int main(void)
     displayCharPositionWrite(0,0);
     displayStringWrite("MIDI Drum Pad v0");
    
-    uint8_t numOfInstrumentNotes = sizeof(instrumentNote) / sizeof(instrumentNote[0]);  //Calculo el número total de notas midi de instrumentos percusivos disponibles
+    uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes(); //Obtengo el número total de notas midi de instrumentos percusivos disponibles
 
     while (true)
     {

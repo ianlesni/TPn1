@@ -35,13 +35,7 @@ typedef enum{
 
 //=====[Declaration and initialization of private global variables]============
 
-
-
-
-
 static UnbufferedSerial serialPort(USBTX, USBRX);   //Creo un objeto UnbufferedSerial para realizar la comunicación serie con la PC.
-
-
 
 //=====[Declaration and initialization of public global variables]=============
 
@@ -54,7 +48,7 @@ static UnbufferedSerial serialPort(USBTX, USBRX);   //Creo un objeto UnbufferedS
     *  software Hariless MIDI<->Serial Bridge
     *  (9600-8-N-1).
     */
-void initializaSerialPort(void);
+static void initializaSerialPort(void);
 //=====[Implementations of public functions]===================================
 
 
