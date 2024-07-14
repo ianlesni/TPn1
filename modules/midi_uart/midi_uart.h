@@ -1,3 +1,11 @@
+/** @file midi_uart.h
+*
+* @brief A description of the module’s purpose.
+*
+* 
+* 
+*/
+
 //=====[#include guards - begin]===============================================
 
 #ifndef _MIDI_UART_H_
@@ -12,3 +20,5 @@
 //=====[#include guards - end]=================================================
 
 #endif // _MIDI_UART_H_
+
+/*** end of file ***/

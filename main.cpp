@@ -52,8 +52,10 @@ float intercept = 0.0;               /**< Ordenada al origen de la recta de conv
  * 
  */
 typedef enum{
+    
     PIEZO_INACTIVE = 0,     /**< El transductor no recibió ningun golpe */
     PIEZO_ACTIVE = 1,       /**< El transductor recibió un golpe que supera el umbral */
+
 }PIEZO_STATE; 
 
 /*!
@@ -64,10 +66,12 @@ typedef enum{
  *y sus valores asociados
  */
 typedef struct{
+
     AnalogIn * alias;        /**< Puntero a un objeto AnalogIn para implementar un transductor */
     uint8_t currentState;   /**< Estado actual del transductor */
     uint8_t MaxVelocity;    /**< Máximo valor de velocity registrado */
-}piezo_t; 
+
+} piezo_t; 
 
 
 /*!
@@ -78,10 +82,12 @@ typedef struct{
  *mensajes MIDI Note On y Note Off en channel 0
  */
 typedef struct{
+
     uint8_t command;        /**< Comando a transmitir en el mensaje por el canal 0 */
     uint8_t note;           /**< Nota del mensaje */
     uint8_t velocity;       /**< Parámetro velocity del mensaje */
-}midiMessage_t; 
+
+} midiMessage_t; 
 
 /*!
  * \enum MIDI_COMMAND
@@ -90,9 +96,11 @@ typedef struct{
  * Enumeración de los comandos necesarios para formar los mensajes MIDI para el canal 0.
  */
 typedef enum{
+
         NOTE_ON = 0x90,     /**< Byte de comando Note On */
         NOTE_OFF = 0x80     /**< Byte de comando Note Off */
-}MIDI_COMMAND; 
+
+} MIDI_COMMAND; 
 
 /*!
  * \enum INSTRUMENT_NOTES
@@ -102,6 +110,7 @@ typedef enum{
  *para el correcto mapeo en el plugin PowerDrumKit instalado en Reaper
  */
 typedef enum{
+
     KICK = 36,              /**< Bombo */
     SNARE = 38,             /**< Caja */
     SIDE_STICK = 37,        /**< Golpe en el aro */
@@ -119,7 +128,8 @@ typedef enum{
     CRASH_R_CHOKED = 58,    /**< Platillo Crash derecho muteado */
     CHINA = 52,             /**< Platillo China */
     SPLASH = 55             /**< Platillo Splash */
-}INSTRUMENT_NOTES; 
+
+} INSTRUMENT_NOTES; 
 
 /*!
  * \brief Arreglo que contiene las notas de diferentes instrumentos.
@@ -130,6 +140,7 @@ typedef enum{
  * una nota de un instrumento específico.
  */
 uint8_t instrumentNote[] = {
+
     KICK,                  /**< Bombo */
     SNARE,                 /**< Caja */
     SIDE_STICK,            /**< Golpe en el aro */
@@ -147,9 +158,11 @@ uint8_t instrumentNote[] = {
     CRASH_R_CHOKED,        /**< Platillo Crash derecho muteado*/
     CHINA,                 /**< Platillo China */
     SPLASH                 /**< Platillo Splash */
+
 };
 
 char * instrumentNoteName[] = {
+
     (char * )"KICK",                  /**< Bombo */
     (char * )"SNARE",                 /**< Caja */
     (char * )"SIDE_STICK",            /**< Golpe en el aro */
@@ -167,6 +180,7 @@ char * instrumentNoteName[] = {
     (char * )"CRASH_R_CHOKED",        /**< Platillo Crash derecho muteado*/
     (char * )"CHINA",                 /**< Platillo China */
     (char * )"SPLASH"                 /**< Platillo Splash */
+
 };
 
 uint8_t numOfInstrumentNotes = 0;       /**< Número total de notas de instrumentos disponibles */
@@ -178,9 +192,11 @@ uint8_t noteIndex = 0;                  /**< Indice para la navegación del arre
  *
  */
 typedef enum{
+
     LED_ON = 1,     /**< Led encendido */
     LED_OFF = 0     /**< Led apagado */
-}LED_STATE; 
+
+} LED_STATE; 
 
 /*!
  * \enum BUTTON_STATE
@@ -188,10 +204,12 @@ typedef enum{
  * 
  */
 typedef enum{
+
     BUTTON_PRESSED = 1,     /**< pulsador presionado */
     BUTTON_RELEASED = 0,    /**< pulsador suelto */
     BUTTON_BOUNCING = 3     /**< pulsador rebotando */
-}BUTTON_STATE; 
+
+} BUTTON_STATE; 
 
 /*!
  * \struct button_t
@@ -201,10 +219,12 @@ typedef enum{
  *estados necesarios para ejecutar la rutina anti rebote
  */
 typedef struct{
+
     DigitalIn * alias;      /**< Puntero a un objeto DigitalIn para implementar un pulsador */
     uint8_t currentState;   /**< Estado actual del pulsador */
     uint8_t lastState;      /**< Último estado conocido del pulsador */
-}button_t; 
+
+} button_t; 
 
 /*********************************************************************
  *=====[Declaración (prototipos) de funciones públicas]===============
@@ -215,7 +235,7 @@ typedef struct{
  * 
  * Esta función inicializa el led del drum pad, apagándolo al inicio.
  */
-void outputsInit(void);
+void outputsInit (void);
 
 /**
  * Calculo de la pendiente y la ordenada al origen de la recta de conversión.
@@ -223,7 +243,7 @@ void outputsInit(void);
  * Esta función calcula la pendiente y la ordenada al origen de la recta de conversión
  * entre voltaje y velocity. Utiliza las constantes DELTA_VEL, DELTA_VOLT, MIN_VEL y PIEZO_THRESHOLD_mV. 
  */
-void calculateSlopeIntercept(void);
+void calculateSlopeIntercept (void);
 
 /**
  * Busqueda y devolución del valor máximo del golpe registrado por el transductor piezoeléctrico.
@@ -234,7 +254,7 @@ void calculateSlopeIntercept(void);
  * @param piezo Puntero a la estructura que representa el un transductor piezoeléctrico.
  * @return Valor máximo de voltaje [mV] registrado durante el muestreo.
  */
-float piezoSearchMax(piezo_t * piezo);
+float piezoSearchMax (piezo_t * piezo);
 
 /**
  * Conviersión de un valor de voltaje [mV] en un valor de velocity.
@@ -255,7 +275,7 @@ uint8_t piezoConvertVoltToVel (float piezoMaxValue);
  * los parámetros de la estructura del mensaje
  *  @param message Puntero a la estructura que representa el mensaje.
  */
-void midiSendNoteOn(midiMessage_t * message);
+void midiSendNoteOn (midiMessage_t * message);
 
 /**
  * Transmisión a través de UART del mensaje midi de Note Off
@@ -264,7 +284,7 @@ void midiSendNoteOn(midiMessage_t * message);
  * los parámetros de la estructura del mensaje
  *  @param message Puntero a la estructura que representa el mensaje.
  */
-void midiSendNoteOff(midiMessage_t * message);
+void midiSendNoteOff (midiMessage_t * message);
 
 /**
  * Actualizción del estado del transductor piezoeléctrico y envío de mensajes MIDI si se detecta un golpe.
@@ -279,7 +299,7 @@ void midiSendNoteOff(midiMessage_t * message);
  *  @param piezo Puntero a la estructura que representa el un transductor piezoeléctrico.
  *  @return Estado actual del transductor, `PIEZO_ACTIVE` o `PIEZO_INACTIVE` .
  */
-uint8_t piezoUpdate(piezo_t * piezo);
+uint8_t piezoUpdate (piezo_t * piezo);
 
 /**
  * Actualización y gestión del estado de un pulsador, considerando el rebote.
@@ -289,7 +309,7 @@ uint8_t piezoUpdate(piezo_t * piezo);
  * @param button Puntero a la estructura que representa el pulsador a actualizar.
  * @return Estado actual del pulsador después de gestionar el debounce, o `BUTTON_BOUNCING` si aún está en estado de rebote.
  */
-uint8_t buttonUpdate(button_t * button);
+uint8_t buttonUpdate (button_t * button);
 
 /*************************************************************************
  *======================[Función main]====================================
@@ -328,14 +348,14 @@ int main(void)
     calculateSlopeIntercept();      //Calculo la pendiente y la ordenada al origen de la recta de conversion de voltaje a velocity
    
     displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);
-    displayCharPositionWrite (0,0);
+    displayCharPositionWrite(0,0);
     displayStringWrite("MIDI Drum Pad v0");
    
     uint8_t numOfInstrumentNotes = sizeof(instrumentNote) / sizeof(instrumentNote[0]);  //Calculo el número total de notas midi de instrumentos percusivos disponibles
 
     while (true)
     {
-        if(piezoUpdate(&piezoAStruct) == PIEZO_ACTIVE)                  //Actualizo y verifico el estado del transductor piezoeléctrico
+        if(PIEZO_ACTIVE == piezoUpdate(&piezoAStruct))                  //Actualizo y verifico el estado del transductor piezoeléctrico
         {  
             ledPad = LED_ON;                                            //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
             midiMessageStruct.note = instrumentNote[noteIndex];         //Cargo la nota del mensaje
@@ -345,23 +365,23 @@ int main(void)
             ledPad = LED_OFF;                                           //Apago el Led para indicar que se envió el mensaje correspondiente
         }
 
-        if(buttonUpdate(&upButtonStruct) == BUTTON_PRESSED)             //Verifico si el pulsador upButton fué presionado
+        if(BUTTON_PRESSED == buttonUpdate(&upButtonStruct))             //Verifico si el pulsador upButton fué presionado
         {
             noteIndex++;                                                //Incremento el indice de navegación de notas
             if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;       //Controlo que el indice no se vaya de rango
-            displayCharPositionWrite ( 0,1 );
+            displayCharPositionWrite (0,1);
             displayStringWrite("                ");
-            displayCharPositionWrite ( 0,1 );
+            displayCharPositionWrite (0,1);
             displayStringWrite(instrumentNoteName[noteIndex]);
         }
 
-        if(buttonUpdate(&downButtonStruct) == BUTTON_PRESSED)           //Verifico si el pulsador downButton fué presionado
+        if(BUTTON_PRESSED == buttonUpdate(&downButtonStruct))           //Verifico si el pulsador downButton fué presionado
         {
             noteIndex--;                                                //Decremento el indice de navegación de notas
             if (noteIndex < 0) noteIndex = numOfInstrumentNotes - 1;    //Controlo que el indice no se vaya de rango
-            displayCharPositionWrite ( 0,1 );
-            displayStringWrite( "                " );
-            displayCharPositionWrite ( 0,1 );
+            displayCharPositionWrite (0,1);
+            displayStringWrite("                ");
+            displayCharPositionWrite (0,1);
             displayStringWrite(instrumentNoteName[noteIndex]);
         }
 
@@ -373,7 +393,7 @@ int main(void)
  *=====[Implementación de funciones públicas]=========================
  ********************************************************************/
 
-uint8_t buttonUpdate(button_t * button)
+uint8_t buttonUpdate (button_t * button)
 {
     button->currentState = button->alias->read();           //Leo el estado actual del pulsador
     if (button->currentState != button->lastState)          //Verifico si el estado ha cambiado
@@ -389,24 +409,24 @@ uint8_t buttonUpdate(button_t * button)
 
 }
 
-void outputsInit()
+void outputsInit ()
 {
     ledPad = LED_OFF;   //Inicializo el led del drum pad apagado
 }
 
-void calculateSlopeIntercept()
+void calculateSlopeIntercept ()
 {
     slope = (float)DELTA_VEL / DELTA_VOLT;                  /**< Pendiente de la recta de conversión */
     intercept = MIN_VEL - PIEZO_THRESHOLD_mV * slope;       /**< Ordenada al origen de la recta de conversión */ 
 }
 
-uint8_t piezoUpdate(piezo_t * piezo)
+uint8_t piezoUpdate (piezo_t * piezo)
 {
     float piezoRead = 0.0;                                              /**< Valor leido del transductor piezoeléctrico  */
     float piezoMax = 0.0;                                               /**< Máximo valor leido del transductor piezoeléctrico */
 
     piezoRead = piezo->alias->read();                                   //Tomo una lectura del transductor piezoeléctrico
-    piezoRead = piezoRead * 3.3 * 1000;                                     //Convierto la lectura a [mV]
+    piezoRead = piezoRead * 3.3 * 1000;                                 //Convierto la lectura a [mV]
                                      
     if(piezoRead  > PIEZO_THRESHOLD_mV)                                 //Comparo la lectura en mV con el umbral de activación
     {
@@ -421,15 +441,15 @@ uint8_t piezoUpdate(piezo_t * piezo)
     return piezo->currentState;                                         //Devuelvo el estado del transductor 
 }
 
-float piezoSearchMax(piezo_t * piezo)
+float piezoSearchMax (piezo_t * piezo)
 {
     float piezoMaxValue = 0.0;                          /**< Valor máximo del golpe registrado por el transductor piezoeléctrico*/
     float piezoSample = 0.0;                            /**< Valor muestreado del transductor piezoeléctrico */
 
-    for(int i = 0; i < NUMBER_OF_PIEZO_SAMPLES; i++)    //Realizo un muestreo de la señal analógica proveniente del transductor piezoeléctrico
+    for(int sample = 0; sample < NUMBER_OF_PIEZO_SAMPLES; sample++)    //Realizo un muestreo de la señal analógica proveniente del transductor piezoeléctrico
     {
-         piezoSample = piezo->alias->read();             //Tomo una lectura del transductor piezoeléctrico     
-         piezoSample = piezoSample * 3.3 * 1000;             //Convierto la lectura a [mV]
+         piezoSample = piezo->alias->read();            //Tomo una lectura del transductor piezoeléctrico     
+         piezoSample = piezoSample * 3.3 * 1000;        //Convierto la lectura a [mV]
 
          if(piezoSample > piezoMaxValue)                //Verifico si el nuevo valor leido es mayor al máximo valor registrado en este muestreo
         {
@@ -455,7 +475,7 @@ uint8_t piezoConvertVoltToVel (float piezoMaxValue)
 }   
 
 
-void midiSendNoteOn(midiMessage_t * message)
+void midiSendNoteOn (midiMessage_t * message)
 {
     uint8_t command = NOTE_ON;                  /**< <Comando de Note On en canal 0> */
 
@@ -464,7 +484,7 @@ void midiSendNoteOn(midiMessage_t * message)
     serialPort.write(&message->velocity, 1);    //Envío el valor de velocity 
 }
 
-void midiSendNoteOff(midiMessage_t * message)
+void midiSendNoteOff (midiMessage_t * message)
 {
     /** Una alternativa a enviar un mensaje con 
     * el comando Note Off es enviar un Comando Note On

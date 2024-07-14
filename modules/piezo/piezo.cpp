@@ -1,3 +1,9 @@
+/** @file piezo.cpp
+*
+* @brief A description of the module’s purpose.
+*
+*/
+
 //=====[Libraries]=============================================================
 
 #include "mbed.h"
@@ -26,4 +32,4 @@
 
 //=====[Implementations of private functions]==================================
 
-
+/*** end of file ***/

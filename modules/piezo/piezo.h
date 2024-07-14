@@ -1,3 +1,10 @@
+/** @file piezo.h
+*
+* @brief A description of the module’s purpose.
+*
+* 
+* 
+*/
 //=====[#include guards - begin]===============================================
 
 #ifndef _PIEZO_H_
@@ -12,3 +19,5 @@
 //=====[#include guards - end]=================================================
 
 #endif // _PIEZO_H_
+
+/*** end of file ***/
