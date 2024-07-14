@@ -8,6 +8,8 @@
  *************************************************/
 #include "mbed.h" 
 #include "display.h"
+#include "midi_uart.h"
+#include "midi_note_atributes.h"
 #include <cstdint>
 
  /*************************************************
@@ -31,10 +33,8 @@
  *=====[Declaración e inicialización de objetos globales]============
  *******************************************************************/
 
-static DigitalOut ledPad(LED1);                     //Creo un objeto DigitalOut como led testigo de interacción con el drum pad
+DigitalOut ledPad(LED1);                     //Creo un objeto DigitalOut como led testigo de interacción con el drum pad
   
-static UnbufferedSerial serialPort(USBTX, USBRX);   //Creo un objeto UnbufferedSerial para realizar la comunicación serie con la PC.
-
 /********************************************************************
  *=======[Declaración e inicialización de variables globales]========
  ********************************************************************/
@@ -73,115 +73,6 @@ typedef struct{
 
 } piezo_t; 
 
-
-/*!
- * \struct midiMessage_t
- * \brief Estructura de un mensaje MIDI
- *
- *Estructura que contiene los campos necesarios para los 
- *mensajes MIDI Note On y Note Off en channel 0
- */
-typedef struct{
-
-    uint8_t command;        /**< Comando a transmitir en el mensaje por el canal 0 */
-    uint8_t note;           /**< Nota del mensaje */
-    uint8_t velocity;       /**< Parámetro velocity del mensaje */
-
-} midiMessage_t; 
-
-/*!
- * \enum MIDI_COMMAND
- * \brief Enumeración de comandos MIDI. 
- *
- * Enumeración de los comandos necesarios para formar los mensajes MIDI para el canal 0.
- */
-typedef enum{
-
-        NOTE_ON = 0x90,     /**< Byte de comando Note On */
-        NOTE_OFF = 0x80     /**< Byte de comando Note Off */
-
-} MIDI_COMMAND; 
-
-/*!
- * \enum INSTRUMENT_NOTES
- * \brief Enumeración notas midi
- *
- *Enumeración de las notas midi correspondientes a los instrumentos percusivos
- *para el correcto mapeo en el plugin PowerDrumKit instalado en Reaper
- */
-typedef enum{
-
-    KICK = 36,              /**< Bombo */
-    SNARE = 38,             /**< Caja */
-    SIDE_STICK = 37,        /**< Golpe en el aro */
-    HI_HAT_CLOSED = 42,     /**< Hi-Hat cerrado */
-    HI_HAT_HALF_OPEN = 44,  /**< Hi-Hat medio abierto */
-    HI_HAT_OPEN = 46,       /**< Hi-Hat abierto */
-    HH_Pedal_CHICK = 65,    /**< Pedal de Hi-Hat */
-    TOM_HI = 48,            /**< Tom alto */
-    TOM_MID = 45,           /**< Tom medio */
-    TOM_LOW = 41,           /**< Tom bajo */
-    RIDE = 51,              /**< Platillo Ride */
-    BELL = 53,              /**< Campana */
-    CRASH_L = 49,           /**< Platillo Crash izquierdo */
-    CRASH_R = 57,           /**< Platillo Crash derecho */
-    CRASH_R_CHOKED = 58,    /**< Platillo Crash derecho muteado */
-    CHINA = 52,             /**< Platillo China */
-    SPLASH = 55             /**< Platillo Splash */
-
-} INSTRUMENT_NOTES; 
-
-/*!
- * \brief Arreglo que contiene las notas de diferentes instrumentos.
- *
- * Este arreglo almacena valores que representan distintas notas midi para 
- * generar sonidos de instrumentos de percusión.
- * Cada valor corresponde a una constante que representa
- * una nota de un instrumento específico.
- */
-uint8_t instrumentNote[] = {
-
-    KICK,                  /**< Bombo */
-    SNARE,                 /**< Caja */
-    SIDE_STICK,            /**< Golpe en el aro */
-    HI_HAT_CLOSED,         /**< Hi-Hat cerrado */
-    HI_HAT_HALF_OPEN,      /**< Hi-Hat medio abierto */
-    HI_HAT_OPEN,           /**< Hi-Hat abierto */
-    HH_Pedal_CHICK,        /**< Pedal de Hi-Hat */
-    TOM_HI,                /**< Tom alto */
-    TOM_MID,               /**< Tom medio */
-    TOM_LOW,               /**< Tom bajo */
-    RIDE,                  /**< Platillo Ride */
-    BELL,                  /**< Campana */
-    CRASH_L,               /**< Platillo Crash izquierdo */
-    CRASH_R,               /**< Platillo Crash derecho */
-    CRASH_R_CHOKED,        /**< Platillo Crash derecho muteado*/
-    CHINA,                 /**< Platillo China */
-    SPLASH                 /**< Platillo Splash */
-
-};
-
-char * instrumentNoteName[] = {
-
-    (char * )"KICK",                  /**< Bombo */
-    (char * )"SNARE",                 /**< Caja */
-    (char * )"SIDE_STICK",            /**< Golpe en el aro */
-    (char * )"HI_HAT_CLOSED",         /**< Hi-Hat cerrado */
-    (char * )"HI_HAT_HALF_OPEN",      /**< Hi-Hat medio abierto */
-    (char * )"HI_HAT_OPEN",           /**< Hi-Hat abierto */
-    (char * )"HH_Pedal_CHICK",        /**< Pedal de Hi-Hat */
-    (char * )"TOM_HI",                /**< Tom alto */
-    (char * )"TOM_MID",               /**< Tom medio */
-    (char * )"TOM_LOW",               /**< Tom bajo */
-    (char * )"RIDE",                  /**< Platillo Ride */
-    (char * )"BELL",                  /**< Campana */
-    (char * )"CRASH_L",               /**< Platillo Crash izquierdo */
-    (char * )"CRASH_R",               /**< Platillo Crash derecho */
-    (char * )"CRASH_R_CHOKED",        /**< Platillo Crash derecho muteado*/
-    (char * )"CHINA",                 /**< Platillo China */
-    (char * )"SPLASH"                 /**< Platillo Splash */
-
-};
 
 uint8_t numOfInstrumentNotes = 0;       /**< Número total de notas de instrumentos disponibles */
 uint8_t noteIndex = 0;                  /**< Indice para la navegación del arreglo de notas de intrumento */
@@ -268,23 +159,7 @@ float piezoSearchMax (piezo_t * piezo);
  */
 uint8_t piezoConvertVoltToVel (float piezoMaxValue);
 
-/**
- * Transmisión a través de UART del mensaje midi de Note On
- *
- * Esta función permite enviar mensajes para que la nota comience a sonar en función de 
- * los parámetros de la estructura del mensaje
- *  @param message Puntero a la estructura que representa el mensaje.
- */
-void midiSendNoteOn (midiMessage_t * message);
 
-/**
- * Transmisión a través de UART del mensaje midi de Note Off
- *
- * Esta función permite enviar mensajes para que la nota deje de sonar en función de 
- * los parámetros de la estructura del mensaje
- *  @param message Puntero a la estructura que representa el mensaje.
- */
-void midiSendNoteOff (midiMessage_t * message);
 
 /**
  * Actualizción del estado del transductor piezoeléctrico y envío de mensajes MIDI si se detecta un golpe.
@@ -334,14 +209,6 @@ int main(void)
     DigitalIn downButton(D1);                                                   //Creo un objeto DigitalIn para la navegación descendente del arreglo de notas midi disponibles
     button_t downButtonStruct {&downButton,BUTTON_RELEASED,BUTTON_RELEASED};    /**< Estructura asociada al pulsador downButton  */
     
-    /** Seteo las propiedades de la comuniación serie 
-    *  acorde a las preferencias configuradas en el 
-    *  software Hariless MIDI<->Serial Bridge
-    *  (9600-8-N-1).
-    */
-    serialPort.baud(38400);
-    serialPort.format(8,SerialBase::None,1);
-
     midiMessage_t midiMessageStruct{0x00,0x00,0x00};
 
     outputsInit();                  //Inicializo el led del drum pad
@@ -473,30 +340,4 @@ uint8_t piezoConvertVoltToVel (float piezoMaxValue)
 
     return vel;                                         //Devuelvo el valor de velocity
 }   
-
-
-void midiSendNoteOn (midiMessage_t * message)
-{
-    uint8_t command = NOTE_ON;                  /**< <Comando de Note On en canal 0> */
-
-    serialPort.write(&command, 1);              //Envío el comando y su canal
-    serialPort.write(&message->note, 1);        //Envío la nota       
-    serialPort.write(&message->velocity, 1);    //Envío el valor de velocity 
-}
-
-void midiSendNoteOff (midiMessage_t * message)
-{
-    /** Una alternativa a enviar un mensaje con 
-    * el comando Note Off es enviar un Comando Note On
-    * con una velocity de 0x00 
-    * la funcionalidad es equivalente 
-    */
-    uint8_t command = NOTE_ON;                  
-    uint8_t velocityOff = 0x00;                 
-
-    serialPort.write(&command, 1);              //Envío el comando y su canal
-    serialPort.write(&message->note, 1);        //Envío la nota
-    serialPort.write(&velocityOff, 1);          //Envío el valor de velocity         
-}
-
 
