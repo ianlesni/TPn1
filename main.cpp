@@ -43,7 +43,7 @@ static UnbufferedSerial serialPort(USBTX, USBRX);   //Creo un objeto UnbufferedS
  *  generado por el transductor piezoelectrico luego del golpe
  *  a un valor proporcional de velocity 
  */
-float  slope = 0.0;                  /**< Pendiente de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity */
+float slope = 0.0;                  /**< Pendiente de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity */
 float intercept = 0.0;               /**< Ordenada al origen de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity  */
 
 /*!
@@ -327,9 +327,9 @@ int main(void)
     outputsInit();                  //Inicializo el led del drum pad
     calculateSlopeIntercept();      //Calculo la pendiente y la ordenada al origen de la recta de conversion de voltaje a velocity
    
-    displayInit( DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER );
-    displayCharPositionWrite ( 0,0 );
-    displayStringWrite( "MIDI Drum Pad v0" );
+    displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);
+    displayCharPositionWrite (0,0);
+    displayStringWrite("MIDI Drum Pad v0");
    
     uint8_t numOfInstrumentNotes = sizeof(instrumentNote) / sizeof(instrumentNote[0]);  //Calculo el número total de notas midi de instrumentos percusivos disponibles
 
@@ -350,9 +350,9 @@ int main(void)
             noteIndex++;                                                //Incremento el indice de navegación de notas
             if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;       //Controlo que el indice no se vaya de rango
             displayCharPositionWrite ( 0,1 );
-            displayStringWrite( "                " );
+            displayStringWrite("                ");
             displayCharPositionWrite ( 0,1 );
-            displayStringWrite( instrumentNoteName[noteIndex] );
+            displayStringWrite(instrumentNoteName[noteIndex]);
         }
 
         if(buttonUpdate(&downButtonStruct) == BUTTON_PRESSED)           //Verifico si el pulsador downButton fué presionado
@@ -362,7 +362,7 @@ int main(void)
             displayCharPositionWrite ( 0,1 );
             displayStringWrite( "                " );
             displayCharPositionWrite ( 0,1 );
-            displayStringWrite( instrumentNoteName[noteIndex] );
+            displayStringWrite(instrumentNoteName[noteIndex]);
         }
 
     }
