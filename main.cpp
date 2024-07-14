@@ -23,13 +23,12 @@
  *=====[Declaración e inicialización de objetos globales]============
  *******************************************************************/
 
-DigitalOut ledPad(LED1);                     //Creo un objeto DigitalOut como led testigo de interacción con el drum pad
+DigitalOut ledPad(LED1);                                    //Creo un objeto DigitalOut como led testigo de interacción con el drum pad
+
   
 /********************************************************************
  *=======[Declaración e inicialización de variables globales]========
  ********************************************************************/
-
-uint8_t noteIndex = 0;                  /**< Indice para la navegación del arreglo de notas de intrumento */
 
 /*!
  * \enum LED_STATE
@@ -78,10 +77,9 @@ typedef struct{
 /**
  * Inicialización los dispositivos de salida.
  * 
- * Esta función inicializa el led del drum pad, apagándolo al inicio.
+ * Esta función inicializa el led y el display del drum pad.
  */
-void outputsInit (void);
-
+void visualInterfaceInit (void);
 
 
 /**
@@ -105,7 +103,6 @@ int main(void)
     */
     AnalogIn piezoA(A0);
     piezo_t piezoAStruct{&piezoA,PIEZO_INACTIVE,0x00};
-
     /** Creo los pulsadores necesarios para configurar el 
     *  sonido del drum pad. 
     *  Estos pulsadores permiten navegar de manera ascendente y 
@@ -119,13 +116,10 @@ int main(void)
     
     midiMessage_t midiMessageStruct{0x00,0x00,0x00};
 
-    outputsInit();                  //Inicializo el led del drum pad
-    
-    displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);
-    displayCharPositionWrite(0,0);
-    displayStringWrite("MIDI Drum Pad v0");
-   
-    uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes(); //Obtengo el número total de notas midi de instrumentos percusivos disponibles
+    visualInterfaceInit();                                              //Inicializo el led del drum pad
+       
+    uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes();           //Obtengo el número total de notas midi de instrumentos percusivos disponibles
+    uint8_t noteIndex = 0;                                              /**< Indice para la navegación del arreglo de notas de intrumento */
 
     while (true)
     {
@@ -183,9 +177,13 @@ uint8_t buttonUpdate (button_t * button)
 
 }
 
-void outputsInit ()
+void visualInterfaceInit ()
 {
     ledPad = LED_OFF;   //Inicializo el led del drum pad apagado
+    
+    displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);
+    displayCharPositionWrite(0,0);
+    displayStringWrite("MIDI Drum Pad v0");
 }
 
 
