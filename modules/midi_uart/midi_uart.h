@@ -43,6 +43,14 @@ typedef struct{
     *  (9600-8-N-1).
     *  @param alias Puntero al objeto .
     */
+void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t *midiMessageStruct);
+
+    /** Seteo las propiedades de la comuniación serie 
+    *  acorde a las preferencias configuradas en el 
+    *  software Hariless MIDI<->Serial Bridge
+    *  (9600-8-N-1).
+    *  @param alias Puntero al objeto .
+    */
 void initializaMIDISerialPort(mbed::UnbufferedSerial * alias);
 
 /**

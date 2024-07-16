@@ -115,10 +115,8 @@ int main(void)
     button_t downButtonStruct {&downButton,BUTTON_RELEASED,BUTTON_RELEASED};    /**< Estructura asociada al pulsador downButton  */
     
     UnbufferedSerial serialPort(USBTX, USBRX);   //Creo un objeto UnbufferedSerial para realizar la comunicación serie con la PC.
-
-    midiMessage_t midiMessageStruct{0x00,0x00,0x00};
-    
-    initializaMIDISerialPort(&serialPort);
+    midiMessage_t midiMessageStruct; 
+    initializaMIDISerial(&serialPort, &midiMessageStruct);
 
     visualInterfaceInit();                                              //Inicializo el led del drum pad
        

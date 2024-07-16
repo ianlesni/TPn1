@@ -42,6 +42,14 @@ typedef enum{
 //=====[Declarations (prototypes) of private functions]========================
 
 //=====[Implementations of public functions]===================================
+void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t *midiMessageStruct)
+{
+    initializaMIDISerialPort(alias);
+    midiMessageStruct->command = 0x00;
+    midiMessageStruct->note = 0x00;
+    midiMessageStruct->velocity = 0x00;
+}
+
 void initializaMIDISerialPort(UnbufferedSerial * alias)
 {
     alias->baud(38400);
