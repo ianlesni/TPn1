@@ -61,37 +61,6 @@ typedef struct{
 
 
 /**
- * Calculo de la pendiente y la ordenada al origen de la recta de conversión.
- * 
- * Esta función calcula la pendiente y la ordenada al origen de la recta de conversión
- * entre voltaje y velocity. Utiliza las constantes DELTA_VEL, DELTA_VOLT, MIN_VEL y PIEZO_THRESHOLD_mV. 
- */
- void calculateSlopeIntercept (void);
-
-/**
- * Conviersión de un valor de voltaje [mV] en un valor de velocity.
- * 
- * Esta función calcula y convierte un valor de voltaje [mV] registrado por el transductor
- * piezoeléctrico en un valor de celocity MIDI. El valor de velocity se calcula utilizando
- * la pendiente y la ordenada al origen previamente calculadas (slope e intercept).
- * 
- * @param piezoMaxValue Valor máximo de voltaje [mV] registrado por el transductor piezoeléctrico.
- * @return  Valor de velocity correspondiente, redondeado y ajustado dentro del rango permitido(0-127).
- */
- uint8_t piezoConvertVoltToVel (float piezoMaxValue);
-
-
-/**
- * Busqueda y devolución del valor máximo del golpe registrado por el transductor piezoeléctrico.
- * 
- * Esta función realiza un muestreo de la señal analógica proveniente del transductor piezoeléctrico
- * y determina el valor máximo de voltaje [mV] registrado durante el proceso de muestreo.
- * 
- * @param piezo Puntero a la estructura que representa el un transductor piezoeléctrico.
- * @return Valor máximo de voltaje [mV] registrado durante el muestreo.
- */
-  float piezoSearchMax (piezo_t * piezo);
-/**
  * Actualizción del estado del transductor piezoeléctrico y envío de mensajes MIDI si se detecta un golpe.
  * 
  * Esta función realiza las siguientes operaciones:

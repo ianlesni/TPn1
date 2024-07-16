@@ -11,7 +11,6 @@
 #include "piezo.h"
 
 //=====[Declaration of private defines]========================================
-
 #define MAX_VEL 127                                                 /**< Máximo valor de velocity permitido */
 #define MIN_VEL 35                                                  /**< Máximo valor de velocity permitido (para valores menores se escucha muy poco) */
 #define DELTA_VEL (MAX_VEL - MIN_VEL)                               /**< Variacion entre el máximo y mínimo valor de velocity permitido*/
@@ -42,6 +41,36 @@ float intercept = 0.0;              /**< Ordenada al origen de la recta de conve
 
 //=====[Declarations (prototypes) of private functions]========================
 
+/**
+ * Calculo de la pendiente y la ordenada al origen de la recta de conversión.
+ * 
+ * Esta función calcula la pendiente y la ordenada al origen de la recta de conversión
+ * entre voltaje y velocity. Utiliza las constantes DELTA_VEL, DELTA_VOLT, MIN_VEL y PIEZO_THRESHOLD_mV. 
+ */
+ static void calculateSlopeIntercept (void);
+
+ /**
+ * Conviersión de un valor de voltaje [mV] en un valor de velocity.
+ * 
+ * Esta función calcula y convierte un valor de voltaje [mV] registrado por el transductor
+ * piezoeléctrico en un valor de celocity MIDI. El valor de velocity se calcula utilizando
+ * la pendiente y la ordenada al origen previamente calculadas (slope e intercept).
+ * 
+ * @param piezoMaxValue Valor máximo de voltaje [mV] registrado por el transductor piezoeléctrico.
+ * @return  Valor de velocity correspondiente, redondeado y ajustado dentro del rango permitido(0-127).
+ */
+static uint8_t piezoConvertVoltToVel (float piezoMaxValue);
+
+/**
+ * Busqueda y devolución del valor máximo del golpe registrado por el transductor piezoeléctrico.
+ * 
+ * Esta función realiza un muestreo de la señal analógica proveniente del transductor piezoeléctrico
+ * y determina el valor máximo de voltaje [mV] registrado durante el proceso de muestreo.
+ * 
+ * @param piezo Puntero a la estructura que representa el un transductor piezoeléctrico.
+ * @return Valor máximo de voltaje [mV] registrado durante el muestreo.
+ */
+static  float piezoSearchMax (piezo_t * piezo);
 
 //=====[Implementations of public functions]===================================
  void piezoInit(mbed::AnalogIn * alias, piezo_t * piezoStruct)
@@ -75,13 +104,13 @@ uint8_t piezoUpdate(piezo_t * piezo)
 
 //=====[Implementations of private functions]==================================
 
-void calculateSlopeIntercept()
+static void calculateSlopeIntercept()
 {
     slope = (float)DELTA_VEL / DELTA_VOLT;                  /**< Pendiente de la recta de conversión */
     intercept = MIN_VEL - PIEZO_THRESHOLD_mV * slope;       /**< Ordenada al origen de la recta de conversión */ 
 }
 
-uint8_t piezoConvertVoltToVel (float piezoMaxValue)
+static uint8_t piezoConvertVoltToVel (float piezoMaxValue)
 {
     uint8_t vel = 0;                                    /**< Valor entero de velocity de la nota midi */
     float velFloat = 0.0;                               /**< Valor flotante de velocity luego de la conversión */
@@ -95,7 +124,7 @@ uint8_t piezoConvertVoltToVel (float piezoMaxValue)
     return vel;                                         //Devuelvo el valor de velocity
 }   
 
-float piezoSearchMax (piezo_t * piezo)
+static float piezoSearchMax (piezo_t * piezo)
 {
     float piezoMaxValue = 0.0;                          /**< Valor máximo del golpe registrado por el transductor piezoeléctrico*/
     float piezoSample = 0.0;                            /**< Valor muestreado del transductor piezoeléctrico */

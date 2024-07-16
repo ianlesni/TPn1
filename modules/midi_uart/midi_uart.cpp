@@ -27,7 +27,7 @@ typedef enum{
         NOTE_ON = 0x90,     /**< Byte de comando Note On */
         NOTE_OFF = 0x80     /**< Byte de comando Note Off */
 
-} MIDI_COMMAND; 
+}MIDI_COMMAND; 
 
 //=====[Declaration and initialization of public global objects]===============
 
@@ -37,9 +37,15 @@ typedef enum{
 
 //=====[Declaration and initialization of public global variables]=============
 
-
-
 //=====[Declarations (prototypes) of private functions]========================
+
+    /** Seteo las propiedades de la comuniación serie 
+    *  acorde a las preferencias configuradas en el 
+    *  software Hariless MIDI<->Serial Bridge
+    *  (9600-8-N-1).
+    *  @param alias Puntero al objeto .
+    */
+static void initializaMIDISerialPort(mbed::UnbufferedSerial * alias);
 
 //=====[Implementations of public functions]===================================
 void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t *midiMessageStruct)
@@ -49,13 +55,6 @@ void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t *midiMes
     midiMessageStruct->note = 0x00;
     midiMessageStruct->velocity = 0x00;
 }
-
-void initializaMIDISerialPort(UnbufferedSerial * alias)
-{
-    alias->baud(38400);
-    alias->format(8,SerialBase::None,1);
-}
-
 
 void midiSendNoteOn (midiMessage_t * message, UnbufferedSerial * alias)
 {
@@ -81,8 +80,12 @@ void midiSendNoteOff (midiMessage_t * message, UnbufferedSerial * alias)
     alias->write(&velocityOff, 1);          //Envío el valor de velocity         
 }
 
-
-
 //=====[Implementations of private functions]==================================
+
+static void initializaMIDISerialPort(UnbufferedSerial * alias)
+{
+    alias->baud(38400);
+    alias->format(8,SerialBase::None,1);
+}
 
 /*** end of file ***/
