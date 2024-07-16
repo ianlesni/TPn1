@@ -182,7 +182,6 @@ uint8_t buttonUpdate (button_t * button)
 void visualInterfaceInit ()
 {
     ledPad = LED_OFF;   //Inicializo el led del drum pad apagado
-    
     displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);
     displayCharPositionWrite(0,0);
     displayStringWrite("MIDI Drum Pad v0");
