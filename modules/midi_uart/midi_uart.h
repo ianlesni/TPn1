@@ -23,6 +23,9 @@
  *Estructura que contiene los campos necesarios para los 
  *mensajes MIDI Note On y Note Off en channel 0
  */
+namespace mbed {
+    class UnbufferedSerial;
+}
 
 typedef struct{
 
@@ -34,6 +37,14 @@ typedef struct{
 
 //=====[Declarations (prototypes) of public functions]=========================
 
+    /** Seteo las propiedades de la comuniación serie 
+    *  acorde a las preferencias configuradas en el 
+    *  software Hariless MIDI<->Serial Bridge
+    *  (9600-8-N-1).
+    *  @param alias Puntero al objeto .
+    */
+void initializaMIDISerialPort(mbed::UnbufferedSerial * alias);
+
 /**
  * Transmisión a través de UART del mensaje midi de Note On
  *
@@ -41,7 +52,7 @@ typedef struct{
  * los parámetros de la estructura del mensaje
  *  @param message Puntero a la estructura que representa el mensaje.
  */
-void midiSendNoteOn (midiMessage_t * message);
+void midiSendNoteOn (midiMessage_t * message, mbed::UnbufferedSerial * alias);
 
 /**
  * Transmisión a través de UART del mensaje midi de Note Off
@@ -50,7 +61,7 @@ void midiSendNoteOn (midiMessage_t * message);
  * los parámetros de la estructura del mensaje
  *  @param message Puntero a la estructura que representa el mensaje.
  */
-void midiSendNoteOff (midiMessage_t * message);
+void midiSendNoteOff (midiMessage_t * message, mbed::UnbufferedSerial * alias);
 
 //=====[#include guards - end]=================================================
 

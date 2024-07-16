@@ -98,11 +98,11 @@ uint8_t buttonUpdate (button_t * button);
 
 int main(void)
 {
-    /** Creo el transductor piezo eléctrico necesario para
-    *  detectar el golpe sobre el drum pad y lo inicializo. 
+    /** Creo el transductor piezo eléctrico  
     */
     AnalogIn piezoA(A0);
-    piezo_t piezoAStruct{&piezoA,PIEZO_INACTIVE,0x00};
+    piezo_t piezoAStruct;
+    piezoInit(&piezoA, &piezoAStruct);
     /** Creo los pulsadores necesarios para configurar el 
     *  sonido del drum pad. 
     *  Estos pulsadores permiten navegar de manera ascendente y 
@@ -114,7 +114,11 @@ int main(void)
     DigitalIn downButton(D1);                                                   //Creo un objeto DigitalIn para la navegación descendente del arreglo de notas midi disponibles
     button_t downButtonStruct {&downButton,BUTTON_RELEASED,BUTTON_RELEASED};    /**< Estructura asociada al pulsador downButton  */
     
+    UnbufferedSerial serialPort(USBTX, USBRX);   //Creo un objeto UnbufferedSerial para realizar la comunicación serie con la PC.
+
     midiMessage_t midiMessageStruct{0x00,0x00,0x00};
+    
+    initializaMIDISerialPort(&serialPort);
 
     visualInterfaceInit();                                              //Inicializo el led del drum pad
        
@@ -128,8 +132,8 @@ int main(void)
             ledPad = LED_ON;                                            //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
             midiMessageStruct.note = instrumentNote[noteIndex];         //Cargo la nota del mensaje
             midiMessageStruct.velocity = piezoAStruct.MaxVelocity;      //Cargo la velocity del mensaje              
-            midiSendNoteOff(&midiMessageStruct);                        //Envío el mensaje de Note Off para no superponer notas 
-            midiSendNoteOn(&midiMessageStruct);                         //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
+            midiSendNoteOff(&midiMessageStruct,&serialPort);                        //Envío el mensaje de Note Off para no superponer notas 
+            midiSendNoteOn(&midiMessageStruct,&serialPort);                         //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
             ledPad = LED_OFF;                                           //Apago el Led para indicar que se envió el mensaje correspondiente
         }
 

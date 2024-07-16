@@ -35,33 +35,30 @@ typedef enum{
 
 //=====[Declaration and initialization of private global variables]============
 
-static UnbufferedSerial serialPort(USBTX, USBRX);   //Creo un objeto UnbufferedSerial para realizar la comunicación serie con la PC.
-
 //=====[Declaration and initialization of public global variables]=============
 
 
 
 //=====[Declarations (prototypes) of private functions]========================
 
-    /** Seteo las propiedades de la comuniación serie 
-    *  acorde a las preferencias configuradas en el 
-    *  software Hariless MIDI<->Serial Bridge
-    *  (9600-8-N-1).
-    */
-static void initializaSerialPort(void);
 //=====[Implementations of public functions]===================================
+void initializaMIDISerialPort(UnbufferedSerial * alias)
+{
+    alias->baud(38400);
+    alias->format(8,SerialBase::None,1);
+}
 
 
-void midiSendNoteOn (midiMessage_t * message)
+void midiSendNoteOn (midiMessage_t * message, UnbufferedSerial * alias)
 {
     uint8_t command = NOTE_ON;                  /**< <Comando de Note On en canal 0> */
 
-    serialPort.write(&command, 1);              //Envío el comando y su canal
-    serialPort.write(&message->note, 1);        //Envío la nota       
-    serialPort.write(&message->velocity, 1);    //Envío el valor de velocity 
+    alias->write(&command, 1);              //Envío el comando y su canal
+    alias->write(&message->note, 1);        //Envío la nota       
+    alias->write(&message->velocity, 1);    //Envío el valor de velocity 
 }
 
-void midiSendNoteOff (midiMessage_t * message)
+void midiSendNoteOff (midiMessage_t * message, UnbufferedSerial * alias)
 {
     /** Una alternativa a enviar un mensaje con 
     * el comando Note Off es enviar un Comando Note On
@@ -71,18 +68,13 @@ void midiSendNoteOff (midiMessage_t * message)
     uint8_t command = NOTE_ON;                  
     uint8_t velocityOff = 0x00;                 
 
-    serialPort.write(&command, 1);              //Envío el comando y su canal
-    serialPort.write(&message->note, 1);        //Envío la nota
-    serialPort.write(&velocityOff, 1);          //Envío el valor de velocity         
+    alias->write(&command, 1);              //Envío el comando y su canal
+    alias->write(&message->note, 1);        //Envío la nota
+    alias->write(&velocityOff, 1);          //Envío el valor de velocity         
 }
 
 
 
 //=====[Implementations of private functions]==================================
-void initializaSerialPort()
-{
-    serialPort.baud(38400);
-    serialPort.format(8,SerialBase::None,1);
-}
 
 /*** end of file ***/
