@@ -24,13 +24,66 @@
 //=====[Declaration and initialization of public global variables]=============
 
 
-
 //=====[Declarations (prototypes) of private functions]========================
 
 
 //=====[Implementations of public functions]===================================
+void debounceButtonInit(button_t * button) {
+    if (1 == *(button->alias) ) {
+        button->currentState = BUTTON_DOWN;
+    } else {
+        button->currentState = BUTTON_UP;
+    }
+    button->accumulatedDebounceTime = 0;
+    button->relasedEvent = false;
+}
 
+bool debounceButtonUpdate(button_t* button) {
+    button->relasedEvent = false;
+    switch (button->currentState) {
+        case BUTTON_UP:
+            if (1 == *(button->alias)) {
+                button->currentState = BUTTON_FALLING;
+                button->accumulatedDebounceTime = 0;
+            }
+            break;
 
+        case BUTTON_FALLING:
+            if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) {
+                if (1 == *(button->alias)) {
+                    button->currentState = BUTTON_DOWN;
+                } else {
+                    button->currentState = BUTTON_UP;
+                }
+            }
+            button->accumulatedDebounceTime += TIME_INCREMENT_MS;
+            break;
+
+        case BUTTON_DOWN:
+            if (0 == *(button->alias)) {
+                button->currentState = BUTTON_RISING;
+                button->accumulatedDebounceTime = 0;
+            }
+            break;
+
+        case BUTTON_RISING:
+            if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) {
+                if (0 == *(button->alias)) {
+                    button->currentState = BUTTON_UP;
+                    button->relasedEvent = true;
+                } else {
+                    button->currentState = BUTTON_DOWN;
+                }
+            }
+            button->accumulatedDebounceTime += TIME_INCREMENT_MS;
+            break;
+
+        default:
+            debounceButtonInit(button);
+            break;
+    }
+    return button->relasedEvent;
+}
 
 //=====[Implementations of private functions]==================================
 
