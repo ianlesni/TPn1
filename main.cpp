@@ -55,6 +55,7 @@ void visualInterfaceInit (void);
 /*************************************************************************
  *======================[Función main]====================================
  ************************************************************************/
+uint8_t noteIndex = 0;  
 
 int main(void)
 {
@@ -69,15 +70,13 @@ int main(void)
     *  descendente por el arreglo de notas de instrumentos
     *  disponibles.
     */
-
     DigitalIn upButton(BUTTON1);                                                //Creo un objeto DigitalIn para la navegación ascendente del arreglo de notas midi disponibles
     button_t  upButtonStruct;
-    DigitalIn downButton(D1);                                                   //Creo un objeto DigitalIn para la navegación descendente del arreglo de notas midi disponibles
-    button_t  downButtonStruct;
-
     upButtonStruct.alias = &upButton;
     debounceButtonInit(&upButtonStruct);
 
+    DigitalIn downButton(D1);                                                   //Creo un objeto DigitalIn para la navegación descendente del arreglo de notas midi disponibles
+    button_t  downButtonStruct;
     downButtonStruct.alias = &downButton;
     debounceButtonInit(&downButtonStruct);
 
@@ -88,7 +87,7 @@ int main(void)
     visualInterfaceInit();                                              //Inicializo el led del drum pad
        
     uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes();           //Obtengo el número total de notas midi de instrumentos percusivos disponibles
-    uint8_t noteIndex = 0;                                              /**< Indice para la navegación del arreglo de notas de intrumento */
+                                            /**< Indice para la navegación del arreglo de notas de intrumento */
 
     while (true)
     {
@@ -100,12 +99,12 @@ int main(void)
             ledPad = LED_ON;                                            //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
             midiMessageStruct.note = instrumentNote[noteIndex];         //Cargo la nota del mensaje
             midiMessageStruct.velocity = piezoAStruct.MaxVelocity;      //Cargo la velocity del mensaje              
-            midiSendNoteOff(&midiMessageStruct,&serialPort);            //Envío el mensaje de Note Off para no superponer notas 
-            midiSendNoteOn(&midiMessageStruct,&serialPort);             //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
+            midiSendNoteOff(&midiMessageStruct, &serialPort);            //Envío el mensaje de Note Off para no superponer notas 
+            midiSendNoteOn(&midiMessageStruct, &serialPort);             //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
             ledPad = LED_OFF;                                           //Apago el Led para indicar que se envió el mensaje correspondiente
         }
 
-        if(true == upbuttonReleased)             //Verifico si el pulsador upButton fué presionado
+        if(true == upbuttonReleased)                                    //Verifico si el pulsador upButton fué presionado
         {
             noteIndex++;                                                //Incremento el indice de navegación de notas
             if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;       //Controlo que el indice no se vaya de rango
@@ -115,7 +114,7 @@ int main(void)
             displayStringWrite(instrumentNoteName[noteIndex]);
         }
 
-        if(true == downButtonReleased)           //Verifico si el pulsador downButton fué presionado
+        if(true == downButtonReleased)                                    //Verifico si el pulsador downButton fué presionado
         {
             noteIndex--;                                                //Decremento el indice de navegación de notas
             if (noteIndex < 0) noteIndex = numOfInstrumentNotes - 1;    //Controlo que el indice no se vaya de rango
@@ -139,6 +138,16 @@ void visualInterfaceInit ()
     displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);
     displayCharPositionWrite(0,0);
     displayStringWrite("MIDI Drum Pad v0");
+    delay(550);
+
+    displayCharPositionWrite(0,0);
+    displayStringWrite("                ");
+
+    displayCharPositionWrite(0,0);
+    displayStringWrite("Drum Pad note:");
+
+    displayCharPositionWrite(0,1);
+    displayStringWrite(instrumentNoteName[noteIndex]);
 }
 
 
