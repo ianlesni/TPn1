@@ -41,7 +41,7 @@ typedef struct{
     mbed::DigitalIn * alias;                 /**< Puntero a un objeto DigitalIn para implementar un pulsador */
     uint8_t currentState;                    /**< Estado actual del pulsador */
     uint8_t accumulatedDebounceTime;
-    bool relasedEvent;
+    bool releasedEvent;
 
 } button_t; 
 

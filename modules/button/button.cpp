@@ -28,21 +28,21 @@
 
 
 //=====[Implementations of public functions]===================================
-void debounceButtonInit(button_t * button) {
-    if (1 == *(button->alias) ) {
+void debounceButtonInit(button_t *button) {
+    if (1 == button->alias->read()) {
         button->currentState = BUTTON_DOWN;
     } else {
         button->currentState = BUTTON_UP;
     }
     button->accumulatedDebounceTime = 0;
-    button->relasedEvent = false;
+    button->releasedEvent = false;
 }
 
-bool debounceButtonUpdate(button_t* button) {
-    button->relasedEvent = false;
+bool debounceButtonUpdate(button_t *button) {
+    button->releasedEvent = false;
     switch (button->currentState) {
         case BUTTON_UP:
-            if (1 == *(button->alias)) {
+            if (1 == button->alias->read()) {
                 button->currentState = BUTTON_FALLING;
                 button->accumulatedDebounceTime = 0;
             }
@@ -50,7 +50,7 @@ bool debounceButtonUpdate(button_t* button) {
 
         case BUTTON_FALLING:
             if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) {
-                if (1 == *(button->alias)) {
+                if (1 == button->alias->read()) {
                     button->currentState = BUTTON_DOWN;
                 } else {
                     button->currentState = BUTTON_UP;
@@ -60,7 +60,7 @@ bool debounceButtonUpdate(button_t* button) {
             break;
 
         case BUTTON_DOWN:
-            if (0 == *(button->alias)) {
+            if (0 == button->alias->read()) {
                 button->currentState = BUTTON_RISING;
                 button->accumulatedDebounceTime = 0;
             }
@@ -68,9 +68,9 @@ bool debounceButtonUpdate(button_t* button) {
 
         case BUTTON_RISING:
             if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) {
-                if (0 == *(button->alias)) {
+                if (0 == button->alias->read()) {
                     button->currentState = BUTTON_UP;
-                    button->relasedEvent = true;
+                    button->releasedEvent = true;
                 } else {
                     button->currentState = BUTTON_DOWN;
                 }
@@ -82,7 +82,7 @@ bool debounceButtonUpdate(button_t* button) {
             debounceButtonInit(button);
             break;
     }
-    return button->relasedEvent;
+    return button->releasedEvent;
 }
 
 //=====[Implementations of private functions]==================================

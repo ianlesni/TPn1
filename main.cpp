@@ -12,6 +12,7 @@
 #include "instrument.h"
 #include "piezo.h"
 #include "button.h"
+#include "arm_book_lib.h"
 #include <cstdint>
 
  /*************************************************
@@ -54,10 +55,7 @@ void visualInterfaceInit (void);
 /*************************************************************************
  *======================[Función main]====================================
  ************************************************************************/
-    DigitalIn upButton(BUTTON1);                                                //Creo un objeto DigitalIn para la navegación ascendente del arreglo de notas midi disponibles
-    button_t  upButtonStruct;
-    DigitalIn downButton(D1);                                                   //Creo un objeto DigitalIn para la navegación descendente del arreglo de notas midi disponibles
-    button_t  downButtonStruct;
+
 int main(void)
 {
     /** Creo el transductor piezo eléctrico  
@@ -72,11 +70,15 @@ int main(void)
     *  disponibles.
     */
 
+    DigitalIn upButton(BUTTON1);                                                //Creo un objeto DigitalIn para la navegación ascendente del arreglo de notas midi disponibles
+    button_t  upButtonStruct;
+    DigitalIn downButton(D1);                                                   //Creo un objeto DigitalIn para la navegación descendente del arreglo de notas midi disponibles
+    button_t  downButtonStruct;
+
     upButtonStruct.alias = &upButton;
     debounceButtonInit(&upButtonStruct);
 
     downButtonStruct.alias = &downButton;
-    
     debounceButtonInit(&downButtonStruct);
 
     UnbufferedSerial serialPort(USBTX, USBRX);   //Creo un objeto UnbufferedSerial para realizar la comunicación serie con la PC.
@@ -90,8 +92,8 @@ int main(void)
 
     while (true)
     {
-        bool downButtonReleased = debounceButtonUpdate(&upButtonStruct);
-        bool upbuttonReleased = debounceButtonUpdate(&downButtonStruct);
+        bool downButtonReleased = debounceButtonUpdate(&downButtonStruct);
+        bool upbuttonReleased = debounceButtonUpdate(&upButtonStruct);
 
         if(PIEZO_ACTIVE == piezoUpdate(&piezoAStruct))                  //Actualizo y verifico el estado del transductor piezoeléctrico
         {  
@@ -122,7 +124,7 @@ int main(void)
             displayCharPositionWrite (0,1);
             displayStringWrite(instrumentNoteName[noteIndex]);
         }
-        wait_us(TIME_INCREMENT_MS * 1000);
+        delay(TIME_INCREMENT_MS);
     }
 
 }
