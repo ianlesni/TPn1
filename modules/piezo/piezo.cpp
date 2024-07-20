@@ -9,6 +9,7 @@
 #include "mbed.h"
 #include "arm_book_lib.h"
 #include "piezo.h"
+#include "fixedpoint.h"
 #include <cstdint>
 
 //=====[Declaration of private defines]========================================
@@ -24,10 +25,6 @@
 #define SAMPLE_FREQ_Hz 2000                                         /**< Frecuencia de muestreo [Hz] */
 #define SAMPLE_TIME_INTERVAL_us 500                                 /**< Intervalo de muestreo [us] */
 
-#define FIXED_POINT_FRACTIONAL_BITS 12                              /**< Número de bits fraccionales */
-#define FIXED_POINT_SCALE (1 << FIXED_POINT_FRACTIONAL_BITS)        /**< Factor de escala para la conversión */
-#define TO_FIXED_POINT(x) ((x) * FIXED_POINT_SCALE)                 /**< Macro para convertir un número en su representacón de punto fijo */
-#define FROM_FIXED_POINT(x) ((x) / FIXED_POINT_SCALE)               /**< Macro para convertir un numero de punto fijo a su representación normal */
 
 #define ADC_MAX_VALUE 65535                                         /**< valor máximo que devuelve read_u16() */
 #define ADC_VOLTAGE_SCALE 3300                                      /**< Valor de voltaje máximo [mV] que corresponde al valor máximo que devuelve read_u16() (65535) */

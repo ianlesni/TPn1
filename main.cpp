@@ -107,7 +107,6 @@ int main(void)
 
 }
 
-
 //=====[Implementations of public functions]===================================
 void visualInterfaceInit(DigitalOut * Led)
 {

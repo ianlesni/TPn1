@@ -30,7 +30,8 @@ typedef enum{
 }MIDI_COMMAND; 
 
 //=====[Declaration and initialization of public global objects]===============
-
+    UnbufferedSerial serialPort(USBTX, USBRX);                          
+    midiMessage_t midiMessageStruct; 
 //=====[Declaration of external public global variables]=======================
 
 //=====[Declaration and initialization of private global variables]============
