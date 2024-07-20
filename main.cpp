@@ -66,7 +66,6 @@ int main(void)
        
     uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes();           //Obtengo el número total de notas midi de instrumentos percusivos disponibles
                                             
-
     while (true)
     {
         /** Actualizo la maquina de estados
@@ -90,10 +89,10 @@ int main(void)
         {
             noteIndex++;                                                        //Incremento el indice de navegación de notas
             if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;               //Controlo que el indice no se vaya de rango
+            displayCharPositionWrite (0,1);                                     
+            displayStringWrite("                ");                             //Limpio la pantalla del display
             displayCharPositionWrite (0,1);
-            displayStringWrite("                ");
-            displayCharPositionWrite (0,1);
-            displayStringWrite(instrumentNoteName[noteIndex]);
+            displayStringWrite(instrumentNoteName[noteIndex]);                  //Imprimo el nombre de la nota a ejecutar
         }
 
         if(true == downButtonReleased)                                          //Verifico si el pulsador downButton fué presionado
@@ -101,9 +100,9 @@ int main(void)
             noteIndex--;                                                        //Decremento el indice de navegación de notas
             if (noteIndex < 0) noteIndex = numOfInstrumentNotes - 1;            //Controlo que el indice no se vaya de rango
             displayCharPositionWrite (0,1);
-            displayStringWrite("                ");
+            displayStringWrite("                ");                             //Limpio la pantalla del display
             displayCharPositionWrite (0,1);
-            displayStringWrite(instrumentNoteName[noteIndex]);
+            displayStringWrite(instrumentNoteName[noteIndex]);                  //Imprimo el nombre de la nota a ejecutar
         }
         
         delay(TIME_INCREMENT_MS);
@@ -117,18 +116,28 @@ void visualInterfaceInit(DigitalOut * Led)
 {
     Led->write(0);                                                  //Inicializo el led del drum pad apagado
 
-    displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);
+    displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);        //Inicializo el display
+    /** Genero un mensaje de bienvenida
+    *   y el retardo para que pueda 
+    *   leerse
+    */
     displayCharPositionWrite(0,0);
-    displayStringWrite("MIDI Drum Pad v0");
-    
-    delay(550);
-
+    displayStringWrite("MIDI Drum Pad v0");                         
+    displayCharPositionWrite (0,1);
+    displayStringWrite("¡WELCOME!"); 
+    delay(1000);                                                   
+    /** Limpio el display
+    *
+    */
     displayCharPositionWrite(0,0);
-    displayStringWrite("                ");
-
+    displayStringWrite("                ");                         
+    displayCharPositionWrite (0,1);
+    displayStringWrite("                ");     
+    /** Imprimo la pantalla 
+    *   de uso del instrumento
+    */
     displayCharPositionWrite(0,0);
     displayStringWrite("Drum Pad note:");
-
     displayCharPositionWrite(0,1);
     displayStringWrite(instrumentNoteName[noteIndex]);
 }
