@@ -31,6 +31,13 @@ int8_t noteIndex = 0;        /**< Indice para la navegación del arreglo de nota
  */
 void visualInterfaceInit (DigitalOut * Led);
 
+/**
+*   Esta función borra imprime en el display
+*  la nota actual con la que se configuró el 
+*  drum pad.
+ */
+void visualInterfaceUpdate (void);
+
 //=====[Main function]=========================================================
 int main(void)
 {
@@ -88,22 +95,15 @@ int main(void)
         if(true == upbuttonReleased)                                            //Verifico si el pulsador upButton fué presionado
         {
             noteIndex++;                                                        //Incremento el indice de navegación de notas
-            if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;               //Controlo que el indice no se vaya de rango
-            displayCharPositionWrite (0,1);                                     
-            displayStringWrite("                ");                             //Limpio la pantalla del display
-            displayCharPositionWrite (0,1);
-            displayStringWrite(instrumentNoteName[noteIndex]);                  //Imprimo el nombre de la nota a ejecutar
+            if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;               //Controlo que el indice no se vaya de rango     
         }
 
         if(true == downButtonReleased)                                          //Verifico si el pulsador downButton fué presionado
         {
             noteIndex--;                                                        //Decremento el indice de navegación de notas
             if (noteIndex < 0) noteIndex = numOfInstrumentNotes - 1;            //Controlo que el indice no se vaya de rango
-            displayCharPositionWrite (0,1);
-            displayStringWrite("                ");                             //Limpio la pantalla del display
-            displayCharPositionWrite (0,1);
-            displayStringWrite(instrumentNoteName[noteIndex]);                  //Imprimo el nombre de la nota a ejecutar
         }
+        visualInterfaceUpdate();
         
         delay(TIME_INCREMENT_MS);
     }
@@ -130,19 +130,22 @@ void visualInterfaceInit(DigitalOut * Led)
     *
     */
     displayCharPositionWrite(0,0);
-    displayStringWrite("                ");                         
-    displayCharPositionWrite (0,1);
-    displayStringWrite("                ");     
+    displayStringWrite("                ");                            
     /** Imprimo la pantalla 
     *   de uso del instrumento
     */
     displayCharPositionWrite(0,0);
     displayStringWrite("Drum Pad note:");
-    displayCharPositionWrite(0,1);
-    displayStringWrite(instrumentNoteName[noteIndex]);
+    visualInterfaceUpdate();
 }
 
-
+void visualInterfaceUpdate()
+{
+    displayCharPositionWrite (0,1);                                     
+    displayStringWrite("                ");                             //Limpio la pantalla del display
+    displayCharPositionWrite (0,1);
+    displayStringWrite(instrumentNoteName[noteIndex]);                  //Imprimo el nombre de la nota a ejecutar
+}
 
 
 
