@@ -42,7 +42,6 @@ void visualInterfaceUpdate (void);
 int main(void)
 {
     DigitalOut ledPad(LED1);                                        //Creo un objeto DigitalOut como led testigo de interacción con el drum pad
-    
     /** Creo el transductor piezo eléctrico  
     */
     AnalogIn piezoA(A0);
@@ -53,14 +52,12 @@ int main(void)
     *   sonido del drum pad    
     */
     DigitalIn upButton(BUTTON1);                                                
-    button_t  upButtonStruct;
-    upButtonStruct.alias = &upButton;
-    debounceButtonInit(&upButtonStruct);
-
     DigitalIn downButton(D1);                                                   
-    button_t  downButtonStruct;
-    downButtonStruct.alias = &downButton;
-    debounceButtonInit(&downButtonStruct);
+
+    buttonsArray_t drumPadButtons;
+    drumPadButtons.button[0].alias = &upButton;
+    drumPadButtons.button[1].alias = &downButton;
+    debounceButtonInit(&drumPadButtons);
 
     /** Creo objeto UnbufferedSerial para realizar
     *   la comunicación serie con la PC   
@@ -79,8 +76,7 @@ int main(void)
         *   que gestiona el debounce de los
         *   pulsadores   
         */
-        bool downButtonReleased = debounceButtonUpdate(&downButtonStruct);
-        bool upbuttonReleased = debounceButtonUpdate(&upButtonStruct);
+        debounceButtonUpdate(&drumPadButtons);
 
         if(PIEZO_ACTIVE == piezoUpdate(&piezoAStruct))                          //Actualizo y verifico el estado del transductor piezoeléctrico
         {  
@@ -92,19 +88,20 @@ int main(void)
             ledPad = 0;                                                         //Apago el Led para indicar que se envió el mensaje correspondiente
         }
 
-        if(true == upbuttonReleased)                                            //Verifico si el pulsador upButton fué presionado
+        if(true == drumPadButtons.button[0].releasedEvent)                      //Verifico si el pulsador upButton fué presionado
         {
             noteIndex++;                                                        //Incremento el indice de navegación de notas
             if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;               //Controlo que el indice no se vaya de rango     
+            visualInterfaceUpdate();
         }
 
-        if(true == downButtonReleased)                                          //Verifico si el pulsador downButton fué presionado
+        if(true == drumPadButtons.button[1].releasedEvent)                      //Verifico si el pulsador downButton fué presionado
         {
             noteIndex--;                                                        //Decremento el indice de navegación de notas
             if (noteIndex < 0) noteIndex = numOfInstrumentNotes - 1;            //Controlo que el indice no se vaya de rango
+            visualInterfaceUpdate();
         }
-        visualInterfaceUpdate();
-        
+
         delay(TIME_INCREMENT_MS);
     }
 
@@ -124,7 +121,7 @@ void visualInterfaceInit(DigitalOut * Led)
     displayCharPositionWrite(0,0);
     displayStringWrite("MIDI Drum Pad v0");                         
     displayCharPositionWrite (0,1);
-    displayStringWrite("¡WELCOME!"); 
+    displayStringWrite("WELCOME!..."); 
     delay(1000);                                                   
     /** Limpio el display
     *
