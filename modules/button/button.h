@@ -15,8 +15,8 @@
 //=====[Declaration of public defines]=========================================
 
 #define DEBOUNCE_BUTTON_TIME_MS 30       /**< Tiempo de espera asociado al rebote típico de los pulsadores */
-#define TIME_INCREMENT_MS 1              /**< Intervalo incremental del contador de tiempo de rebote  */
-
+#define TIME_INCREMENT_MS 2              /**< Intervalo incremental del contador de tiempo de rebote  */
+#define NUM_BUTTONS 2                    /**< Número de pulsadores activos de mi sistema  */  
 //=====[Declaration of public data types]======================================
 
 namespace mbed{
@@ -39,22 +39,29 @@ typedef struct{
 
 } button_t; 
 
+/*!
+ * \struct buttonsArray_t
+ * \brief Estructura para almacenar todos los pulsadores
+ *
+ */
+typedef struct {
+    button_t button[NUM_BUTTONS];
+} buttonsArray_t;
 //=====[Declarations (prototypes) of public functions]=========================
 
-/** Defino el estado inicial del pulsador y lo incializo
+/** Defino el estado inicial de cada pulsador y lo incializo
 *  para su posterior uso en la máquina de estados que
 *  gestiona la rutina antirebote.
-*  @param button Estructura para la representación del pulsador.
+*  @param buttons Estructura para la representación de los pulsadores.
 */
-void debounceButtonInit (button_t * button);
+void debounceButtonInit (buttonsArray_t * buttonsArray);
 
-/** Defino el estado inicial del pulsador y lo incializo
+/** Defino el estado inicial de cada pulsador y lo incializo
 *  para su posterior uso en la máquina de estados que
 *  gestiona la rutina antirebote.
-*  @param button Estructura para la representación del pulsador.
-*  @return bool para indicar si el pulsador fue liberado desde el ultimo chequeo
+*  @param buttons Estructura para la representación del pulsador.
 */
-bool debounceButtonUpdate (button_t * button);
+void debounceButtonUpdate (buttonsArray_t * buttonsArray);
 //=====[#include guards - end]=================================================
 
 #endif // _BUTTON_H_

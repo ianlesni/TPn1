@@ -39,72 +39,73 @@ typedef enum{
 //=====[Declarations (prototypes) of private functions]========================
 
 //=====[Implementations of public functions]===================================
-void debounceButtonInit(button_t *button) 
+void debounceButtonInit(buttonsArray_t * buttonsArray) 
 {
-    /** En función del estado fisico del 
-    *  pulsador defino el estado para la
-    *  FSM e inicializo los parámetros
-    *  del pulsador
-    */
-    if (1 == button->alias->read()) {
-        button->currentState = BUTTON_DOWN;
-    } else {
-        button->currentState = BUTTON_UP;
+    for (int buttonIndex = 0; buttonIndex < NUM_BUTTONS; buttonIndex++) 
+    {
+        if (1 == buttonsArray->button[buttonIndex].alias->read()) {
+            buttonsArray->button[buttonIndex].currentState = BUTTON_DOWN;
+        } else {
+            buttonsArray->button[buttonIndex].currentState = BUTTON_UP;
+        }
+        buttonsArray->button[buttonIndex].accumulatedDebounceTime = 0;
+        buttonsArray->button[buttonIndex].releasedEvent = false;
     }
-    button->accumulatedDebounceTime = 0;
-    button->releasedEvent = false;
 }
 
 /** FSM del libro adaptada para  
 *  poder utilizarse con más de
 *  un pulsador
 */
-bool debounceButtonUpdate(button_t *button) 
+void debounceButtonUpdate(buttonsArray_t * buttonsArray) 
 {
-    button->releasedEvent = false;
-    switch (button->currentState) {
-        case BUTTON_UP:
-            if (1 == button->alias->read()) {
-                button->currentState = BUTTON_FALLING;
-                button->accumulatedDebounceTime = 0;
-            }
-            break;
-
-        case BUTTON_FALLING:
-            if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) {
+    for (int buttonIndex = 0; buttonIndex < NUM_BUTTONS; buttonIndex++) 
+    {
+        button_t * button = &buttonsArray->button[buttonIndex];
+        button->releasedEvent = false;
+        switch (button->currentState) {
+            case BUTTON_UP:
                 if (1 == button->alias->read()) {
-                    button->currentState = BUTTON_DOWN;
-                } else {
-                    button->currentState = BUTTON_UP;
+                    button->currentState = BUTTON_FALLING;
+                    button->accumulatedDebounceTime = 0;
                 }
-            }
-            button->accumulatedDebounceTime += TIME_INCREMENT_MS;
-            break;
+                break;
 
-        case BUTTON_DOWN:
-            if (0 == button->alias->read()) {
-                button->currentState = BUTTON_RISING;
-                button->accumulatedDebounceTime = 0;
-            }
-            break;
+            case BUTTON_FALLING:
+                if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) {
+                    if (1 == button->alias->read()) {
+                        button->currentState = BUTTON_DOWN;
+                    } else {
+                        button->currentState = BUTTON_UP;
+                    }
+                }
+                button->accumulatedDebounceTime += TIME_INCREMENT_MS;
+                break;
 
-        case BUTTON_RISING:
-            if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) {
+            case BUTTON_DOWN:
                 if (0 == button->alias->read()) {
-                    button->currentState = BUTTON_UP;
-                    button->releasedEvent = true;
-                } else {
-                    button->currentState = BUTTON_DOWN;
+                    button->currentState = BUTTON_RISING;
+                    button->accumulatedDebounceTime = 0;
                 }
-            }
-            button->accumulatedDebounceTime += TIME_INCREMENT_MS;
-            break;
+                break;
 
-        default:
-            debounceButtonInit(button);
-            break;
-    }
-    return button->releasedEvent;
+            case BUTTON_RISING:
+                if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) {
+                    if (0 == button->alias->read()) {
+                        button->currentState = BUTTON_UP;
+                        button->releasedEvent = true;
+                    } else {
+                        button->currentState = BUTTON_DOWN;
+                    }
+                }
+                button->accumulatedDebounceTime += TIME_INCREMENT_MS;
+                break;
+
+            default:
+                debounceButtonInit(buttonsArray);
+                break;
+        }
+    }    
 }
 
 //=====[Implementations of private functions]==================================
