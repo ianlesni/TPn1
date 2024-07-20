@@ -6,6 +6,8 @@
 
 [![Alt text](https://img.youtube.com/vi/TNhxJsQY0_c/0.jpg)](https://www.youtube.com/watch?v=TNhxJsQY0_c)
 
+[![Alt text](https://img.youtube.com/vi/la1K-TzpbiQ/0.jpg)](https://www.youtube.com/watch?v=la1K-TzpbiQ)
+
 ### Descripción
   El sistema consiste en un dispositivo que captura la información de una acción musical mediante un transductor piezoeléctrico integrado en un *drum pad*. Este transductor convierte la deformación mecánica generada por un golpe en una señal eléctrica, la cual es procesada y transformada en un mensaje MIDI según el estándar MIDI. Estos mensajes se envían a través de una interfaz UART hacia una PC y son recibidos por ésta en el puerto COM. El software Hairless-MIDI (disponible en https://projectgus.github.io/hairless-midiserial/) interpreta los bytes de datos enviados desde la placa NUCLEO-429FZI como mensajes MIDI y los reenvía a un puerto MIDI de salida virtual, el cual pertenece al mismo software.
   
@@ -20,13 +22,19 @@
 - 5: Nota número 36 mapeada al pedal de bombo ejecutándose
 
 ### Diagrama en bloques
-![Diagrama en bloques ](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/79b5c3e0-ac47-409f-8339-413e8e71b634)
+![image](https://github.com/user-attachments/assets/67f5da01-9b32-4465-8e7e-6522b90c9172)
 - #### Drum Pad:
 El Drum pad está coformado por un transductor piezoeléctrico (*piezo*), un circuito (*acondicionador de señal*) y un led (*ledPad*). Al golpear el pad, el transductor piezoelectrico genera una diferencia de potencial eléctrica propocional a la intensidad del golpe. Debido a la magnitud y caracteristicas de la señal, es necesario adaptarla a los rangos de voltaje y caracteristicas de la entrada del conversor analogico-digital(ADC). Para ello, se implementó un circuito acondicionador de señal que escala y ajusta la señal proveniente del transductor piezoelectrico a valores compatibles con la entrada del ADC. Además, el drum pad cuenta con un led idnicador que proporciona retroalimentación visual al usuario cada vez que se envía un comando MIDI, facilitando la comprensión de la relación entre el golpe en el pad y la generación de sonido correspondiente.
 - #### Pulsadores:
 El sistema cuenta con dos pulsadores (upButton y downButton) que permiten configurar el sonido asociado al golpe del drum pad. Estos pulsadores facilitan la navegación ascendente o descendente a través de una lista predefinida en el firmware, la cual contiene con todos los sonidos disponibles para el drum pad.
 - #### PC:
 La comunicación se establece a través de la interfaz UART con la PC y esta utiliza los programas mencionados en la descripción del proyecto, que se encargan de interpretar y traducir el mensaje enviado por la NUCLEO-F429ZI para generar el sonido correspondiente al instrumento virtual seleccionado.
+- #### Display LCD 16x2:
+El Display LCD se comunica con la placa Nucleo a traves de i2C. Su propósito es indicar en pantalla en que nota está configurada en el Drum Pad, y facilitar la navegación entre las notas disponibles.
+
+![LCD welcome](https://github.com/user-attachments/assets/f27bf91b-0794-42ee-8817-7f05384dccfd)
+
+![LCD Note](https://github.com/user-attachments/assets/d5c3ea7d-d748-484d-ba7a-8c950879c1b8)
 
 ### MIDI
 MIDI es un acrónimo para "Musical Instrumen Digital Interface". Es principalmente una especificación para conectar y controlar instrumentos musicales electrónicos. La especificación está propiamente detallada en el documento "MIDI 1.0 DETAILED SPECIFICATION" (disponible en https://midi.org/midi-1-0-detailed-specification).
@@ -77,11 +85,10 @@ En la siguiente captura del osciloscopio puede observarse un caso de multiples g
 Debido que la intensidad del golpe se representa en este tipo de instrumentos con el parámetro velocity, fue necesario determinar una relación entre la señal medida y dicho parámetro. El piso de ruido es de 80mV y la máxima tensión pico de salida obtenida fue de 2V. Teniendo en cuenta este delta de tensión, se generó una ecuación para transformar el valor medido por el ADC en un valor de velocity. 
 
 ## Análisis de muestreo
-La duración de la señal es de aproximadamente 10ms, independientemente de la fuerza del golpe. Después de realizar la Transformada Rápida de Fourier(FFT) de una señal típica registrada por el transductor, se determinó que la mayor componente en frecuencia distinguible en mi instrumento de 6,7KHz.Siguiendo el criterio de Nyquist, se adoptó una frecuencia de muestreo superior a cinco veces la componente de mayor frecuencia de la señal a analizar, en este caso 40KHz.
-Debido a que la señal alcanza su valor pico en aproximadamente 5ms, el intervalo entre muestras necesario para logar esta frecuencia de muestreo es de 25us. 
+![Cursor tiempo captura](https://github.com/user-attachments/assets/86ceecc4-89ae-4e6c-8a80-b21d0c73b9a3)
+La mayor duración de la señal capturada es de aproximadamente 10ms. La seña se muestrea tomando un total de 20 muestras,una vez superado el umbral, adquiriendo una muestra cada 500us.
 
 ## Código bloqueante
 Un valor muy exigente de velocidad de ejecución es de 900BPM (beats per minute), es decir, 15 golpes por segundo, o un golpe cada 66,6 ms. Por lo tanto, el sistema debe realizar la medición de amplitud, generar y enviar el mensaje MIDI antes de que ocurra el siguiente golpe.
-La única porción de código considerablemente bloqueante es la encargada de gestionar el rebote de los pulsadores, que toma aproximadamente 30ms. Ese período bloqueante es menor que el mínimo tiempo entre golpes considerado, y dado que, por cuestiones de usabilidad, cuando el usuario configura el sonido del pad no se espera que toque simultaneamtente a 900BPM. Por lo tanto, no es necesario preocuparse por esta condición bloqueante.
-
+La única porción de código considerablemente bloqueante es la encargada de actualizar la pantalla del display cuando se configura una nueva nota desde los botones de navegación. Dado que no se pretende configurar el Drum pad al mismo tiempo que se está ejecutando el instrumento, se lo considera un bloqueo tolerable.
 
