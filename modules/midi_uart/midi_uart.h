@@ -16,6 +16,10 @@
 
 
 //=====[Declaration of public data types]======================================
+namespace mbed {
+    class UnbufferedSerial;
+}
+
 /*!
  * \struct midiMessage_t
  * \brief Estructura de un mensaje MIDI
@@ -23,10 +27,6 @@
  *Estructura que contiene los campos necesarios para los 
  *mensajes MIDI Note On y Note Off en channel 0
  */
-namespace mbed {
-    class UnbufferedSerial;
-}
-
 typedef struct{
 
     uint8_t command;        /**< Comando a transmitir en el mensaje por el canal 0 */
@@ -37,31 +37,34 @@ typedef struct{
 
 //=====[Declarations (prototypes) of public functions]=========================
 
-    /** Seteo las propiedades de la comuniación serie 
-    *  acorde a las preferencias configuradas en el 
-    *  software Hariless MIDI<->Serial Bridge
-    *  (9600-8-N-1).
-    *  @param alias Puntero al objeto .
-    */
-void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t *midiMessageStruct);
+/** Seteo las propiedades de la comuniación serie 
+*  acorde a las preferencias configuradas en el 
+*  software Hariless MIDI<->Serial Bridge
+*  (9600-8-N-1) y asigno valores iniciales al mensaje midi.
+*  @param alias Puntero al objeto responsable de la comunicación serie.
+*  @param midimessage Puntero a la estructura que representa el mensaje.
+*/
+void initializaMIDISerial (mbed::UnbufferedSerial * alias, midiMessage_t * midiMessage);
 
 /**
  * Transmisión a través de UART del mensaje midi de Note On
  *
  * Esta función permite enviar mensajes para que la nota comience a sonar en función de 
  * los parámetros de la estructura del mensaje
- *  @param message Puntero a la estructura que representa el mensaje.
+ *  @param alias Puntero al objeto responsable de la comunicación serie.
+ *  @param midiMessage Puntero a la estructura que representa el mensaje.
  */
-void midiSendNoteOn (midiMessage_t * message, mbed::UnbufferedSerial * alias);
+void midiSendNoteOn (midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias);
 
 /**
  * Transmisión a través de UART del mensaje midi de Note Off
  *
- * Esta función permite enviar mensajes para que la nota deje de sonar en función de 
+ * Esta función permite enviar mensajes para que la nota comience a sonar en función de 
  * los parámetros de la estructura del mensaje
- *  @param message Puntero a la estructura que representa el mensaje.
+ *  @param alias Puntero al objeto responsable de la comunicación serie.
+ *  @param midiMessage Puntero a la estructura que representa el mensaje.
  */
-void midiSendNoteOff (midiMessage_t * message, mbed::UnbufferedSerial * alias);
+void midiSendNoteOff (midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias);
 
 //=====[#include guards - end]=================================================
 

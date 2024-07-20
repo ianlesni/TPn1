@@ -42,34 +42,34 @@ typedef enum{
 /** Seteo las propiedades de la comuniación serie 
 *  acorde a las preferencias configuradas en el 
 *  software Hariless MIDI<->Serial Bridge
-*  (9600-8-N-1).
-*  @param alias Puntero al objeto .
+*  (9600-8-N-1) 
+*  @param alias Puntero al objeto responsable de la comunicación serie.
 */
 static void initializaMIDISerialPort(mbed::UnbufferedSerial * alias);
 
 //=====[Implementations of public functions]===================================
-void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t *midiMessageStruct)
+void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t * midiMessage)
 {
     initializaMIDISerialPort(alias);
-    midiMessageStruct->command = 0x00;
-    midiMessageStruct->note = 0x00;
-    midiMessageStruct->velocity = 0x00;
+    midiMessage->command = 0x00;
+    midiMessage->note = 0x00;
+    midiMessage->velocity = 0x00;
 }
 
-void midiSendNoteOn (midiMessage_t * message, UnbufferedSerial * alias)
+void midiSendNoteOn(midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias)
 {               
-    message->command = NOTE_ON;             /**< <Comando de Note On en canal 0> */
-    alias->write(&message->command, 1);     //Envío el comando y su canal
-    alias->write(&message->note, 1);        //Envío la nota       
-    alias->write(&message->velocity, 1);    //Envío el valor de velocity 
+    midiMessage->command = NOTE_ON;             //Asigno comando de Note On en canal 0
+    alias->write(&midiMessage->command, 1);     //Envío el comando y su canal
+    alias->write(&midiMessage->note, 1);        //Envío la nota       
+    alias->write(&midiMessage->velocity, 1);    //Envío el valor de velocity 
 }
 
-void midiSendNoteOff (midiMessage_t * message, UnbufferedSerial * alias)
+void midiSendNoteOff(midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias)
 {
-    message->command = NOTE_OFF;                  /**< <Comando de Note Off en canal 0> */
-    alias->write(&message->command, 1);           //Envío el comando y su canal
-    alias->write(&message->note, 1);              //Envío la nota
-    alias->write(&message->velocity, 1);          //Envío el valor de velocity         
+    midiMessage->command = NOTE_OFF;                  //Asigno comando de Note Off en canal 0
+    alias->write(&midiMessage->command, 1);           //Envío el comando y su canal
+    alias->write(&midiMessage->note, 1);              //Envío la nota
+    alias->write(&midiMessage->velocity, 1);          //Envío el valor de velocity de apagado        
 }
 
 //=====[Implementations of private functions]==================================
