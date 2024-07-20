@@ -1,6 +1,14 @@
+/** @file midi_uart.cpp
+*
+* @brief A description of the module’s purpose.
+*
+*/
+
+//=====[Libraries]=============================================================
 #include "instrument.h"
 
 //=====[Declaration of external public global variables]=======================
+
 /*!
  * \brief Arreglo que contiene las notas de diferentes instrumentos.
  *
@@ -34,8 +42,6 @@ const uint8_t instrumentNote[] = {
 /*!
  * \brief Arreglo que contiene los nombres de las notas de diferentes instrumentos.
  *
- * Este arreglo almacena los nombres para imprimir sobre un display 
- * 
  */
 const char * instrumentNoteName[] = {
 
@@ -59,9 +65,22 @@ const char * instrumentNoteName[] = {
 
 };
 
+//=====[Declaration and initialization of private global variables]============
 
+//=====[Declaration and initialization of public global variables]=============
+
+//=====[Declarations (prototypes) of private functions]========================
+
+//=====[Implementations of public functions]===================================
+
+/** Calculo el número total de instrumentos mini disponibles
+*  para asignarle al pad.
+*  @return Numero de instrumentos disponibles para el pad.
+*/
 uint8_t  getNumOfInstrumentNotes()
 {
     uint8_t numOfInstrumentNotes = sizeof(instrumentNote) / sizeof(instrumentNote[0]);  //Calculo el número total de notas midi de instrumentos percusivos disponibles
     return numOfInstrumentNotes;
 }
+
+/*** end of file ***/

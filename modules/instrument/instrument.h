@@ -11,6 +11,12 @@
 #ifndef _INSTRUMET_H_
 #define _INSTRUMET_H_
 #include <cstdint>
+
+//=====[Declaration of public defines]=========================================
+
+
+//=====[Declaration of public data types]======================================
+
 /*!
  * \enum INSTRUMENT_NOTES
  * \brief Enumeración notas midi
@@ -40,10 +46,12 @@ const typedef enum{
 
 } INSTRUMENT_NOTES; 
 
+//=====[Declaration of external public global variables]=======================
+
 extern const uint8_t instrumentNote[];
 extern const char * instrumentNoteName[];
 
-
+//=====[Declarations (prototypes) of public functions]=========================
 uint8_t getNumOfInstrumentNotes (void);
 
 
