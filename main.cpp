@@ -55,7 +55,7 @@ void visualInterfaceInit (void);
 /*************************************************************************
  *======================[Función main]====================================
  ************************************************************************/
-uint8_t noteIndex = 0;  
+int8_t noteIndex = 0;  
 
 int main(void)
 {
@@ -97,10 +97,10 @@ int main(void)
         if(PIEZO_ACTIVE == piezoUpdate(&piezoAStruct))                  //Actualizo y verifico el estado del transductor piezoeléctrico
         {  
             ledPad = LED_ON;                                            //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
+            midiSendNoteOff(&midiMessageStruct, &serialPort);           //Envío el mensaje de Note Off para no superponer notas
             midiMessageStruct.note = instrumentNote[noteIndex];         //Cargo la nota del mensaje
-            midiMessageStruct.velocity = piezoAStruct.MaxVelocity;      //Cargo la velocity del mensaje              
-            midiSendNoteOff(&midiMessageStruct, &serialPort);            //Envío el mensaje de Note Off para no superponer notas 
-            midiSendNoteOn(&midiMessageStruct, &serialPort);             //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
+            midiMessageStruct.velocity = piezoAStruct.MaxVelocity;      //Cargo la velocity del mensaje               
+            midiSendNoteOn(&midiMessageStruct, &serialPort);            //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
             ledPad = LED_OFF;                                           //Apago el Led para indicar que se envió el mensaje correspondiente
         }
 
