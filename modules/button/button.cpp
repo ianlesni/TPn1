@@ -14,21 +14,38 @@
 
 //=====[Declaration of private data types]=====================================
 
+/*!
+ * \enum BUTTON_STATE
+ * \brief Enumeración de los estados de los pulsadores.
+ * 
+ */
+typedef enum{
+    
+    BUTTON_UP,
+    BUTTON_FALLING,
+    BUTTON_DOWN,
+    BUTTON_RISING
+
+}BUTTON_STATE;
+
 //=====[Declaration and initialization of public global objects]===============
 
 //=====[Declaration of external public global variables]=======================
 
 //=====[Declaration and initialization of private global variables]============
 
-
 //=====[Declaration and initialization of public global variables]=============
-
 
 //=====[Declarations (prototypes) of private functions]========================
 
-
 //=====[Implementations of public functions]===================================
-void debounceButtonInit(button_t *button) {
+void debounceButtonInit(button_t *button) 
+{
+    /** En función del estado fisico del 
+    *  pulsador defino el estado para la
+    *  FSM e inicializo los parámetros
+    *  del pulsador
+    */
     if (1 == button->alias->read()) {
         button->currentState = BUTTON_DOWN;
     } else {
@@ -38,7 +55,12 @@ void debounceButtonInit(button_t *button) {
     button->releasedEvent = false;
 }
 
-bool debounceButtonUpdate(button_t *button) {
+/** FSM del libro adaptada para  
+*  poder utilizarse con más de
+*  un pulsador
+*/
+bool debounceButtonUpdate(button_t *button) 
+{
     button->releasedEvent = false;
     switch (button->currentState) {
         case BUTTON_UP:
