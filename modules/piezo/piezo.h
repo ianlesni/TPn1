@@ -12,16 +12,13 @@
 
 #include <cstdint>
 
-// Declaración adelantada de la clase AnalogIn dentro del namespace mbed
-
-
+namespace mbed {
+    class AnalogIn;
+}
 
 //=====[Declaration of public defines]=========================================
 
 //=====[Declaration of public data types]======================================
-namespace mbed {
-    class AnalogIn;
-}
 
 /*!
  * \enum PIEZO_STATE
@@ -52,12 +49,12 @@ typedef struct{
 
 //=====[Declarations (prototypes) of public functions]=========================
 /**
- * Calculo de la pendiente y la ordenada al origen de la recta de conversión.
- * 
- * Esta función calcula la pendiente y la ordenada al origen de la recta de conversión
- * entre voltaje y velocity. Utiliza las constantes DELTA_VEL, DELTA_VOLT, MIN_VEL y PIEZO_THRESHOLD_mV. 
+ * Inicializo el piezoelectrico y llamo a la función que calcula
+ * la pendiente y ordenada al origen de la recta de conversión
+ *  @param alias Puntero al objeto del transductor.
+ *  @param piezo Puntero a la estructura que representa el mensaje.
  */
- void piezoInit (mbed::AnalogIn * alias, piezo_t * piezoStruct);
+ void piezoInit (mbed::AnalogIn * alias, piezo_t * piezo);
 
 
 /**
@@ -68,10 +65,10 @@ typedef struct{
  * 2- Compara la lectura con el umbral de activación.
  * 3- Si el valor supera el umbral, busca y registra el valor máximo del golpe detectado.
  * 4- Convierte este valor máximo en un valor de velocity y guarda.
- * 5- Devuelve el estado actual del transductor
+ * 5- Actualiza el estado del transductor
  *
  *  @param piezo Puntero a la estructura que representa el un transductor piezoeléctrico.
- *  @return Estado actual del transductor, `PIEZO_ACTIVE` o `PIEZO_INACTIVE` .
+ *  
  */
 uint8_t piezoUpdate (piezo_t * piezo);
 

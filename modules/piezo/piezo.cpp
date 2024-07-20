@@ -12,6 +12,7 @@
 #include <cstdint>
 
 //=====[Declaration of private defines]========================================
+
 #define MAX_VEL 127                                                 /**< Máximo valor de velocity permitido */
 #define MIN_VEL 35                                                  /**< Máximo valor de velocity permitido (para valores menores se escucha muy poco) */
 #define DELTA_VEL (MAX_VEL - MIN_VEL)                               /**< Variacion entre el máximo y mínimo valor de velocity permitido*/
@@ -30,6 +31,7 @@
 
 #define ADC_MAX_VALUE 65535                                         /**< valor máximo que devuelve read_u16() */
 #define ADC_VOLTAGE_SCALE 3300                                      /**< Valor de voltaje máximo [mV] que corresponde al valor máximo que devuelve read_u16() (65535) */
+
 //=====[Declaration of private data types]=====================================
 
 //=====[Declaration and initialization of public global objects]===============
@@ -40,16 +42,22 @@
 
 //=====[Declaration and initialization of private global variables]============
 
-/** Variables utilizadas para la conversión del valor de voltaje
- *  generado por el transductor piezoelectrico luego del golpe
- *  a un valor proporcional de velocity 
- */
-             
+    
 int32_t slopeFixedPoint;            /**< Pendiente de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity */
 int32_t interceptFixedPoint;        /**< Ordenada al origen de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity  */
 
-
 //=====[Declarations (prototypes) of private functions]========================
+
+ /**
+ * Conviersión de un valor de lectura 
+ * 
+ * Esta función realiza la conversión del valor de lectura del ADC 
+ * obtenido en uint16_t a [mV]
+ * 
+ * 
+ * @param adcValue Valor de adc (uint16_t producto de read_u16)
+ * @return  Valor de ADC en [mV].
+ */
 uint16_t adcToMilliVolts (uint16_t adcValue);
 /**
  * Calculo de la pendiente y la ordenada al origen de la recta de conversión.
@@ -67,7 +75,7 @@ uint16_t adcToMilliVolts (uint16_t adcValue);
  * la pendiente y la ordenada al origen previamente calculadas (slope e intercept).
  * 
  * @param piezoMaxValue Valor máximo de voltaje [mV] registrado por el transductor piezoeléctrico.
- * @return  Valor de velocity correspondiente, redondeado y ajustado dentro del rango permitido(0-127).
+ * @return  Valor de velocity correspondiente ajustado dentro del rango permitido(0-127).
  */
 static uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue);
 
@@ -80,15 +88,15 @@ static uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue);
  * @param piezo Puntero a la estructura que representa el un transductor piezoeléctrico.
  * @return Valor máximo de voltaje [mV] registrado durante el muestreo.
  */
-static  uint16_t piezoSearchMax (piezo_t * piezo);
+static uint16_t piezoSearchMax (piezo_t * piezo);
 
 //=====[Implementations of public functions]===================================
- void piezoInit(mbed::AnalogIn * alias, piezo_t * piezoStruct)
+ void piezoInit(mbed::AnalogIn * alias, piezo_t * piezo)
  {
-    piezoStruct->alias = alias;
-    piezoStruct->currentState = PIEZO_INACTIVE;
-    piezoStruct->MaxVelocity = 0x00;
-    calculateSlopeIntercept();
+    piezo->alias = alias;                                               
+    piezo->currentState = PIEZO_INACTIVE;                               
+    piezo->MaxVelocity = 0x00;                                          
+    calculateSlopeIntercept();                  
  }
 
 uint8_t piezoUpdate(piezo_t * piezo)
