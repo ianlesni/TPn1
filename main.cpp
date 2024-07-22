@@ -47,7 +47,7 @@ int main(void)
     AnalogIn piezoA(A0);
     piezo_t piezoAStruct;
     piezoInit(&piezoA, &piezoAStruct);
-
+    DigitalIn piezoADetector(D2);   
     /** Creo los pulsadores necesarios para configurar el 
     *   sonido del drum pad    
     */
