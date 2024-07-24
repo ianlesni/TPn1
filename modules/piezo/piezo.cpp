@@ -45,17 +45,7 @@ int32_t interceptFixedPoint;        /**< Ordenada al origen de la recta de conve
 
 //=====[Declarations (prototypes) of private functions]========================
 
- /**
- * Conviersión de un valor de lectura 
- * 
- * Esta función realiza la conversión del valor de lectura del ADC 
- * obtenido en uint16_t a [mV]
- * 
- * 
- * @param adcValue Valor de adc (uint16_t producto de read_u16)
- * @return  Valor de ADC en [mV].
- */
-uint16_t adcToMilliVolts (uint16_t adcValue);
+
 /**
  * Calculo de la pendiente y la ordenada al origen de la recta de conversión.
  * 
@@ -74,7 +64,7 @@ uint16_t adcToMilliVolts (uint16_t adcValue);
  * @param piezoMaxValue Valor máximo de voltaje [mV] registrado por el transductor piezoeléctrico.
  * @return  Valor de velocity correspondiente ajustado dentro del rango permitido(0-127).
  */
-static uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue);
+ uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue);
 
 /**
  * Busqueda y devolución del valor máximo del golpe registrado por el transductor piezoeléctrico.
@@ -85,7 +75,7 @@ static uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue);
  * @param piezo Puntero a la estructura que representa el un transductor piezoeléctrico.
  * @return Valor máximo de voltaje [mV] registrado durante el muestreo.
  */
-static uint16_t piezoSearchMax (piezo_t * piezo);
+ uint16_t piezoSearchMax (piezo_t * piezo);
 
 //=====[Implementations of public functions]===================================
  void piezoInit(mbed::AnalogIn * alias, piezo_t * piezo)
@@ -128,7 +118,7 @@ static void calculateSlopeIntercept()
     interceptFixedPoint = TO_FIXED_POINT(MIN_VEL) - PIEZO_THRESHOLD_mV * slopeFixedPoint;       /**< Ordenada al origen de la recta de conversión */ 
 }
 
-static uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue)
+ uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue)
 {
     uint8_t vel = 0;                                                        /**< Valor entero de velocity de la nota midi */
                           
@@ -143,7 +133,7 @@ static uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue)
     return vel;                                                             //Devuelvo el valor de velocity
 }   
 
-static uint16_t piezoSearchMax (piezo_t * piezo)
+ uint16_t piezoSearchMax (piezo_t * piezo)
 {
     uint16_t piezoMaxValue = 0;                                         /**< Valor máximo del golpe registrado por el transductor piezoeléctrico*/
     uint16_t piezoSample = 0;                                           /**< Valor muestreado del transductor piezoeléctrico */
