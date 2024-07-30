@@ -1,4 +1,4 @@
-/** @file midi_uart.h
+/** @file midi_serial.h
 *
 * @brief A description of the module’s purpose.
 *
@@ -8,8 +8,8 @@
 
 //=====[#include guards - begin]===============================================
 
-#ifndef _MIDI_UART_H_
-#define _MIDI_UART_H_
+#ifndef _MIDI_SERIAL_H_
+#define _MIDI_SERIAL_H_
 #include <cstdint>
 
 //=====[Declaration of public defines]=========================================
@@ -47,7 +47,7 @@ typedef struct{
 void initializaMIDISerial (mbed::UnbufferedSerial * alias, midiMessage_t * midiMessage);
 
 /**
- * Transmisión a través de UART del mensaje midi de Note On
+ * Transmisión a través de serial del mensaje midi de Note On
  *
  * Esta función permite enviar mensajes para que la nota comience a sonar en función de 
  * los parámetros de la estructura del mensaje
@@ -57,7 +57,7 @@ void initializaMIDISerial (mbed::UnbufferedSerial * alias, midiMessage_t * midiM
 void midiSendNoteOn (midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias);
 
 /**
- * Transmisión a través de UART del mensaje midi de Note Off
+ * Transmisión a través de serial del mensaje midi de Note Off
  *
  * Esta función permite enviar mensajes para que la nota comience a sonar en función de 
  * los parámetros de la estructura del mensaje
@@ -68,6 +68,6 @@ void midiSendNoteOff (midiMessage_t * midiMessage, mbed::UnbufferedSerial * alia
 
 //=====[#include guards - end]=================================================
 
-#endif // _MIDI_UART_H_
+#endif // _MIDI_SERIAL_H_
 
 /*** end of file ***/

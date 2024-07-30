@@ -7,7 +7,7 @@
 
 #include "mbed.h" 
 #include "display.h"
-#include "midi_uart.h"
+#include "midi_serial.h"
 #include "instrument.h"
 #include "piezo.h"
 #include "button.h"
@@ -49,6 +49,9 @@ void visualInterfaceUpdate (void);
 void piezoDetectorACallback (void);
 
 void piezoReadAndGetMax(void);
+
+
+
 //=====[Main function]=========================================================
 int main(void)
 {
@@ -59,9 +62,6 @@ int main(void)
     piezoInit(&piezoA, &piezoAStruct);
 
     piezoADetector.fall(piezoDetectorACallback);   
-
-
-
 
     /** Creo los pulsadores necesarios para configurar el 
     *   sonido del drum pad    
