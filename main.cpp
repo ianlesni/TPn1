@@ -12,6 +12,7 @@
 #include "piezo.h"
 #include "button.h"
 #include "arm_book_lib.h"
+#include "ble.h"
 #include <cstdint>
 
 //=====[Declaration of defines]================================================
@@ -77,9 +78,16 @@ int main(void)
     /** Creo objeto UnbufferedSerial para realizar
     *   la comunicación serie con la PC   
     */
-    UnbufferedSerial serialPort(USBTX, USBRX);                          
+    UnbufferedSerial uartSerialPort(USBTX, USBRX);   
+    UnbufferedSerial bleSerialPort(PD_5, PD_6);     //PD_5 UART2_TX to RXD ; PD_6 UART2_RX to TXD 
+
     midiMessage_t midiMessageStruct; 
-    initializaMIDISerial(&serialPort, &midiMessageStruct);
+
+
+
+    //initializaMIDISerial(&bleSerialPort, &midiMessageStruct);
+
+    initializateBlePort(&bleSerialPort);
 
     visualInterfaceInit(&ledPad);                                       //Inicializo el led del drum pad y display
        
@@ -99,10 +107,10 @@ int main(void)
             piezoMili = adcToMilliVolts(piezoAStruct.MaxValue);
             piezoAStruct.MaxVelocity = piezoConvertVoltToVel(piezoMili); 
             ledPad = 1;                                                         //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
-            midiSendNoteOff(&midiMessageStruct, &serialPort);                   //Envío el mensaje de Note Off para no superponer notas
+            midiSendNoteOff(&midiMessageStruct, &bleSerialPort);                   //Envío el mensaje de Note Off para no superponer notas
             midiMessageStruct.note = instrumentNote[noteIndex];                 //Cargo la nota del mensaje
             midiMessageStruct.velocity = piezoAStruct.MaxVelocity;              //Cargo la velocity del mensaje               
-            midiSendNoteOn(&midiMessageStruct, &serialPort);                    //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
+            midiSendNoteOn(&midiMessageStruct, &bleSerialPort);                    //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
             ledPad = 0;                                                         //Apago el Led para indicar que se envió el mensaje correspondiente
             status = 0;
         }
@@ -111,6 +119,7 @@ int main(void)
         {
             noteIndex++;                                                        //Incremento el indice de navegación de notas
             if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;               //Controlo que el indice no se vaya de rango     
+            BLESetATConfig(&bleSerialPort);
             visualInterfaceUpdate();
         }
 

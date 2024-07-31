@@ -44,10 +44,11 @@ typedef struct{
     mbed::AnalogIn * alias;         /**< Puntero a un objeto AnalogIn para implementar un transductor */
     uint8_t currentState;           /**< Estado actual del transductor */
     uint8_t MaxVelocity;            /**< Máximo valor de velocity registrado */
-    uint16_t MaxValue;            /**< Máximo valor de velocity registrado */
+    uint16_t MaxValue;              /**< Máximo valor de velocity registrado */
 } piezo_t; 
 
 //=====[Declarations (prototypes) of public functions]=========================
+
 /**
  * Inicializo el piezoelectrico y llamo a la función que calcula
  * la pendiente y ordenada al origen de la recta de conversión
@@ -74,11 +75,7 @@ uint8_t piezoUpdate (piezo_t * piezo);
 
  /**
  * Conviersión de un valor de lectura 
- * 
- * Esta función realiza la conversión del valor de lectura del ADC 
- * obtenido en uint16_t a [mV]
- * 
- * 
+ *
  * @param adcValue Valor de adc (uint16_t producto de read_u16)
  * @return  Valor de ADC en [mV].
  */
@@ -86,10 +83,6 @@ uint16_t adcToMilliVolts (uint16_t adcValue);
 
  /**
  * Conviersión de un valor de voltaje [mV] en un valor de velocity.
- * 
- * Esta función calcula y convierte un valor de voltaje [mV] registrado por el transductor
- * piezoeléctrico en un valor de celocity MIDI. El valor de velocity se calcula utilizando
- * la pendiente y la ordenada al origen previamente calculadas (slope e intercept).
  * 
  * @param piezoMaxValue Valor máximo de voltaje [mV] registrado por el transductor piezoeléctrico.
  * @return  Valor de velocity correspondiente ajustado dentro del rango permitido(0-127).

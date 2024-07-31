@@ -8,7 +8,7 @@
 
 #include "mbed.h"
 #include "arm_book_lib.h"
-#include "midi_uart.h"
+#include "midi_serial.h"
 
 //=====[Declaration of private defines]========================================
 
