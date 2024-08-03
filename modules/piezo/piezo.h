@@ -11,10 +11,8 @@
 #define _PIEZO_H_
 
 #include <cstdint>
+#include "mbed.h"
 
-namespace mbed {
-    class AnalogIn;
-}
 
 //=====[Declaration of public defines]=========================================
 
@@ -32,6 +30,28 @@ typedef enum{
     PIEZO_FINISHED =2
 
 }PIEZO_STATE; 
+
+
+
+class piezoTransducer{
+    public:
+        piezoTransducer(PinName piezoADPin, PinName piezoIntPin,Ticker * piezoConvertionTicker);   
+        void piezoTransducerInit();
+        PIEZO_STATE getPiezoStatus();    
+        uint16_t piezoMaxSampleValue = 0;  
+        uint16_t piezoMaxVelocity = 0;  
+    private:
+        void piezoIntCallback();
+        void piezoReadAndGetMax();
+        void piezoTransducerReset();
+
+        Ticker * piezoConvertionTicker;
+        AnalogIn piezoAD;
+        InterruptIn piezoInterruptPin;
+
+        uint16_t elapsedADConvertionTime = 0;
+        PIEZO_STATE piezoStatus;
+};
 
 /*!
  * \struct piezo_t

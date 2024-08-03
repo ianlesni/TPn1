@@ -32,24 +32,6 @@
 #define PIEZO_SAMPLING_DURATION_US 2000                             /**< Duración [us] del muestreo del pico de interes  */
 //=====[Declaration of public classes]=====================================
 
-class piezoTransducer{
-    public:
-        piezoTransducer(PinName piezoADPin, PinName piezoIntPin,Ticker * piezoConvertionTicker);   
-        void piezoTransducerInit();
-        PIEZO_STATE getPiezoStatus();      
-    private:
-        void piezoIntCallback();
-        void piezoReadAndGetMax();
-        void piezoTransducerReset();
-
-        Ticker * piezoConvertionTicker;
-        AnalogIn piezoAD;
-        InterruptIn piezoInterruptPin;
-
-        uint16_t piezoMaxSampleValue = 0;
-        uint16_t elapsedADConvertionTime = 0;
-        PIEZO_STATE piezoStatus;
-};
 
 piezoTransducer::piezoTransducer(PinName piezoADPin, PinName piezoIntPin, Ticker* ticker)
     : piezoAD(piezoADPin),       
@@ -62,6 +44,7 @@ piezoTransducer::piezoTransducer(PinName piezoADPin, PinName piezoIntPin, Ticker
 void piezoTransducer::piezoTransducerInit() 
 {
     piezoMaxSampleValue = 0;
+    piezoMaxVelocity = 0;
     elapsedADConvertionTime = 0;
     piezoStatus = PIEZO_IDLE;
 }
