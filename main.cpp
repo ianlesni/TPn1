@@ -179,15 +179,15 @@ void piezoDetectorACallback()
 
 void piezoReadAndGetMax()
 {
-
     piezoSample = piezoA.read_u16();                        //Tomo una lectura del transductor piezoeléctrico     
+    
     if(piezoSample > piezoMaxSample)                                //Verifico si el nuevo valor leido es mayor al máximo valor registrado en este muestreo
     {
-    piezoMaxSample = piezoSample;                                //Actualizo el máximo valor registrado hasta el momento
+        piezoMaxSample = piezoSample;                                //Actualizo el máximo valor registrado hasta el momento
     }
     piezoAStruct.MaxValue = piezoMaxSample; //Guardo el valor más alto medido
 
-    sampleCount++;
+    sampleCount++; // SERÍA MEJOR LLAMRLO "ELAPSED CONVERTION TIME" tiempo de conversión transcurrido
     if(4 == sampleCount) //transcurrieron 400us
     {
         if(1 == piezoADetector.read()) //Subió a alto la señal del detector porque era un pico
@@ -196,7 +196,7 @@ void piezoReadAndGetMax()
             piezoSample = 0;
             piezoMaxSample = 0;
             piezoAConvertionTimer.detach();
-            status = 0;
+            status = 0;//Conversion anulada
         }
         
     }
