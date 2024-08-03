@@ -67,13 +67,10 @@ int main(void)
     *   la comunicación serie con la PC   
     */
     UnbufferedSerial uartSerialPort(USBTX, USBRX);   
-    //UnbufferedSerial bleSerialPort(PD_5, PD_6);     //PD_5 UART2_TX to RXD ; PD_6 UART2_RX to TXD 
 
     midiMessage_t midiMessageStruct; 
 
     initializaMIDISerial(&uartSerialPort, &midiMessageStruct);
-
-    //initializateBlePort(&bleSerialPort);
 
     visualInterfaceInit(&ledPad);                                       //Inicializo el led del drum pad y display
        
@@ -87,7 +84,7 @@ int main(void)
         */
         debounceButtonUpdate(&drumPadButtons);
 
-        if(PIEZO_ACTIVE == piezoA.getPiezoStatus())                          //Actualizo y verifico el estado del transductor piezoeléctrico
+        if(PIEZO_FINISHED == piezoA.getPiezoStatus())                          //Actualizo y verifico el estado del transductor piezoeléctrico
         {  
             uint16_t piezoMili = 0;
             piezoMili = adcToMilliVolts(piezoA.piezoMaxSampleValue);

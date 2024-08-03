@@ -38,8 +38,8 @@ class piezoTransducer{
         piezoTransducer(PinName piezoADPin, PinName piezoIntPin,Ticker * piezoConvertionTicker);   
         void piezoTransducerInit();
         PIEZO_STATE getPiezoStatus();    
-        uint16_t piezoMaxSampleValue = 0;  
-        uint16_t piezoMaxVelocity = 0;  
+        uint16_t piezoMaxSampleValue;  
+        uint16_t piezoMaxVelocity;  
     private:
         void piezoIntCallback();
         void piezoReadAndGetMax();
@@ -69,30 +69,6 @@ typedef struct{
 } piezo_t; 
 
 //=====[Declarations (prototypes) of public functions]=========================
-
-/**
- * Inicializo el piezoelectrico y llamo a la función que calcula
- * la pendiente y ordenada al origen de la recta de conversión
- *  @param alias Puntero al objeto del transductor.
- *  @param piezo Puntero a la estructura que representa el mensaje.
- */
- void piezoInit (mbed::AnalogIn * alias, piezo_t * piezo);
-
-
-/**
- * Actualizción del estado del transductor piezoeléctrico y envío de mensajes MIDI si se detecta un golpe.
- * 
- * Esta función realiza las siguientes operaciones:
- * 1- Lee el valor actual del transductor piezoeléctrico y lo convierte a [mV].
- * 2- Compara la lectura con el umbral de activación.
- * 3- Si el valor supera el umbral, busca y registra el valor máximo del golpe detectado.
- * 4- Convierte este valor máximo en un valor de velocity y guarda.
- * 5- Actualiza el estado del transductor
- *
- *  @param piezo Puntero a la estructura que representa el un transductor piezoeléctrico.
- *  
- */
-uint8_t piezoUpdate (piezo_t * piezo);
 
  /**
  * Conviersión de un valor de lectura 
