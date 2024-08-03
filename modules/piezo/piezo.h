@@ -27,8 +27,9 @@ namespace mbed {
  */
 typedef enum{
     
-    PIEZO_INACTIVE = 0,     /**< El transductor no recibió ningun golpe */
+    PIEZO_IDLE = 0,     /**< El transductor no recibió ningun golpe */
     PIEZO_ACTIVE = 1,       /**< El transductor recibió un golpe que supera el umbral */
+    PIEZO_FINISHED =2
 
 }PIEZO_STATE; 
 

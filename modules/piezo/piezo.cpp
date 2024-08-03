@@ -25,10 +25,45 @@
 #define SAMPLE_FREQ_Hz 2000                                         /**< Frecuencia de muestreo [Hz] */
 #define SAMPLE_TIME_INTERVAL_us 500                                 /**< Intervalo de muestreo [us] */
 
-
 #define ADC_MAX_VALUE 65535                                         /**< valor máximo que devuelve read_u16() */
 #define ADC_VOLTAGE_SCALE 3300                                      /**< Valor de voltaje máximo [mV] que corresponde al valor máximo que devuelve read_u16() (65535) */
 
+#define SPURIOUS_PEAK_DURATION_US 400                               /**< Duración típica [us] de los picos espurios producto de las propagaciones del golpe sobre el pad  */
+#define PIEZO_SAMPLING_DURATION_US 2000                             /**< Duración [us] del muestreo del pico de interes  */
+//=====[Declaration of public classes]=====================================
+
+class piezoTransducer{
+    public:
+        piezoTransducer(PinName piezoADPin, PinName piezoIntPin,Ticker * piezoConvertionTicker);   
+        void piezoTransducerInit();
+        PIEZO_STATE getPiezoStatus();      
+    private:
+        void piezoIntCallback();
+        void piezoReadAndGetMax();
+
+        Ticker * piezoConvertionTicker;
+        AnalogIn piezoAD;
+        InterruptIn piezoInterruptPin;
+
+        uint16_t piezoMaxSampleValue = 0;
+        uint16_t elapsedADConvertionTime = 0;
+        PIEZO_STATE piezoStatus;
+};
+
+piezoTransducer::piezoTransducer(PinName piezoADPin, PinName piezoIntPin, Ticker* ticker)
+    : piezoAD(piezoADPin),       
+      piezoInterruptPin(piezoIntPin),
+      piezoConvertionTicker(ticker) 
+{
+    piezoInterruptPin.fall(callback(this, &piezoTransducer::piezoIntCallback));
+}
+
+void piezoTransducer::piezoTransducerInit() 
+{
+    piezoMaxSampleValue = 0;
+    elapsedADConvertionTime = 0;
+    piezoStatus = PIEZO_IDLE;
+}
 //=====[Declaration of private data types]=====================================
 
 //=====[Declaration and initialization of public global objects]===============
@@ -38,8 +73,7 @@
 //=====[Declaration and initialization of public global variables]=============
 
 //=====[Declaration and initialization of private global variables]============
-
-    
+   
 int32_t slopeFixedPoint;            /**< Pendiente de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity */
 int32_t interceptFixedPoint;        /**< Ordenada al origen de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity  */
 
@@ -81,7 +115,7 @@ int32_t interceptFixedPoint;        /**< Ordenada al origen de la recta de conve
  void piezoInit(mbed::AnalogIn * alias, piezo_t * piezo)
  {
     piezo->alias = alias;                                               
-    piezo->currentState = PIEZO_INACTIVE;                               
+    piezo->currentState = PIEZO_IDLE;                               
     piezo->MaxVelocity = 0x00;                                          
     calculateSlopeIntercept();                  
  }
@@ -103,7 +137,7 @@ uint8_t piezoUpdate(piezo_t * piezo)
         piezo->currentState = PIEZO_ACTIVE;                             //Actualizo el estado del piezoeléctrico a activo
         return piezo->currentState;                                     //Devuelvo el estado del transductor                  
     }
-    piezo->currentState = PIEZO_INACTIVE;                               //Actualizo el estado del piezoeléctrico a inactivo
+    piezo->currentState = PIEZO_IDLE;                               //Actualizo el estado del piezoeléctrico a inactivo
     return piezo->currentState;                                         //Devuelvo el estado del transductor 
 }
 

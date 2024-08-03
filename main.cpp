@@ -19,10 +19,10 @@
 
 //=====[Declaration and initialization of public global objects]===============
 Ticker piezoAConvertionTimer;
-    AnalogIn piezoA(A0);
-    piezo_t piezoAStruct;
+AnalogIn piezoA(A0);
+piezo_t piezoAStruct;
     
-    InterruptIn piezoADetector(PF_9);
+InterruptIn piezoADetector(PF_9);
 //=====[Declaration of  public global variables]===============================
 
 int8_t noteIndex = 0;        /**< Indice para la navegación del arreglo de notas de intrumento */
@@ -83,11 +83,9 @@ int main(void)
 
     midiMessage_t midiMessageStruct; 
 
+    initializaMIDISerial(&uartSerialPort, &midiMessageStruct);
 
-
-    //initializaMIDISerial(&bleSerialPort, &midiMessageStruct);
-
-    initializateBlePort(&bleSerialPort);
+    //initializateBlePort(&bleSerialPort);
 
     visualInterfaceInit(&ledPad);                                       //Inicializo el led del drum pad y display
        
@@ -107,10 +105,10 @@ int main(void)
             piezoMili = adcToMilliVolts(piezoAStruct.MaxValue);
             piezoAStruct.MaxVelocity = piezoConvertVoltToVel(piezoMili); 
             ledPad = 1;                                                         //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
-            midiSendNoteOff(&midiMessageStruct, &bleSerialPort);                   //Envío el mensaje de Note Off para no superponer notas
+            midiSendNoteOff(&midiMessageStruct, &uartSerialPort);                   //Envío el mensaje de Note Off para no superponer notas
             midiMessageStruct.note = instrumentNote[noteIndex];                 //Cargo la nota del mensaje
             midiMessageStruct.velocity = piezoAStruct.MaxVelocity;              //Cargo la velocity del mensaje               
-            midiSendNoteOn(&midiMessageStruct, &bleSerialPort);                    //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
+            midiSendNoteOn(&midiMessageStruct, &uartSerialPort);                    //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
             ledPad = 0;                                                         //Apago el Led para indicar que se envió el mensaje correspondiente
             status = 0;
         }
@@ -200,7 +198,7 @@ void piezoReadAndGetMax()
         }
         
     }
-    if(20 == sampleCount) //tomé las muestras necesarias para los 2ms de señal
+    if(20 == sampleCount) //tomé las muestras necesarias para los 2ms de señal (esto lo podría hacer mirando si el nuevo valor es menor al maáximo -> estaría bajando)
     {
         sampleCount = 0;
         piezoSample = 0;
