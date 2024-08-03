@@ -40,6 +40,7 @@ class piezoTransducer{
     private:
         void piezoIntCallback();
         void piezoReadAndGetMax();
+        void piezoTransducerReset();
 
         Ticker * piezoConvertionTicker;
         AnalogIn piezoAD;
@@ -63,6 +64,46 @@ void piezoTransducer::piezoTransducerInit()
     piezoMaxSampleValue = 0;
     elapsedADConvertionTime = 0;
     piezoStatus = PIEZO_IDLE;
+}
+
+void piezoTransducer::piezoTransducerReset() 
+{
+    piezoMaxSampleValue = 0;
+    elapsedADConvertionTime = 0;
+    piezoConvertionTicker->detach();
+}
+
+PIEZO_STATE piezoTransducer::getPiezoStatus()
+{
+    return piezoStatus;
+}
+
+void piezoTransducer::piezoIntCallback()
+{
+    piezoConvertionTicker->attach(callback(this,&piezoTransducer::piezoReadAndGetMax),100us);
+}
+
+void piezoTransducer::piezoReadAndGetMax()
+{
+    uint16_t piezoSample = piezoAD.read_u16();
+
+    if(piezoSample > piezoMaxSampleValue)
+    {
+        piezoMaxSampleValue = piezoSample;
+    }
+
+    elapsedADConvertionTime++;
+
+    if(4 == elapsedADConvertionTime && 1 == piezoInterruptPin.read())
+    {
+        piezoTransducerReset();
+        piezoStatus = PIEZO_IDLE;
+    }
+    if(20 == elapsedADConvertionTime)
+    {
+        piezoTransducerReset();
+        piezoStatus = PIEZO_FINISHED; 
+    }
 }
 //=====[Declaration of private data types]=====================================
 
