@@ -49,8 +49,8 @@ int main(void)
     DigitalOut ledPad(LED1);                                        //Creo un objeto DigitalOut como led testigo de interacción con el drum pad
     /** Creo el transductor piezo eléctrico  
     */
-    Ticker piezoConvertionTicker;
-    piezoTransducer piezoA(PinName::A0, PinName::PF_9, &piezoConvertionTicker);
+    Ticker piezoAConvertionTicker;
+    piezoTransducer piezoA(PinName::A0, PinName::PF_9, &piezoAConvertionTicker);
 
     /** Creo los pulsadores necesarios para configurar el 
     *   sonido del drum pad    
@@ -90,10 +90,10 @@ int main(void)
             piezoMili = adcToMilliVolts(piezoA.piezoMaxSampleValue);
             piezoA.piezoMaxVelocity = piezoConvertVoltToVel(piezoMili); 
             ledPad = 1;                                                         //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
-            midiSendNoteOff(&midiMessageStruct, &uartSerialPort);                   //Envío el mensaje de Note Off para no superponer notas
+            midiSendNoteOff(&midiMessageStruct, &uartSerialPort);               //Envío el mensaje de Note Off para no superponer notas
             midiMessageStruct.note = instrumentNote[noteIndex];                 //Cargo la nota del mensaje
-            midiMessageStruct.velocity = piezoA.piezoMaxVelocity;              //Cargo la velocity del mensaje               
-            midiSendNoteOn(&midiMessageStruct, &uartSerialPort);                    //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
+            midiMessageStruct.velocity = piezoA.piezoMaxVelocity;               //Cargo la velocity del mensaje               
+            midiSendNoteOn(&midiMessageStruct, &uartSerialPort);                //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
             ledPad = 0;                                                         //Apago el Led para indicar que se envió el mensaje correspondiente
             piezoA.piezoTransducerInit();
         }
