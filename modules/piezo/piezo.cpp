@@ -30,6 +30,7 @@
 
 #define SPURIOUS_PEAK_DURATION_US 400                               /**< Duración típica [us] de los picos espurios producto de las propagaciones del golpe sobre el pad  */
 #define PIEZO_SAMPLING_DURATION_US 2000                             /**< Duración [us] del muestreo del pico de interes  */
+
 //=====[Declaration of public classes]=====================================
 piezoTransducer::piezoTransducer(PinName piezoADPin, PinName piezoIntPin, Ticker* ticker)
     : piezoAD(piezoADPin),       

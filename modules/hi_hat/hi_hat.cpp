@@ -66,7 +66,7 @@ HI_HAT_STATE hiHat::hiHatGetAperture()
     hiHatAperture = hiHatAD.read_u16();
     uint16_t hiHatAperturemV = adcToMilliVolts(hiHatAperture);
 
-    if (hiHatAperturemV >= OPEN_THRESHOLD_mV)
+    if (hiHatAperturemV > OPEN_THRESHOLD_mV)
     {
         hiHatStatus = OPEN;
     }
