@@ -26,7 +26,7 @@ typedef enum{
     
     OPEN = 0,     
     HALF_OPEN = 1,     
-    CLOSED =2
+    CLOSE =2
 
 }HI_HAT_STATE; 
 
@@ -34,13 +34,14 @@ typedef enum{
 
 class hiHat{
     public:
-        hiHat(PinName hiHatAD, PinName hiHatIntPin, piezoTransducer hiHatPiezo);   
+        hiHat(PinName hiHatAD, PinName hiHatIntPin, piezoTransducer * hiHatPiezo);   
         void hiHatInit();
-        HI_HAT_STATE gethiHatStatus();    
- 
+        HI_HAT_STATE gethiHatStatus(); 
+        HI_HAT_STATE hiHatGetAperture();   
+        uint16_t hiHatAperture;
     private:
         void hiHatIntCallback();
-        void hiHatReadAperture();
+
 
         AnalogIn hiHatAD;               
         InterruptIn hiHatInterruptPin;

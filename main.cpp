@@ -10,6 +10,7 @@
 #include "midi_serial.h"
 #include "instrument.h"
 #include "piezo.h"
+#include "hi_hat.h"
 #include "button.h"
 #include "arm_book_lib.h"
 #include "ble.h"
@@ -52,6 +53,8 @@ int main(void)
     Ticker piezoAConvertionTicker;
     piezoTransducer piezoA(PinName::A0, PinName::PF_9, &piezoAConvertionTicker);
 
+    hiHat hiHatA(PinName::A1,PinName::PF_7, &piezoA);   
+
     /** Creo los pulsadores necesarios para configurar el 
     *   sonido del drum pad    
     */
@@ -87,13 +90,36 @@ int main(void)
         if(PIEZO_FINISHED == piezoA.getPiezoStatus())                          //Actualizo y verifico el estado del transductor piezoeléctrico
         {  
             uint16_t piezoMili = 0;
+
             piezoMili = adcToMilliVolts(piezoA.piezoMaxSampleValue);
             piezoA.piezoMaxVelocity = piezoConvertVoltToVel(piezoMili); 
             ledPad = 1;                                                         //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
+            
             midiSendNoteOff(&midiMessageStruct, &uartSerialPort);               //Envío el mensaje de Note Off para no superponer notas
-            midiMessageStruct.note = instrumentNote[noteIndex];                 //Cargo la nota del mensaje
+
+            uint8_t hiHatPos = hiHatA.hiHatGetAperture();
+            switch(hiHatPos)
+            {
+                case OPEN:
+                    midiMessageStruct.note = HI_HAT_OPEN;                 
+                    break;
+
+                case HALF_OPEN:
+                    midiMessageStruct.note = HI_HAT_HALF_OPEN;
+                    break;
+
+                case CLOSE:
+                    midiMessageStruct.note = HI_HAT_CLOSED;
+                    break;
+
+                default:
+                    midiMessageStruct.note = CRASH_R_CHOKED; 
+                    break;                
+            }
+
             midiMessageStruct.velocity = piezoA.piezoMaxVelocity;               //Cargo la velocity del mensaje               
             midiSendNoteOn(&midiMessageStruct, &uartSerialPort);                //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
+           
             ledPad = 0;                                                         //Apago el Led para indicar que se envió el mensaje correspondiente
             piezoA.piezoTransducerInit();
         }
