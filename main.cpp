@@ -69,6 +69,8 @@ int main(void)
     /** Creo objeto UnbufferedSerial para realizar
     *   la comunicación serie con la PC   
     */
+    UnbufferedSerial uartBle(PD_5, PD_6, 9600);
+
     UnbufferedSerial uartSerialPort(USBTX, USBRX);   
 
     midiMessage_t midiMessageStruct; 
@@ -95,7 +97,7 @@ int main(void)
             piezoA.piezoMaxVelocity = piezoConvertVoltToVel(piezoMili); 
             ledPad = 1;                                                         //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
             
-            midiSendNoteOff(&midiMessageStruct, &uartSerialPort);               //Envío el mensaje de Note Off para no superponer notas
+            midiSendNoteOff(&midiMessageStruct, &uartBle);               //Envío el mensaje de Note Off para no superponer notas
 
             uint8_t hiHatPos = hiHatA.hiHatGetAperture();
             switch(hiHatPos)
@@ -118,7 +120,7 @@ int main(void)
             }
 
             midiMessageStruct.velocity = piezoA.piezoMaxVelocity;               //Cargo la velocity del mensaje               
-            midiSendNoteOn(&midiMessageStruct, &uartSerialPort);                //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
+            midiSendNoteOn(&midiMessageStruct, &uartBle);                //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
            
             ledPad = 0;                                                         //Apago el Led para indicar que se envió el mensaje correspondiente
             piezoA.piezoTransducerInit();
