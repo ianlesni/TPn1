@@ -71,11 +71,11 @@ int main(void)
     */
     UnbufferedSerial uartBle(PD_5, PD_6, 9600);
 
-    UnbufferedSerial uartSerialPort(USBTX, USBRX);   
+    UnbufferedSerial uartSerialPort(USBTX, USBRX, 9600);   
 
     midiMessage_t midiMessageStruct; 
 
-    initializaMIDISerial(&uartSerialPort, &midiMessageStruct);
+    //initializaMIDISerial(&uartSerialPort, &midiMessageStruct);
 
     visualInterfaceInit(&ledPad);                                       //Inicializo el led del drum pad y display
        
@@ -129,6 +129,7 @@ int main(void)
         if(true == drumPadButtons.button[0].releasedEvent)                      //Verifico si el pulsador upButton fué presionado
         {
             noteIndex++;                                                        //Incremento el indice de navegación de notas
+            
             if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;               //Controlo que el indice no se vaya de rango     
             visualInterfaceUpdate();
         }
