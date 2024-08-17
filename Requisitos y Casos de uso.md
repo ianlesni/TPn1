@@ -8,9 +8,9 @@
 Siguiendo la filosofía de aprender desarrollando un proyecto que resulte de interés personal, se ha realizado una ponderación sobre los siguientes proyectos para definir cuál de los dos será el elegido en este trabajo final:
 
 1. **Controlador MIDI**: Un dispositivo que permite controlar instrumentos y efectos virtuales de una estación de audio digital mediante mensajes MIDI, a través de pulsadores, encoders rotativos, y potenciómetros deslizables.
-2. **MIDI Drum Pad**: Un dispositivo enfocado en la interpretación musical a través de pads sensibles al golpe, que envía mensajes MIDI a una estación de audio digital para generar sonidos. Incluye una interfaz de usuario de control y capacidad de almacenamiento de configuraciones.
+2. **MIDI Drum Pad**: Un dispositivo enfocado en la interpretación musical a través de pads sensibles al golpe, que envía mensajes MIDI a una estación de audio digital para generar sonidos. Con interfaz de usuario y capacidad de almacenamiento de configuraciones.
 
-Para poder comparar y evaluar de forma más profesional los proyectos, se han considerado los siguientes factores de selección:
+Para poder comparar y evaluar los proyectos de forma más detallada, se han considerado los siguientes factores de selección:
 
 Factor                     | Peso | Análisis del factor y criterios de puntuación sobre el proyecto                                                                                                                                  |
 |--------------------------|------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
@@ -66,14 +66,14 @@ Luego de analizar los factores y sus respectivas ponderaciones para cada uno de 
 
 #### Descripción del proyecto
 
-  El sistema consiste en un dispositivo que captura la información de una acción musical mediante transductores piezoeléctricos integrados en *drum pads*. Estos transductores convierten la deformación mecánica generada por un golpe en una señal eléctrica, la cual es procesada y transformada en un mensaje MIDI según el estándar MIDI. Estos mensajes se envían hacia una PC a través de una interfaz UART o mediante una conexión Bluetooth. Cualquiera sea el caso, la PC los recibe en el puerto COM. El software Hairless-MIDI (disponible en https://projectgus.github.io/hairless-midiserial/) interpreta los bytes de datos enviados desde la placa NUCLEO-429FZI como mensajes MIDI y los reenvía a un puerto MIDI de salida virtual, el cual pertenece al mismo software.
+  El sistema consiste en un dispositivo que captura la información de una acción musical mediante transductores piezoeléctricos integrados en *drum pads*. Estos transductores convierten la deformación mecánica generada por un golpe en una señal eléctrica, la cual es procesada y transformada en un mensaje MIDI según el estándar MIDI. Estos mensajes se envían hacia una PC a través de una interfaz UART, o mediante una conexión Bluetooth. Cualquiera sea el caso, la PC los recibe en el puerto COM. El software Hairless-MIDI (disponible en https://projectgus.github.io/hairless-midiserial/) interpreta los bytes de datos enviados desde la placa NUCLEO-429FZI como mensajes MIDI y los reenvía a un puerto MIDI de salida virtual, el cual pertenece al mismo software.
   
  Dado que el objetivo es que una Estación de Audio Digital (en este caso https://www.reaper.fm/) genere el sonido del instrumento, es necesario que esos mensajes MIDI, interpretados por el software Hairless-MIDI, sean transmitidos a dicha estación. Aunque tanto Hairless-MIDI como Reaper pueden comprender y procesar mensajes MIDI, no poseen una forma nativa de establecer una conexión directa entre sí. Para solucionar esta limitación, se emplea el software loopMIDI (disponible en https://www.tobias-erichsen.de/software/loopmidi.html) que crea un canal virtual llamado "loopMIDI Port" permitiendo la comunicación entre ambos programas a través mensajes MIDI.
 
  Además, el dispositivo contará con una interfaz de control de usuario, compuesta por un display LCD gráfico que facilitará la visualización de las configuraciones y los distintos menús del sistema. Esta interfaz también incluirá un encoder rotativo y dos pulsadores, que permitirán al usuario desplazarse por las opciones de configuración y confirmar o retroceder en los menús, mejorando la usabilidad e interacción con el sistema.
  Adicionalmente, se incorporará una memoria micro-SD para almacenar las distintas configuraciones del dispositivo. Esto permitirá guardar varios drum kits con pads asociados a diferentes instrumentos, lo que ofrecerá una mayor flexibilidad en la personalización del instrumento.
 
- Por último, el desarrollo también incluirá un pedal de control de hi-hat, permitiendo un mayor realismo en la ejecución del pedal de hi-hat, al emular de manera más precisa el comportamiento de un hi-hat tradicional.
+ Por último, el desarrollo también incluirá un pedal de control de hi-hat, permitiendo un mayor realismo en la ejecución al emular de manera más precisa el comportamiento de un hi-hat tradicional.
 
 #### Diagrama en bloques:
 
@@ -120,13 +120,13 @@ Grupo de requisito     | ID  | Descripción                                     
 2.Configuraciones      | 2.1 | Podrá modificarse la nota MIDI asociada a cada uno de los drum pads de forma individual                                                                                                              |
   ---                  | 2.2 | Podrá modificarse la sensibilidad al golpe de cada uno de los drum pads de forma individual                                                                                                          |
   ---                  | 2.3 | Podrá modificarse la reverberación de cada uno de los drum pads de forma individual                                                                                                                  |
-  ---                  | 2.4 | Podrán configurarse 10 drum kits                                                                                                                                                                     |
+  ---                  | 2.4 | Podrán configurarse 10 drum kits (Drum Kit: conjunto de 6 drum pads)                                                                                                                                                                     |
   ---                  | 2.5 | Podrán configurarse los canales MIDI de cada drum kit                                                                                                                                                |
   ---                  | 2.6 | Podrá configurarse el volumen general de cada drum kit                                                                                                                                               |
 3.Interfaz de control  | 3.1 | El sistema dispondrá de un display LCD gráfico para mostrar las configuraciones y menús                                                                                                              |
   ---                  | 3.2 | El sistema contará con dos pulsadores: uno para confirmar las selecciones del menú y otro para cancelarlas y/o volver a la opción anterior                                                           | 
   ---                  | 3.3 | El sistema contará con un encoder rotativo para navegar por las configuraciones y menús                                                                                                              |
-  ---                  | 3.3 | El sistema contará con un led en cada pad que se ilumina cada vez que el pad recibe un golpe                                                                                                         |
+  ---                  | 3.3 | El sistema contará con un led en cada drum pad que se ilumina cada vez que recibe un golpe                                                                                                         |
 4.Conectividad         | 4.1 | El sistema podrá conectarse a la PC y enviar los mensajes MIDI mediante un cable USB, a través del conversor USB-UART de la placa Nucleo                                                             |
   ---                  | 4.2 | El sistema podrá conectarse a la PC y enviar los mensajes MIDI mediante conexión Bluetooth                                                                                                           |
 5.Almacenamiento       | 5.1 | El sistema permitirá guardar configuraciones y drum kits en una tarjeta microSD de 2GB                                                                                                               |
