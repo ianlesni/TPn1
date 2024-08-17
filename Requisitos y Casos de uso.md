@@ -5,7 +5,7 @@
 
 ### 1. Selección del proyecto a implementar 
 
-Siguiendo la filosofía personal de aprender desarrollando un proyecto que resulte de interés personal, se ha realizado una ponderación sobre los siguientes proyectos para definir cuál de los dos será el elegido en este trabajo final:
+Siguiendo la filosofía de aprender desarrollando un proyecto que resulte de interés personal, se ha realizado una ponderación sobre los siguientes proyectos para definir cuál de los dos será el elegido en este trabajo final:
 
 1. **Controlador MIDI**: Un dispositivo que permite controlar instrumentos y efectos virtuales de una estación de audio digital mediante mensajes MIDI, a través de pulsadores, encoders rotativos, y potenciómetros deslizables.
 2. **MIDI Drum Pad**: Un dispositivo enfocado en la interpretación musical a través de pads sensibles al golpe, que envía mensajes MIDI a una estación de audio digital para generar sonidos. Incluye una interfaz de usuario de control y capacidad de almacenamiento de configuraciones.
@@ -77,36 +77,34 @@ Luego de analizar los factores y sus respectivas ponderaciones para cada uno de 
 
 #### Diagrama en bloques:
 
- ![Diagrama en bloques TP final](https://github.com/user-attachments/assets/88fdcd48-ee57-4121-b0a4-7c7afd537f7e)
+![Diagrama en bloques TP final](https://github.com/user-attachments/assets/00c6026d-d886-4869-9de9-9d541defa3af)
 
 
 ### 2. Elicitación de requisitos y casos de uso
 Para establecer un punto de referencia, se compararon características de productos similares de marcas líderes en el mercado, como Alesis, Roland y Yamaha. Es importante mencionar que este desarrollo no busca superar las prestaciones de los productos listados a continuación, si no tomar sus características como referencias.
+El proyecto pone el foco en ser una versión económica que tenga las prestaciónes básicas de este tipo de productos.
 
 Marca | Alesis        | Roland | Yamaha       | 
 ------|---------------|--------|------------- |
 Modelo| SamplePad Pro | SPD-SX | DTX Multi 12 |
 
-Caracteristica         | SamplePad Pro           | SPD-SX     | DTX-MULTI 12          |
------------------------|-------------------------|------------|-----------------------|
-Secuenciador integrado | ??                      | SI         | SI                    |
-Cantidad de pads       | 8                       | 9          | 12                    | 
-Iluminación reactiva   | SI                      | SI         | NO                    |
-Control de Hi-hat      | SI                      | SI         | SI                    |
-Pedal de bombo         | SI                      | SI         | SI                    |
-MIDI in                | SI                      |  ??        | ??                    |
-MIDI out               | SI                      |  ??        | ??                    |
-Polifonía              | ??                      | 20 voces   | 64 voces              |
-Pads dinámicos         | SI                      | SI         | SI                    |
-Flash ROM              |  ??                     |  ??        | 64MB                  |
-Modos de pad           |  ??                     |  ??        | Palillo, Mano , Dedos |
-USB/MIDI               | SI                      | SI         | SI                    |
-AUX in                 | SI                      | SI         | SI                    |
-Presets                | 200                     | 100        | 50                    |
-Display                | LCD Gráfico 128x64 dots |  ??        | LCD 16x2              |
-SD Card Slot           | SI                      |  ??        | ??                    |
-Fuente de alimentación |  ??                     | DC 9V      |  ??                   |
-Precio                 | $ 1.600.000             | $2.200.500 | $1.800.000            |
+Caracteristica         | SamplePad Pro           | SPD-SX                       | DTX-MULTI 12          |
+-----------------------|-------------------------|------------------------------|-----------------------|
+Cantidad de pads       | 8                       | 9                            | 12                    | 
+Iluminación reactiva   | SI                      | SI                           | NO                    |
+Control de Hi-hat      | SI                      | SI                           | SI                    |
+Pedal de bombo         | SI                      | SI                           | SI                    |
+MIDI in                | SI                      | SI                           | SI                    |
+MIDI out               | SI                      | SI                           | SI                    |
+Polifonía              | --                      | 20 voces                     | 64 voces              |
+Pads dinámicos         | SI                      | SI                           | SI                    |
+Memoria disponible     | SD/SDHC card externa    | 2GB                          | 168MB                 |
+USB-MIDI               | SI                      | SI                           | SI                    |
+Presets                | 200                     | 100                          | 50                    |
+Display                | LCD Gráfico 128x64 dots | LCD Gráfico 128x64 dots      | LCD 16x2              |
+SD Card Slot           | SI                      | NO                           | NO                    |
+Fuente de alimentación | DC 9V                   | DC 9V                        | DC 12V                |
+Precio                 | $ 1.600.000             | $2.200.500                   | $1.800.000            |
 
 Links:
 * [Alesis-SamplePad Pro](https://www.alesis.com/products/view2/samplepad-pro.html)
@@ -118,7 +116,7 @@ Links:
 Grupo de requisito     | ID  | Descripción                                                                                                                                                                                          |
 -----------------------|-----|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|   
 1.Sensado              | 1.1 | El sistema tendrá sensibilidad a los golpes sobre los 4 drum pads, detectando la intensidad de los golpes con una resolución de 12 bits                                                              |
-  ---                  | 1.2 | El sistema contará con un pedal de control de hi-hat, cuya posición será leída con una resolución de 12 bits                                                                                          |
+  ---                  | 1.2 | El sistema contará con un pedal de control de hi-hat, cuya posición será leída con una resolución de 12 bits                                                                                         |
 2.Configuraciones      | 2.1 | Podrá modificarse la nota MIDI asociada a cada uno de los drum pads de forma individual                                                                                                              |
   ---                  | 2.2 | Podrá modificarse la sensibilidad al golpe de cada uno de los drum pads de forma individual                                                                                                          |
   ---                  | 2.3 | Podrá modificarse la reverberación de cada uno de los drum pads de forma individual                                                                                                                  |
@@ -128,6 +126,7 @@ Grupo de requisito     | ID  | Descripción                                     
 3.Interfaz de control  | 3.1 | El sistema dispondrá de un display LCD gráfico para mostrar las configuraciones y menús                                                                                                              |
   ---                  | 3.2 | El sistema contará con dos pulsadores: uno para confirmar las selecciones del menú y otro para cancelarlas y/o volver a la opción anterior                                                           | 
   ---                  | 3.3 | El sistema contará con un encoder rotativo para navegar por las configuraciones y menús                                                                                                              |
+  ---                  | 3.3 | El sistema contará con un led en cada pad que se ilumina cada vez que el pad recibe un golpe                                                                                                         |
 4.Conectividad         | 4.1 | El sistema podrá conectarse a la PC y enviar los mensajes MIDI mediante un cable USB, a través del conversor USB-UART de la placa Nucleo                                                             |
   ---                  | 4.2 | El sistema podrá conectarse a la PC y enviar los mensajes MIDI mediante conexión Bluetooth                                                                                                           |
 5.Almacenamiento       | 5.1 | El sistema permitirá guardar configuraciones y drum kits en una tarjeta microSD de 2GB                                                                                                               |
