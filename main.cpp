@@ -15,6 +15,7 @@
 #include "arm_book_lib.h"
 #include "ble.h"
 #include <cstdint>
+#include "GLCD_bitmaps.h"
 
 //=====[Declaration of defines]================================================
 
@@ -152,17 +153,15 @@ void visualInterfaceInit(DigitalOut * Led)
     Led->write(0);                                                  //Inicializo el led del drum pad apagado
 
     displayInit( DISPLAY_TYPE_GLCD_ST7920, DISPLAY_CONNECTION_SPI); 
-    //displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);        //Inicializo el display
-    /** Genero un mensaje de bienvenida
-    *   y el retardo para que pueda 
-    *   leerse
-    */
-      
+    
+
+    displayModeWrite( DISPLAY_MODE_CHAR );  
     displayCharPositionWrite(0,0);
     displayStringWrite("MIDI Drum Pad v0");                         
     displayCharPositionWrite (0,1);
     displayStringWrite("WELCOME!..."); 
     delay(1000);                                                   
+  
     /** Limpio el display
     *
     */

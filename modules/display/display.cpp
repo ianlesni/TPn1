@@ -66,6 +66,13 @@
 #define SPI1_SCK  PA_5
 #define SPI1_CS   PD_14
 
+#define DISPLAY_IR_SET_GDRAM_ADDR  0b10000000
+
+#define DISPLAY_IR_FUNCTION_SET_EXTENDED_INSTRUCION_SET 0b00000100
+#define DISPLAY_IR_FUNCTION_SET_BASIC_INSTRUCION_SET    0b00000000
+#define DISPLAY_IR_FUNCTION_SET_GRAPHIC_DISPLAY_ON      0b00000010
+#define DISPLAY_IR_FUNCTION_SET_GRAPHIC_DISPLAY_OFF     0b00000000
+
 #define DISPLAY_ST7920_LINE1_FIRST_CHARACTER_ADDRESS 0
 #define DISPLAY_ST7920_LINE2_FIRST_CHARACTER_ADDRESS 16
 #define DISPLAY_ST7920_LINE3_FIRST_CHARACTER_ADDRESS 8
@@ -134,6 +141,7 @@ void displayInit( displayType_t type, displayConnection_t connection )
 {
     display.type = type;
     display.connection = connection;
+    display.mode = DISPLAY_MODE_CHAR;
     
     if( display.connection == DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER) {
         pcf8574.address = PCF8574_I2C_BUS_8BIT_WRITE_ADDRESS;
@@ -297,6 +305,72 @@ void displayStringWrite( const char * str )
 {
     while (*str) {
         displayCodeWrite(DISPLAY_RS_DATA, *str++);
+    }
+}
+
+void displayClear( void )
+{
+    displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                      DISPLAY_IR_CLEAR_DISPLAY );
+    delay( 2 ); 
+}
+
+void displayModeWrite( displayMode_t mode )
+{
+    if ( mode == DISPLAY_MODE_GRAPHIC )
+    {
+        displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                          DISPLAY_IR_FUNCTION_SET  | 
+                          DISPLAY_IR_FUNCTION_SET_8BITS |
+                          DISPLAY_IR_FUNCTION_SET_EXTENDED_INSTRUCION_SET );
+        delay(1);
+        displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                          DISPLAY_IR_FUNCTION_SET  | 
+                          DISPLAY_IR_FUNCTION_SET_8BITS |
+                          DISPLAY_IR_FUNCTION_SET_EXTENDED_INSTRUCION_SET |
+                          DISPLAY_IR_FUNCTION_SET_GRAPHIC_DISPLAY_ON  );
+        delay(1);
+    } else if ( mode == DISPLAY_MODE_CHAR ) {
+        displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                          DISPLAY_IR_FUNCTION_SET | 
+                          DISPLAY_IR_FUNCTION_SET_8BITS |
+                          DISPLAY_IR_FUNCTION_SET_BASIC_INSTRUCION_SET |
+                          DISPLAY_IR_FUNCTION_SET_GRAPHIC_DISPLAY_OFF);
+        delay(1);
+    }
+}
+
+void displayBitmapWrite( uint8_t* bitmap )
+{
+    uint8_t x, y;
+    for( y=0; y<64; y++ ) {
+        if ( y < 32 ) {
+            for( x = 0; x < 8; x++ ) {                                   
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION,
+                                  DISPLAY_IR_SET_GDRAM_ADDR | 
+                                  y );
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION,
+                                  DISPLAY_IR_SET_GDRAM_ADDR | 
+                                  x );
+                displayCodeWrite(DISPLAY_RS_DATA, 
+                                 bitmap[16*y + 2*x] );
+                displayCodeWrite(DISPLAY_RS_DATA, 
+                                 bitmap[16*y + 2*x+1] );                                 
+                }
+        } else {
+            for( x = 0; x < 8; x++ ) {                                        
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION,
+                                  DISPLAY_IR_SET_GDRAM_ADDR | 
+                                  (y-32) );
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION,
+                                  DISPLAY_IR_SET_GDRAM_ADDR | 
+                                  (x+8) );
+                displayCodeWrite(DISPLAY_RS_DATA, 
+                                 bitmap[16*y + 2*x]);
+                displayCodeWrite(DISPLAY_RS_DATA, 
+                                 bitmap[16*y + 2*x+1]);                                 
+                }
+        }
     }
 }
 
