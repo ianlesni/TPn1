@@ -61,6 +61,24 @@
 
 #define PCF8574_I2C_BUS_8BIT_WRITE_ADDRESS 78
 
+#define SPI1_MOSI PA_7
+#define SPI1_MISO PA_6
+#define SPI1_SCK  PA_5
+#define SPI1_CS   PD_14
+
+#define DISPLAY_ST7920_LINE1_FIRST_CHARACTER_ADDRESS 0
+#define DISPLAY_ST7920_LINE2_FIRST_CHARACTER_ADDRESS 16
+#define DISPLAY_ST7920_LINE3_FIRST_CHARACTER_ADDRESS 8
+#define DISPLAY_ST7920_LINE4_FIRST_CHARACTER_ADDRESS 24
+
+#define ST7920_SPI_SYNCHRONIZING_BIT_STRING 0b11111000
+
+#define ST7920_SPI_RS_INSTRUCTION 0b000000000
+#define ST7920_SPI_RS_DATA        0b000000010
+
+#define ST7920_SPI_RW_WRITE 0b000000000
+#define ST7920_SPI_RW_READ  0b000000100
+
 //=====[Declaration of private data types]=====================================
 
 typedef struct{
@@ -91,6 +109,9 @@ DigitalOut displayEn( D9 );
 
 I2C i2cPcf8574( I2C1_SDA, I2C1_SCL ); 
 
+DigitalOut spiSt7920ChipSelect(SPI1_CS);
+SPI spiSt7920(SPI1_MOSI, SPI1_MISO, SPI1_SCK);
+
 //=====[Declaration of external public global variables]=======================
 
 //=====[Declaration and initialization of public global variables]=============
@@ -109,8 +130,9 @@ static void displayCodeWrite( bool type, uint8_t dataBus );
 
 //=====[Implementations of public functions]===================================
 
-void displayInit( displayConnection_t connection )
+void displayInit( displayType_t type, displayConnection_t connection )
 {
+    display.type = type;
     display.connection = connection;
     
     if( display.connection == DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER) {
@@ -118,7 +140,12 @@ void displayInit( displayConnection_t connection )
         pcf8574.data = 0b00000000;
         i2cPcf8574.frequency(100000);
         displayPinWrite( DISPLAY_PIN_A_PCF8574,  ON );
-    } 
+    }
+
+    if( display.connection == DISPLAY_CONNECTION_SPI) {
+        spiSt7920.format( 8, 3 );
+        spiSt7920.frequency( 1000000 );
+    }    
     
     initial8BitCommunicationIsCompleted = false;    
 
@@ -141,6 +168,7 @@ void displayInit( displayConnection_t connection )
 
     switch( display.connection ) {
         case DISPLAY_CONNECTION_GPIO_8BITS:
+        case DISPLAY_CONNECTION_SPI:
             displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
                               DISPLAY_IR_FUNCTION_SET | 
                               DISPLAY_IR_FUNCTION_SET_8BITS | 
@@ -194,38 +222,74 @@ void displayInit( displayConnection_t connection )
 
 void displayCharPositionWrite( uint8_t charPositionX, uint8_t charPositionY )
 {    
-    switch( charPositionY ) {
-        case 0:
-            displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
-                              DISPLAY_IR_SET_DDRAM_ADDR |
-                              ( DISPLAY_20x4_LINE1_FIRST_CHARACTER_ADDRESS +
-                                charPositionX ) );
-            delay( 1 );         
-        break;
-       
-        case 1:
-            displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
-                              DISPLAY_IR_SET_DDRAM_ADDR |
-                              ( DISPLAY_20x4_LINE2_FIRST_CHARACTER_ADDRESS +
-                                charPositionX ) );
-            delay( 1 );         
-        break;
-       
-        case 2:
-            displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
-                              DISPLAY_IR_SET_DDRAM_ADDR |
-                              ( DISPLAY_20x4_LINE3_FIRST_CHARACTER_ADDRESS +
-                                charPositionX ) );
-            delay( 1 );         
-        break;
+    if( display.type == DISPLAY_TYPE_LCD_HD44780 ) {
+        switch( charPositionY ) {
+            case 0:
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                                  DISPLAY_IR_SET_DDRAM_ADDR |
+                                  ( DISPLAY_20x4_LINE1_FIRST_CHARACTER_ADDRESS +
+                                    charPositionX ) );
+                delay( 1 );         
+            break;
+        
+            case 1:
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                                  DISPLAY_IR_SET_DDRAM_ADDR |
+                                  ( DISPLAY_20x4_LINE2_FIRST_CHARACTER_ADDRESS +
+                                    charPositionX ) );
+                delay( 1 );         
+            break;
+        
+            case 2:
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                                  DISPLAY_IR_SET_DDRAM_ADDR |
+                                  ( DISPLAY_20x4_LINE3_FIRST_CHARACTER_ADDRESS +
+                                    charPositionX ) );
+                delay( 1 );         
+            break;
 
-        case 3:
-            displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
-                              DISPLAY_IR_SET_DDRAM_ADDR |
-                              ( DISPLAY_20x4_LINE4_FIRST_CHARACTER_ADDRESS +
-                                charPositionX ) );
-            delay( 1 );         
-        break;
+            case 3:
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                                  DISPLAY_IR_SET_DDRAM_ADDR |
+                                  ( DISPLAY_20x4_LINE4_FIRST_CHARACTER_ADDRESS +
+                                    charPositionX ) );
+                delay( 1 );         
+            break;
+         }
+    } else if( display.type == DISPLAY_TYPE_GLCD_ST7920 ) {         
+        switch( charPositionY ) {
+            case 0:
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                                  DISPLAY_IR_SET_DDRAM_ADDR |
+                                  ( DISPLAY_ST7920_LINE1_FIRST_CHARACTER_ADDRESS +
+                                    charPositionX/2 ) );
+                delay( 1 );         
+            break;
+        
+            case 1:
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                                  DISPLAY_IR_SET_DDRAM_ADDR |
+                                  ( DISPLAY_ST7920_LINE2_FIRST_CHARACTER_ADDRESS +
+                                    charPositionX/2 ) );
+                delay( 1 );         
+            break;
+        
+            case 2:
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                                  DISPLAY_IR_SET_DDRAM_ADDR |
+                                  ( DISPLAY_ST7920_LINE3_FIRST_CHARACTER_ADDRESS +
+                                    charPositionX/2 ) );
+                delay( 1 );         
+            break;
+
+            case 3:
+                displayCodeWrite( DISPLAY_RS_INSTRUCTION, 
+                                  DISPLAY_IR_SET_DDRAM_ADDR |
+                                  ( DISPLAY_ST7920_LINE4_FIRST_CHARACTER_ADDRESS +
+                                    charPositionX/2 ) );
+                delay( 1 );         
+            break;
+         }
     }
 }
 
@@ -240,12 +304,35 @@ void displayStringWrite( const char * str )
 
 static void displayCodeWrite( bool type, uint8_t dataBus )
 {
-    if ( type == DISPLAY_RS_INSTRUCTION )
-        displayPinWrite( DISPLAY_PIN_RS, DISPLAY_RS_INSTRUCTION);
-        else
-        displayPinWrite( DISPLAY_PIN_RS, DISPLAY_RS_DATA);
-    displayPinWrite( DISPLAY_PIN_RW, DISPLAY_RW_WRITE );
-    displayDataBusWrite( dataBus );
+    switch( display.connection ) {
+        case DISPLAY_CONNECTION_GPIO_8BITS:
+        case DISPLAY_CONNECTION_GPIO_4BITS:
+        case DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER:    
+            if ( type == DISPLAY_RS_INSTRUCTION )
+                displayPinWrite( DISPLAY_PIN_RS, DISPLAY_RS_INSTRUCTION);
+                else
+                displayPinWrite( DISPLAY_PIN_RS, DISPLAY_RS_DATA);
+            displayPinWrite( DISPLAY_PIN_RW, DISPLAY_RW_WRITE );
+            displayDataBusWrite( dataBus );
+        break;
+  
+        case DISPLAY_CONNECTION_SPI:
+            spiSt7920.lock();
+            spiSt7920ChipSelect = ON;
+            if ( type == DISPLAY_RS_INSTRUCTION )           
+                spiSt7920.write( ST7920_SPI_SYNCHRONIZING_BIT_STRING |
+                                  ST7920_SPI_RW_WRITE |
+                                  ST7920_SPI_RS_INSTRUCTION );                              
+                else
+                spiSt7920.write( ST7920_SPI_SYNCHRONIZING_BIT_STRING |
+                                  ST7920_SPI_RW_WRITE |
+                                  ST7920_SPI_RS_DATA );               
+            spiSt7920.write( dataBus & 0b11110000 );      
+            spiSt7920.write( (dataBus<<4) & 0b11110000 );
+            spiSt7920ChipSelect = OFF;
+            spiSt7920.unlock();
+        break;
+    }    
 }
 
 static void displayPinWrite( uint8_t pinName, int value )
@@ -316,7 +403,10 @@ static void displayPinWrite( uint8_t pinName, int value )
             if ( pcf8574.displayPinD6 ) pcf8574.data |= 0b01000000; 
             if ( pcf8574.displayPinD7 ) pcf8574.data |= 0b10000000; 
             i2cPcf8574.write( pcf8574.address, &pcf8574.data, 1);
-            break;    
+            break;
+
+        case DISPLAY_CONNECTION_SPI:
+        break;
     }
 }
 
@@ -348,7 +438,9 @@ static void displayDataBusWrite( uint8_t dataBus )
                 displayPinWrite( DISPLAY_PIN_D4, dataBus & 0b00000001 );                
             }
         break;
-    
+        
+        case DISPLAY_CONNECTION_SPI:
+        break;
     }
     displayPinWrite( DISPLAY_PIN_EN, ON );              
     delay( 1 );

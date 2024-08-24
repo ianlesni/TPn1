@@ -151,11 +151,13 @@ void visualInterfaceInit(DigitalOut * Led)
 {
     Led->write(0);                                                  //Inicializo el led del drum pad apagado
 
-    displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);        //Inicializo el display
+    displayInit( DISPLAY_TYPE_GLCD_ST7920, DISPLAY_CONNECTION_SPI); 
+    //displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);        //Inicializo el display
     /** Genero un mensaje de bienvenida
     *   y el retardo para que pueda 
     *   leerse
     */
+      
     displayCharPositionWrite(0,0);
     displayStringWrite("MIDI Drum Pad v0");                         
     displayCharPositionWrite (0,1);
