@@ -16,6 +16,7 @@
 #include "ble.h"
 #include <cstdint>
 #include "GLCD_bitmaps.h"
+#include "rotary_encoder.h"
 
 //=====[Declaration of defines]================================================
 
@@ -55,7 +56,10 @@ int main(void)
     piezoTransducer piezoA(PinName::A0, PinName::PF_9, &piezoAConvertionTicker);
 
     hiHat hiHatA(PinName::A1,PinName::PF_7, &piezoA);   
-
+    /** Creo el encoder rotativo 
+    */ 
+    rotaryEncoder encoder(PinName::PF_8, PinName::PE_3);
+    
     /** Creo los pulsadores necesarios para configurar el 
     *   sonido del drum pad    
     */
@@ -81,7 +85,9 @@ int main(void)
     visualInterfaceInit(&ledPad);                                       //Inicializo el led del drum pad y display
        
     uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes();           //Obtengo el número total de notas midi de instrumentos percusivos disponibles
-                                            
+    char Note[3] = "";  
+    encoder.rotaryEncoderInit(numOfInstrumentNotes);
+
     while (true)
     {
         /** Actualizo la maquina de estados
@@ -132,7 +138,7 @@ int main(void)
             noteIndex++;                                                        //Incremento el indice de navegación de notas
             
             if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;               //Controlo que el indice no se vaya de rango     
-            visualInterfaceUpdate();
+            visualInterfaceUpdate();   
         }
 
         if(true == drumPadButtons.button[1].releasedEvent)                      //Verifico si el pulsador downButton fué presionado
@@ -140,8 +146,15 @@ int main(void)
             noteIndex--;                                                        //Decremento el indice de navegación de notas
             if (noteIndex < 0) noteIndex = numOfInstrumentNotes - 1;            //Controlo que el indice no se vaya de rango
             visualInterfaceUpdate();
+            
+            displayCharPositionWrite (7,2);
+            displayStringWrite("  "); 
+            sprintf(Note, "%.0hhu", encoder.rotaryEncoderGetCount());
+            displayCharPositionWrite (7,2);
+            displayStringWrite(Note); 
         }
 
+        
         delay(TIME_INCREMENT_MS);
     }
 
@@ -172,6 +185,8 @@ void visualInterfaceInit(DigitalOut * Led)
     */
     displayCharPositionWrite(0,0);
     displayStringWrite("Drum Pad note:");
+    displayCharPositionWrite (0,2);
+    displayStringWrite("COUNT:"); 
     visualInterfaceUpdate();
 }
 

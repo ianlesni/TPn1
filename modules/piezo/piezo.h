@@ -53,6 +53,8 @@ class piezoTransducer{
         PIEZO_STATE piezoStatus;
 };
 
+
+
 /*!
  * \struct piezo_t
  * \brief Estructura de un transductor piezoeléctrico
