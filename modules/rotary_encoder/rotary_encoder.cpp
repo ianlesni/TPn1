@@ -13,9 +13,10 @@
 //=====[Declaration of private defines]========================================
 
 //=====[Declaration of private data types]=====================================
-rotaryEncoder::rotaryEncoder(PinName CLKPin,PinName DTPin)
+rotaryEncoder::rotaryEncoder(PinName CLKPin, PinName DTPin, Ticker * encoderTicker)
     : CLKInterruptPin(CLKPin),       
-      DTDigitalPin(DTPin)
+      DTDigitalPin(DTPin),
+      encoderDebounceTicker(encoderTicker)
 {
     CLKInterruptPin.fall(callback(this, &rotaryEncoder::rotaryEncoderCallback));
 }
@@ -24,34 +25,49 @@ void rotaryEncoder::rotaryEncoderInit(uint8_t maxCountValue)
 {
     rotationCounter = 0;
     auxCounter = 0;
+    debounceCounter = 0;
+    encoderDebounceStatus = READY;
     maxRotationCounterValue = maxCountValue;
 }
 
-void rotaryEncoder::rotaryEncoderResetCount()
+void rotaryEncoder::encoderDeounceCallback()
 {
-    rotationCounter = 0;
+    encoderDebounceStatus = READY;              //Una vez que transcurren los 100ms el encoder vuelve a ser utilizable
+    encoderDebounceTicker->detach();            //A partir de acá no debe interrumpir más el ticker
+}
+
+void rotaryEncoder::rotaryEncoderDebounceResetCount()
+{
+    debounceCounter = 0;
+
 }
 
 void rotaryEncoder::rotaryEncoderCallback()
 {
-    uint8_t dtStatus = DTDigitalPin.read();
-    if(0 == dtStatus)
-    {   
-        auxCounter --;
-        rotationCounter = auxCounter/2;
-        if(rotationCounter <= 0)
-        {
-            rotationCounter = maxRotationCounterValue - 1;
-        }
-    }
-    else
+
+    if(encoderDebounceStatus == READY)
     {
-        auxCounter++;
-        rotationCounter = auxCounter/2;
-        if(rotationCounter  >= maxRotationCounterValue)
-        {
-            rotationCounter = 0;
+        uint8_t dtStatus = DTDigitalPin.read();
+        if(0 == dtStatus)
+        {   
+            
+            rotationCounter --;
+            if(rotationCounter <= 0)
+            {
+                rotationCounter = maxRotationCounterValue - 1;
+            }
         }
+        else
+        {
+            rotationCounter++;
+            if(rotationCounter  >= maxRotationCounterValue)
+            {
+                rotationCounter = 0;
+            }
+        }
+        encoderDebounceStatus = DEBOUNCING; //A partir de este momento seguramente este haciendo bouncing
+        encoderDebounceTicker->attach(callback(this,&rotaryEncoder::encoderDeounceCallback),100ms); // Hasta que no transcurran 100ms, se ignoran los flancos
+
     }
 
 }

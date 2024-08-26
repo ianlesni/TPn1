@@ -58,7 +58,8 @@ int main(void)
     hiHat hiHatA(PinName::A1,PinName::PF_7, &piezoA);   
     /** Creo el encoder rotativo 
     */ 
-    rotaryEncoder encoder(PinName::PF_8, PinName::PE_3);
+    Ticker encoderDebounceticker;
+    rotaryEncoder encoder(PinName::PF_8, PinName::PE_3, &encoderDebounceticker);
     
     /** Creo los pulsadores necesarios para configurar el 
     *   sonido del drum pad    
@@ -148,7 +149,7 @@ int main(void)
             visualInterfaceUpdate();
             
             displayCharPositionWrite (7,2);
-            displayStringWrite("  "); 
+            displayStringWrite("    "); 
             sprintf(Note, "%.0hhu", encoder.rotaryEncoderGetCount());
             displayCharPositionWrite (7,2);
             displayStringWrite(Note); 

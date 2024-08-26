@@ -16,19 +16,28 @@
 //=====[Declaration of public defines]=========================================
 
 //=====[Declaration of public data types]======================================
+typedef enum{
+    READY = 0,
+    DEBOUNCING = 1
+}ENCODER_STATUS;
+
 
 class rotaryEncoder{
     public:
-    rotaryEncoder(PinName CLKPin,PinName DTPin);
+    rotaryEncoder(PinName CLKPin,PinName DTPin, Ticker * encoderDebounceTicker);
     void rotaryEncoderInit(uint8_t maxCountValue);
-    void rotaryEncoderResetCount();
+    void rotaryEncoderDebounceResetCount();
     uint8_t rotaryEncoderGetCount();
     int8_t rotationCounter;
     private:
+    uint8_t encoderDebounceStatus;
+    uint8_t debounceCounter;
     int8_t auxCounter;
     void rotaryEncoderCallback();
+    void encoderDeounceCallback();
     DigitalIn DTDigitalPin;
     InterruptIn CLKInterruptPin;
+    Ticker * encoderDebounceTicker;
     uint8_t maxRotationCounterValue;
 };
 
