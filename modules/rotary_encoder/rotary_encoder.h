@@ -28,7 +28,8 @@ class rotaryEncoder{
     void rotaryEncoderInit(uint8_t maxCountValue);
     void rotaryEncoderDebounceResetCount();
     uint8_t rotaryEncoderGetCount();
-    int8_t rotationCounter;
+    void handleMenuNavigation(int8_t * submenuIndex, int8_t maxIndex);
+    int8_t * rotationCounter;
     private:
     uint8_t encoderDebounceStatus;
     uint8_t debounceCounter;

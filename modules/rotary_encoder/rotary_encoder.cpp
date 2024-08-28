@@ -49,20 +49,19 @@ void rotaryEncoder::rotaryEncoderCallback()
     {
         uint8_t dtStatus = DTDigitalPin.read();
         if(0 == dtStatus)
-        {   
-            
-            rotationCounter --;
-            if(rotationCounter <= 0)
+        {          
+            (*rotationCounter) --;
+            if((*rotationCounter) <= 0)
             {
-                rotationCounter = maxRotationCounterValue - 1;
+                (*rotationCounter) = maxRotationCounterValue - 1;
             }
         }
         else
         {
-            rotationCounter++;
-            if(rotationCounter  >= maxRotationCounterValue)
+            (*rotationCounter)++;
+            if((*rotationCounter)  >= maxRotationCounterValue)
             {
-                rotationCounter = 0;
+                (*rotationCounter) = 0;
             }
         }
         encoderDebounceStatus = DEBOUNCING; //A partir de este momento seguramente este haciendo bouncing
@@ -72,10 +71,12 @@ void rotaryEncoder::rotaryEncoderCallback()
 
 }
 
-uint8_t rotaryEncoder::rotaryEncoderGetCount()
+void rotaryEncoder::handleMenuNavigation(int8_t * submenuIndex, int8_t maxIndex)
 {
-    return rotationCounter;
+    rotationCounter = submenuIndex;
+    maxRotationCounterValue = maxIndex;
 }
+
 //=====[Declaration and initialization of public global objects]===============
 
 //=====[Declaration of external public global variables]=======================
