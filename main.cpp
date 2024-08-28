@@ -127,11 +127,13 @@ int main(void)
 
         handleMenuNavigation();
 
-        if (true == drumPadButtons.button[1].releasedEvent) {
+        if (true == drumPadButtons.button[1].releasedEvent) 
+        {
             confirmSelection();
         }
 
-        if (true == drumPadButtons.button[0].releasedEvent) {
+        if (true == drumPadButtons.button[0].releasedEvent) 
+        {
             returnToPreviousMenu();
         }
 
@@ -210,13 +212,6 @@ void visualInterfaceInit(DigitalOut * Led)
     displayModeWrite( DISPLAY_MODE_CHAR );  
     
     displayClear();
-    displayCharPositionWrite(0,0);
-    displayStringWrite("MIDI Drum Pad v1");                         
-    displayCharPositionWrite (4,2);
-    displayStringWrite("PLAY");
-    displayCharPositionWrite (4,3);
-    displayStringWrite("CONFIG"); 
-
 }
 
 void visualInterfaceUpdate()
