@@ -26,15 +26,28 @@ enum DrumPadState {
     CONFIG_MENU,
     DRUMKIT_MENU,
     CONNECTION_MENU,
-    MIDI_CONFIG_MENU,
+    SET_DRUMKIT_NUMBER,
+    DRUMPAD_MENU,
+    MIDI_DRUMKIT_MENU,
+    SAVE_OPTION,
+    SET_DRUMPAD_NUMBER,
+    SET_DRUMPAD_NOTE,
+    SET_DRUMPAD_SENSIBILITY,
+    SET_DRUMKIT_CHANNEL,
+    SET_DRUMKIT_VOLUME,
+    SET_USB_CONN,
+    SET_BT_CONN,
     IDLE
 };
 
 DrumPadState currentState = MAIN_MENU;
 DrumPadState previousState = IDLE;
+
 int8_t mainMenuIndex = 0;
 int8_t configMenuIndex = 0;
 int8_t drumkitMenuIndex = 0;
+int8_t drumpadMenuIndex = 0;
+int8_t midiDrumkitMenuIndex = 0;
 int8_t connectionMenuIndex = 0;
 
 
@@ -126,13 +139,14 @@ int main(void)
         debounceButtonUpdate(&drumPadButtons);
 
         handleMenuNavigation();
+        updateDisplay();
 
-        if (true == drumPadButtons.button[1].releasedEvent) 
+        if (true == drumPadButtons.button[1].releasedEvent)  //Pulsador Encoder
         {
             confirmSelection();
         }
 
-        if (true == drumPadButtons.button[0].releasedEvent) 
+        if (true == drumPadButtons.button[0].releasedEvent)  //Pulsador USER
         {
             returnToPreviousMenu();
         }
@@ -198,7 +212,7 @@ int main(void)
         */
 
     
-        delay(TIME_INCREMENT_MS);
+        delay(2);
     }
 
 }
@@ -262,7 +276,7 @@ void updateDisplay() {
                 displayCharPositionWrite(0,0);
                 displayStringWrite("Playing...");
             }
-            previousState = PLAY_SCREEN;
+           previousState = PLAY_SCREEN; 
         break;
 
         case CONFIG_MENU:
@@ -294,6 +308,109 @@ void updateDisplay() {
             previousState = CONFIG_MENU;
         break;
 
+        case DRUMKIT_MENU:
+            if(currentState != previousState) 
+            {
+                displayClear();
+                displayCharPositionWrite(0,0);
+                displayStringWrite("  DrumKit N:__");
+                displayCharPositionWrite(4,1);
+                displayStringWrite("  DrumPads");
+                displayCharPositionWrite(4,2);
+                displayStringWrite("  MIDI");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("  Save");
+            }
+
+            if (drumkitMenuIndex == 0) 
+            {   
+                displayCharPositionWrite(0,0);
+                displayStringWrite("> ");
+                displayCharPositionWrite(4,1);
+                displayStringWrite("  ");
+                displayCharPositionWrite(4,2);
+                displayStringWrite("  ");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("  "); 
+            }  
+            if (drumkitMenuIndex == 1) 
+            {
+                displayCharPositionWrite(0,0);
+                displayStringWrite("  ");
+                displayCharPositionWrite(4,1);
+                displayStringWrite("> ");
+                displayCharPositionWrite(4,2);
+                displayStringWrite("  ");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("  "); 
+            }          
+            if (drumkitMenuIndex == 2) 
+            {
+                displayCharPositionWrite(0,0);
+                displayStringWrite("  ");                
+                displayCharPositionWrite(4,1);
+                displayStringWrite("  ");
+                displayCharPositionWrite(4,2);
+                displayStringWrite("> ");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("  ");
+            }
+            if (drumkitMenuIndex == 3) 
+            {
+                displayCharPositionWrite(0,0);
+                displayStringWrite("  ");
+                displayCharPositionWrite(4,1);
+                displayStringWrite("  ");
+                displayCharPositionWrite(4,2);
+                displayStringWrite("  ");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("> ");
+            }   
+            previousState = DRUMKIT_MENU;        
+        break;
+
+        case DRUMPAD_MENU:
+            if(currentState != previousState) 
+            {
+                displayClear();
+                displayCharPositionWrite(0,0);
+                displayStringWrite("  DrumPad N:__");
+                displayCharPositionWrite(0,2);
+                displayStringWrite("  Note N:___");
+                displayCharPositionWrite(0,3);
+                displayStringWrite("  SensibiLity:__");
+            }
+
+            if (drumpadMenuIndex == 0) 
+            {   
+                displayCharPositionWrite(0,0);
+                displayStringWrite("> ");
+                displayCharPositionWrite(0,2);
+                displayStringWrite("  ");
+                displayCharPositionWrite(0,3);
+                displayStringWrite("  ");
+            }  
+            if (drumpadMenuIndex == 1) 
+            {
+                displayCharPositionWrite(0,0);
+                displayStringWrite("  ");
+                displayCharPositionWrite(0,2);
+                displayStringWrite("> ");
+                displayCharPositionWrite(0,3);
+                displayStringWrite("  ");
+            }          
+            if (drumpadMenuIndex == 2) 
+            {
+                displayCharPositionWrite(0,0);
+                displayStringWrite("  ");                
+                displayCharPositionWrite(0,2);
+                displayStringWrite("  ");
+                displayCharPositionWrite(0,3);
+                displayStringWrite("> ");
+            }
+            previousState = DRUMPAD_MENU; 
+        break;
+
         default:
         break;
     }
@@ -301,21 +418,45 @@ void updateDisplay() {
 
 void handleMenuNavigation() 
 {
-    switch (currentState) 
-    {
-        case MAIN_MENU:
-            encoder.handleMenuNavigation(&mainMenuIndex, 2);
-            updateDisplay();
-        break;
 
-        case CONFIG_MENU:
-            encoder.handleMenuNavigation(&configMenuIndex, 2);
-            updateDisplay();
-        break;
+        switch (currentState) 
+        {
+            case MAIN_MENU:
+                encoder.handleMenuNavigation(&mainMenuIndex, 2);
+                
+            break;
 
-        default:
-        break;
+            case CONFIG_MENU:
+                encoder.handleMenuNavigation(&configMenuIndex, 2);
+                
+            break;
+
+            case DRUMKIT_MENU:
+                encoder.handleMenuNavigation(&drumkitMenuIndex, 4);
+                
+            break;
+
+            case DRUMPAD_MENU:
+                encoder.handleMenuNavigation(&drumpadMenuIndex, 3);
+                
+            break;
+
+            case MIDI_DRUMKIT_MENU:
+                encoder.handleMenuNavigation(&midiDrumkitMenuIndex, 2);
+                
+            break;
+
+            case CONNECTION_MENU:
+                encoder.handleMenuNavigation(&connectionMenuIndex, 2);
+                
+            break;
+
+            default:
+                encoder.handleMenuNavigation(&mainMenuIndex, 2);
+            break;
+        
     }
+
 }
 
 void confirmSelection() 
@@ -325,13 +466,13 @@ void confirmSelection()
         case MAIN_MENU:
             if (mainMenuIndex == 0) 
             {
-                currentState = PLAY_SCREEN;
+                currentState = PLAY_SCREEN; //No hay menu para interactuar aqui, va al default y sale
             } 
             else if (mainMenuIndex == 1) 
             {
                 currentState = CONFIG_MENU;
             }
-            break;
+        break;
 
         case CONFIG_MENU:
             if (configMenuIndex == 0) 
@@ -342,8 +483,73 @@ void confirmSelection()
             {
                 currentState = CONNECTION_MENU;
             }
-            break;
 
+        break;
+
+        case DRUMKIT_MENU:
+            if (drumkitMenuIndex == 0) 
+            {
+                //Selección de numero de drumkit
+                currentState = SET_DRUMKIT_NUMBER;  
+            } 
+            else if (drumkitMenuIndex == 1) 
+            {
+                currentState = DRUMPAD_MENU;
+            }
+            else if (drumkitMenuIndex == 2) 
+            {
+                currentState = MIDI_DRUMKIT_MENU;
+            }
+            else if (drumkitMenuIndex == 3) 
+            {
+                //Si apreto aca tengo que guardar en la sd, mostrarlo en pantalla y nada mas
+                currentState = SAVE_OPTION;
+            }            
+
+        break;
+
+        case DRUMPAD_MENU:
+            if (drumpadMenuIndex == 0) 
+            {
+                //Selección de numero de drumpad
+                currentState = SET_DRUMPAD_NUMBER;
+            } 
+            else if (drumpadMenuIndex == 1) 
+            {
+                currentState = SET_DRUMPAD_NOTE;
+            }
+            else if (drumpadMenuIndex == 2) 
+            {
+                currentState = SET_DRUMPAD_SENSIBILITY;
+            }        
+
+        break;
+
+        case MIDI_DRUMKIT_MENU:
+            if (midiDrumkitMenuIndex == 0) 
+            {
+                //Selección de numero de drumpad
+                currentState = SET_DRUMKIT_CHANNEL;
+            } 
+            else if (midiDrumkitMenuIndex == 1) 
+            {
+                currentState = SET_DRUMKIT_VOLUME;
+            }      
+
+        break;
+
+        case CONNECTION_MENU:
+            if (connectionMenuIndex == 0) 
+            {
+                //Selección de numero de drumpad
+                currentState = SET_USB_CONN;
+            } 
+            else if (connectionMenuIndex == 1) 
+            {
+                currentState = SET_BT_CONN;
+            }      
+
+        break;
 
         default:
         break;
@@ -363,6 +569,29 @@ void returnToPreviousMenu()
         case DRUMKIT_MENU:
         case CONNECTION_MENU:
             currentState = CONFIG_MENU;
+        break;
+
+        case SET_DRUMKIT_NUMBER:
+        case DRUMPAD_MENU:
+        case MIDI_DRUMKIT_MENU:
+        case SAVE_OPTION:
+            currentState = DRUMKIT_MENU; 
+        break;
+
+        case SET_DRUMPAD_NUMBER:
+        case SET_DRUMPAD_NOTE:
+        case SET_DRUMPAD_SENSIBILITY:
+            currentState = DRUMPAD_MENU;
+        break;
+            
+        case SET_DRUMKIT_CHANNEL:
+        case SET_DRUMKIT_VOLUME:
+            currentState = MIDI_DRUMKIT_MENU;
+        break;
+
+        case SET_USB_CONN:
+        case SET_BT_CONN:
+            currentState = CONNECTION_MENU;
         break;
 
         default:
