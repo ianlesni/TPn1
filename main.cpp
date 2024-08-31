@@ -411,6 +411,64 @@ void updateDisplay() {
             previousState = DRUMPAD_MENU; 
         break;
 
+        case MIDI_DRUMKIT_MENU:
+            if(currentState != previousState) 
+            {
+                displayClear();
+                displayCharPositionWrite(0,0);
+                displayStringWrite("MIDIDrumkit Conf");
+                displayCharPositionWrite(4,2);
+                displayStringWrite("  Channel:__");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("  Volume:___");
+            }
+
+            if (midiDrumkitMenuIndex == 0) 
+            {
+                displayCharPositionWrite(4,2);
+                displayStringWrite("> ");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("  ");
+            }          
+            if (midiDrumkitMenuIndex == 1) 
+            {
+                displayCharPositionWrite(4,2);
+                displayStringWrite("  ");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("> ");
+            }
+            previousState = MIDI_DRUMKIT_MENU;
+        break;
+
+        case CONNECTION_MENU:
+            if(currentState != previousState) 
+            {
+                displayClear();
+                displayCharPositionWrite(0,0);
+                displayStringWrite("CONNECTION Conf");
+                displayCharPositionWrite(4,2);
+                displayStringWrite("  USB:ON");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("  BT:OFF");
+            }
+
+            if (connectionMenuIndex == 0) 
+            {
+                displayCharPositionWrite(4,2);
+                displayStringWrite("> ");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("  ");
+            }          
+            if (connectionMenuIndex == 1) 
+            {
+                displayCharPositionWrite(4,2);
+                displayStringWrite("  ");
+                displayCharPositionWrite(4,3);
+                displayStringWrite("> ");
+            }
+            previousState = CONNECTION_MENU;
+        break;
+
         default:
         break;
     }
