@@ -51,6 +51,10 @@ int8_t connectionMenuIndex = 0;
 int8_t setUSBConnIndex = 0;
 int8_t setBTConnIndex = 0;
 
+int8_t drumkitChannel = 0;
+
+char drunmkitchannelstr[3] = " "; 
+char Note[3] = " "; 
 //=====[Declaration and initialization of public global objects]===============
 
 //=====[Declaration of  public global variables]===============================
@@ -127,8 +131,9 @@ int main(void)
     visualInterfaceInit(&ledPad);                                       //Inicializo el led del drum pad y display
        
     uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes();           //Obtengo el número total de notas midi de instrumentos percusivos disponibles
-    char Note[3] = "";  
-
+    
+    char drunmkitchannel[3] = " ";  
+    char Note[3] = " "; 
 
     while (true)
     {
@@ -412,7 +417,7 @@ void updateDisplay() {
         break;
 
         case MIDI_DRUMKIT_MENU:
-            if(currentState != previousState) 
+            if(currentState != previousState && previousState != SET_DRUMKIT_CHANNEL) 
             {
                 displayClear();
                 displayCharPositionWrite(0,0);
@@ -438,6 +443,16 @@ void updateDisplay() {
                 displayStringWrite("> ");
             }
             previousState = MIDI_DRUMKIT_MENU;
+        break;
+
+        case SET_DRUMKIT_CHANNEL:
+            displayCharPositionWrite(4,2);
+            displayStringWrite("  Channel:  ");
+            sprintf(drunmkitchannelstr, "%.0hhu", drumkitChannel);
+            displayCharPositionWrite (14,2);
+            displayStringWrite(drunmkitchannelstr); 
+            previousState = SET_DRUMKIT_CHANNEL; 
+
         break;
 
         case CONNECTION_MENU:
@@ -535,6 +550,10 @@ void handleMenuNavigation()
 
             case SET_BT_CONN:
                 encoder.handleMenuNavigation(&setBTConnIndex, 2);               
+            break;
+
+            case SET_DRUMKIT_CHANNEL:
+                encoder.handleMenuNavigation(&drumkitChannel, 10);
             break;
 
             default:
@@ -659,6 +678,18 @@ void confirmSelection()
                 //lo apago
                 returnToPreviousMenu();
             }  
+        break;
+
+        case SET_DRUMKIT_CHANNEL:
+            if(previousState == SET_DRUMKIT_CHANNEL)
+            {
+                returnToPreviousMenu();
+            }
+            else
+            {
+                encoder.handleMenuNavigation(&drumkitChannel, 10);  //Sacar esto de aca
+            }
+
         break;
 
         default:
