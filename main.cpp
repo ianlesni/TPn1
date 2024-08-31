@@ -19,6 +19,7 @@
 
 //=====[Declaration of defines]================================================
 
+// Definición de estados del sistema
 enum DrumPadState {
     MAIN_MENU,
     PLAY_SCREEN,
@@ -39,9 +40,11 @@ enum DrumPadState {
     IDLE
 };
 
+// Estados de control de maquinas de estado
 DrumPadState currentState = MAIN_MENU;
 DrumPadState previousState = IDLE;
 
+// Indices para la navegacion por los menus y submenus
 int8_t mainMenuIndex = 0;
 int8_t configMenuIndex = 0;
 int8_t drumkitMenuIndex = 0;
@@ -51,17 +54,29 @@ int8_t connectionMenuIndex = 0;
 int8_t setUSBConnIndex = 0;
 int8_t setBTConnIndex = 0;
 
-int8_t drumkitChannel = 0;
+// variables auxiliares para debugear la navegacion por el menu
+int8_t drumkitChannel = 0; //de 0 a 10
+int8_t drumkitVolume = 0;  //de 0 a 127
+int8_t drumpadNumber = 0;  //de 0 a 4
+int8_t drumpadNote = 0;  //de 0 a 14
+int8_t drumpadSensibility = 0;  //de 1 a 10
 
-char drunmkitchannelstr[3] = " "; 
+char drumkitchannelstr[3] = " ";
+char drumkitVolumestr[4] = " "; 
+char drumpadNumberstr[3] = " ";
+char numOfInstrumentNotesstr [3] = " ";
+char drumpadSensibilitystr [3] = " ";
 char Note[3] = " "; 
+
+
 //=====[Declaration and initialization of public global objects]===============
 
 //=====[Declaration of  public global variables]===============================
 
 int8_t noteIndex = 0;        /**< Indice para la navegación del arreglo de notas de intrumento */
 
-/** Creo el encoder rotativo 
+/** 
+* Creo el encoder rotativo 
 */ 
 Ticker encoderDebounceticker;
 rotaryEncoder encoder(PinName::PF_8, PinName::PE_3, &encoderDebounceticker);
@@ -132,7 +147,6 @@ int main(void)
        
     uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes();           //Obtengo el número total de notas midi de instrumentos percusivos disponibles
     
-    char drunmkitchannel[3] = " ";  
     char Note[3] = " "; 
 
     while (true)
@@ -228,11 +242,10 @@ void visualInterfaceInit(DigitalOut * Led)
     Led->write(0);                                                  //Inicializo el led del drum pad apagado
 
     displayInit( DISPLAY_TYPE_GLCD_ST7920, DISPLAY_CONNECTION_SPI); 
-    displayModeWrite( DISPLAY_MODE_CHAR );  
-    
+    displayModeWrite( DISPLAY_MODE_CHAR );    
     displayClear();
 }
-
+/*
 void visualInterfaceUpdate()
 {
     displayCharPositionWrite (0,1);                                     
@@ -240,7 +253,7 @@ void visualInterfaceUpdate()
     displayCharPositionWrite (0,1);
     displayStringWrite(instrumentNoteName[noteIndex]);                  //Imprimo el nombre de la nota a ejecutar
 }
-
+*/
 
 void updateDisplay() {
     // Actualizar la pantalla según el estado actual y el índice del menú
@@ -375,7 +388,7 @@ void updateDisplay() {
         break;
 
         case DRUMPAD_MENU:
-            if(currentState != previousState) 
+            if(currentState != previousState && previousState != SET_DRUMPAD_NUMBER && previousState != SET_DRUMPAD_NOTE && previousState != SET_DRUMPAD_SENSIBILITY) 
             {
                 displayClear();
                 displayCharPositionWrite(0,0);
@@ -416,8 +429,35 @@ void updateDisplay() {
             previousState = DRUMPAD_MENU; 
         break;
 
+        case SET_DRUMPAD_NUMBER:
+            displayCharPositionWrite(0,0);
+            displayStringWrite("  DrumPad N:  ");
+            sprintf(drumpadNumberstr, "%.0hhu", drumpadNumber);
+            displayCharPositionWrite (13,0);
+            displayStringWrite(drumpadNumberstr); 
+            previousState = SET_DRUMPAD_NUMBER; 
+        break;
+
+        case SET_DRUMPAD_NOTE:
+            displayCharPositionWrite(0,2);
+            displayStringWrite("  Note N:   ");
+            sprintf(numOfInstrumentNotesstr, "%.0hhu", drumpadNote);
+            displayCharPositionWrite (10,2);
+            displayStringWrite(numOfInstrumentNotesstr); 
+            previousState = SET_DRUMPAD_NOTE;         
+        break;
+            
+        case SET_DRUMPAD_SENSIBILITY:
+            displayCharPositionWrite(0,3);
+            displayStringWrite("  SensibiLity:  ");
+            sprintf(drumpadSensibilitystr, "%.0hhu", drumpadSensibility);
+            displayCharPositionWrite (14,3);
+            displayStringWrite(drumpadSensibilitystr); 
+            previousState = SET_DRUMPAD_SENSIBILITY;  
+        break;
+
         case MIDI_DRUMKIT_MENU:
-            if(currentState != previousState && previousState != SET_DRUMKIT_CHANNEL) 
+            if(currentState != previousState && previousState != SET_DRUMKIT_CHANNEL && previousState != SET_DRUMKIT_VOLUME) 
             {
                 displayClear();
                 displayCharPositionWrite(0,0);
@@ -448,12 +488,20 @@ void updateDisplay() {
         case SET_DRUMKIT_CHANNEL:
             displayCharPositionWrite(4,2);
             displayStringWrite("  Channel:  ");
-            sprintf(drunmkitchannelstr, "%.0hhu", drumkitChannel);
+            sprintf(drumkitchannelstr, "%.0hhu", drumkitChannel);
             displayCharPositionWrite (14,2);
-            displayStringWrite(drunmkitchannelstr); 
+            displayStringWrite(drumkitchannelstr); 
             previousState = SET_DRUMKIT_CHANNEL; 
-
         break;
+
+        case SET_DRUMKIT_VOLUME:
+            displayCharPositionWrite(4,3);
+            displayStringWrite("  Volume:  ");
+            sprintf(drumkitVolumestr, "%.0hhu", drumkitVolume);
+            displayCharPositionWrite (13,3);
+            displayStringWrite(drumkitVolumestr); 
+            previousState = SET_DRUMKIT_VOLUME; 
+        break;        
 
         case CONNECTION_MENU:
             if(currentState != previousState && previousState != SET_USB_CONN && previousState != SET_BT_CONN) 
@@ -536,6 +584,18 @@ void handleMenuNavigation()
                 encoder.handleMenuNavigation(&drumpadMenuIndex, 3);               
             break;
 
+            case SET_DRUMPAD_NUMBER:
+                encoder.handleMenuNavigation(&drumpadNumber, 4);  //Con define 
+            break;
+
+            case SET_DRUMPAD_NOTE:
+                encoder.handleMenuNavigation(&drumpadNote, 14);  //Que sea con un define          
+            break;
+
+            case SET_DRUMPAD_SENSIBILITY:
+                encoder.handleMenuNavigation(&drumpadSensibility, 9);  
+            break;
+
             case MIDI_DRUMKIT_MENU:
                 encoder.handleMenuNavigation(&midiDrumkitMenuIndex, 2);               
             break;
@@ -554,6 +614,10 @@ void handleMenuNavigation()
 
             case SET_DRUMKIT_CHANNEL:
                 encoder.handleMenuNavigation(&drumkitChannel, 10);
+            break;
+
+            case SET_DRUMKIT_VOLUME:
+                encoder.handleMenuNavigation(&drumkitVolume, 127);
             break;
 
             default:
@@ -609,7 +673,6 @@ void confirmSelection()
                 //Si apreto aca tengo que guardar en la sd, mostrarlo en pantalla y nada mas
                 currentState = SAVE_OPTION;
             }            
-
         break;
 
         case DRUMPAD_MENU:
@@ -626,7 +689,40 @@ void confirmSelection()
             {
                 currentState = SET_DRUMPAD_SENSIBILITY;
             }        
+        break;
 
+
+        case SET_DRUMPAD_NUMBER:
+            if(previousState == SET_DRUMPAD_NUMBER)
+            {
+                returnToPreviousMenu();
+            }
+            else
+            {
+                encoder.handleMenuNavigation(&drumpadNumber, 10);  //Sacar esto de aca
+            }
+        break;
+
+        case SET_DRUMPAD_NOTE:
+            if(previousState == SET_DRUMPAD_NOTE)
+            {
+                returnToPreviousMenu();
+            }
+            else
+            {
+                encoder.handleMenuNavigation(&drumpadNote, 14);  //Que sea con un define
+            }
+        break;
+
+        case SET_DRUMPAD_SENSIBILITY:
+            if(previousState == SET_DRUMPAD_SENSIBILITY)
+            {
+                returnToPreviousMenu();
+            }
+            else
+            {
+                encoder.handleMenuNavigation(&drumpadSensibility, 9);  
+            }
         break;
 
         case MIDI_DRUMKIT_MENU:
@@ -689,7 +785,17 @@ void confirmSelection()
             {
                 encoder.handleMenuNavigation(&drumkitChannel, 10);  //Sacar esto de aca
             }
+        break;
 
+        case SET_DRUMKIT_VOLUME:
+            if(previousState == SET_DRUMKIT_VOLUME)
+            {
+                returnToPreviousMenu();
+            }
+            else
+            {
+                encoder.handleMenuNavigation(&drumkitVolume, 127);  //Sacar esto de aca
+            }
         break;
 
         default:
