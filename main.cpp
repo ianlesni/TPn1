@@ -15,7 +15,6 @@
 #include "arm_book_lib.h"
 #include "ble.h"
 #include <cstdint>
-#include "GLCD_bitmaps.h"
 #include "rotary_encoder.h"
 
 //=====[Declaration of defines]================================================
@@ -49,7 +48,8 @@ int8_t drumkitMenuIndex = 0;
 int8_t drumpadMenuIndex = 0;
 int8_t midiDrumkitMenuIndex = 0;
 int8_t connectionMenuIndex = 0;
-
+int8_t setUSBConnIndex = 0;
+int8_t setBTConnIndex = 0;
 
 //=====[Declaration and initialization of public global objects]===============
 
@@ -441,17 +441,16 @@ void updateDisplay() {
         break;
 
         case CONNECTION_MENU:
-            if(currentState != previousState) 
+            if(currentState != previousState && previousState != SET_USB_CONN && previousState != SET_BT_CONN) 
             {
                 displayClear();
                 displayCharPositionWrite(0,0);
                 displayStringWrite("CONNECTION Conf");
                 displayCharPositionWrite(4,2);
-                displayStringWrite("  USB:ON");
+                displayStringWrite("  USB:OFF");
                 displayCharPositionWrite(4,3);
                 displayStringWrite("  BT:OFF");
             }
-
             if (connectionMenuIndex == 0) 
             {
                 displayCharPositionWrite(4,2);
@@ -469,6 +468,34 @@ void updateDisplay() {
             previousState = CONNECTION_MENU;
         break;
 
+        case SET_USB_CONN:
+            if (setUSBConnIndex == 0) 
+            {
+                displayCharPositionWrite(4,2);
+                displayStringWrite("  USB:OFF");
+            }          
+            if (setUSBConnIndex == 1) 
+            {
+                displayCharPositionWrite(4,2);
+                displayStringWrite("  USB:ON ");
+            }
+            previousState = SET_USB_CONN;            
+        break;
+
+        case SET_BT_CONN:
+            if (setBTConnIndex == 0) 
+            {
+                 displayCharPositionWrite(4,3);
+                displayStringWrite("  BT:OFF");
+            }          
+            if (setBTConnIndex == 1) 
+            {
+                displayCharPositionWrite(4,3);
+                displayStringWrite("  BT:ON ");
+            }
+            previousState = SET_USB_CONN; 
+        break;
+
         default:
         break;
     }
@@ -476,43 +503,43 @@ void updateDisplay() {
 
 void handleMenuNavigation() 
 {
-
         switch (currentState) 
         {
             case MAIN_MENU:
-                encoder.handleMenuNavigation(&mainMenuIndex, 2);
-                
+                encoder.handleMenuNavigation(&mainMenuIndex, 2);    
             break;
 
             case CONFIG_MENU:
-                encoder.handleMenuNavigation(&configMenuIndex, 2);
-                
+                encoder.handleMenuNavigation(&configMenuIndex, 2);                
             break;
 
             case DRUMKIT_MENU:
-                encoder.handleMenuNavigation(&drumkitMenuIndex, 4);
-                
+                encoder.handleMenuNavigation(&drumkitMenuIndex, 4);               
             break;
 
             case DRUMPAD_MENU:
-                encoder.handleMenuNavigation(&drumpadMenuIndex, 3);
-                
+                encoder.handleMenuNavigation(&drumpadMenuIndex, 3);               
             break;
 
             case MIDI_DRUMKIT_MENU:
-                encoder.handleMenuNavigation(&midiDrumkitMenuIndex, 2);
-                
+                encoder.handleMenuNavigation(&midiDrumkitMenuIndex, 2);               
             break;
 
             case CONNECTION_MENU:
-                encoder.handleMenuNavigation(&connectionMenuIndex, 2);
-                
+                encoder.handleMenuNavigation(&connectionMenuIndex, 2);               
+            break;
+
+            case SET_USB_CONN:
+                encoder.handleMenuNavigation(&setUSBConnIndex, 2);               
+            break;
+
+            case SET_BT_CONN:
+                encoder.handleMenuNavigation(&setBTConnIndex, 2);               
             break;
 
             default:
                 encoder.handleMenuNavigation(&mainMenuIndex, 2);
             break;
-        
     }
 
 }
@@ -524,7 +551,7 @@ void confirmSelection()
         case MAIN_MENU:
             if (mainMenuIndex == 0) 
             {
-                currentState = PLAY_SCREEN; //No hay menu para interactuar aqui, va al default y sale
+                currentState = PLAY_SCREEN; 
             } 
             else if (mainMenuIndex == 1) 
             {
@@ -598,15 +625,40 @@ void confirmSelection()
 
         case CONNECTION_MENU:
             if (connectionMenuIndex == 0) 
-            {
-                //Selección de numero de drumpad
+            { 
                 currentState = SET_USB_CONN;
             } 
             else if (connectionMenuIndex == 1) 
-            {
+            {  
                 currentState = SET_BT_CONN;
             }      
+        break;
 
+        case SET_USB_CONN:
+            if (setUSBConnIndex == 0) 
+            { 
+                //le aviso al drum pad que va a transmitir por UART
+                returnToPreviousMenu();
+            } 
+            else if (setUSBConnIndex == 1) 
+            {  
+                //le aviso al drum pad que no va a transmitir por UART
+                returnToPreviousMenu();
+
+            }  
+        break;
+
+        case SET_BT_CONN:
+            if (setBTConnIndex == 0) 
+            { 
+                //lo prendo
+                returnToPreviousMenu();
+            } 
+            else if (setBTConnIndex == 1) 
+            {  
+                //lo apago
+                returnToPreviousMenu();
+            }  
         break;
 
         default:

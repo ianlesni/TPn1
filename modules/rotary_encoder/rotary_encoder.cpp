@@ -39,7 +39,6 @@ void rotaryEncoder::encoderDeounceCallback()
 void rotaryEncoder::rotaryEncoderDebounceResetCount()
 {
     debounceCounter = 0;
-
 }
 
 void rotaryEncoder::rotaryEncoderCallback()
