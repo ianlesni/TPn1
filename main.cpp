@@ -14,6 +14,8 @@
 #include "button.h"
 #include "arm_book_lib.h"
 #include "ble.h"
+#include "drumpad.h"
+#include "drumkit.h"
 #include <cstdint>
 #include "rotary_encoder.h"
 
@@ -37,12 +39,12 @@ enum DrumPadState {
     SET_DRUMKIT_VOLUME,
     SET_USB_CONN,
     SET_BT_CONN,
-    IDLE
+    IDLE_STATE
 };
 
 // Estados de control de maquinas de estado
 DrumPadState currentState = MAIN_MENU;
-DrumPadState previousState = IDLE;
+DrumPadState previousState = IDLE_STATE;
 
 // Indices para la navegacion por los menus y submenus
 int8_t mainMenuIndex = 0;
@@ -89,7 +91,7 @@ rotaryEncoder encoder(PinName::PF_8, PinName::PE_3, &encoderDebounceticker);
  * 
  * Esta función inicializa el led y el display del drum pad.
  */
-void visualInterfaceInit (DigitalOut * Led);
+void visualInterfaceInit (void);
 
 /**
 *   Esta función borra imprime en el display
@@ -112,15 +114,27 @@ void returnToPreviousMenu(void);
 //=====[Main function]=========================================================
 int main(void)
 {
-    DigitalOut ledPad(LED1);                                        //Creo un objeto DigitalOut como led testigo de interacción con el drum pad
-    /** Creo el transductor piezo eléctrico  
-    */
+    displayInit(DISPLAY_TYPE_GLCD_ST7920, DISPLAY_CONNECTION_SPI); 
+    displayModeWrite(DISPLAY_MODE_CHAR);    
+    displayClear();
+    displayCharPositionWrite(0,0);
+    displayStringWrite("MIDI Drum Pad v1");
+
+    UnbufferedSerial uartBle(PD_5, PD_6, 9600);
+    UnbufferedSerial uartSerialPort(USBTX, USBRX, 9600); 
+  
     Ticker piezoAConvertionTicker;
-    piezoTransducer piezoA(PinName::A0, PinName::PF_9, &piezoAConvertionTicker);
+    piezoTransducer piezo1(PinName::A0, PinName::PF_9, &piezoAConvertionTicker);
+    midiMessage_t midiMessage1;
+    drumpad pad1(LED1,&piezo1, &midiMessage1);
+    //hiHat hiHatA(PinName::A1,PinName::PF_7, &piezoA);  
 
-    hiHat hiHatA(PinName::A1,PinName::PF_7, &piezoA);   
+    // Arreglo de punteros a drumpads
+    drumpad* pads[] = { &pad1};
+    bool drumkitCommMode = 0;
+    drumkit kit(1, pads, &uartSerialPort, &uartBle, drumkitCommMode);
 
-    
+    kit.init();
     /** Creo los pulsadores necesarios para configurar el 
     *   sonido del drum pad    
     */
@@ -132,22 +146,10 @@ int main(void)
     drumPadButtons.button[1].alias = &downButton;
     debounceButtonInit(&drumPadButtons);
 
-    /** Creo objeto UnbufferedSerial para realizar
-    *   la comunicación serie con la PC   
-    */
-    UnbufferedSerial uartBle(PD_5, PD_6, 9600);
-
-    UnbufferedSerial uartSerialPort(USBTX, USBRX, 9600);   
-
-    midiMessage_t midiMessageStruct; 
-
+    void visualInterfaceInit();
     //initializaMIDISerial(&uartSerialPort, &midiMessageStruct);
 
-    visualInterfaceInit(&ledPad);                                       //Inicializo el led del drum pad y display
-       
     uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes();           //Obtengo el número total de notas midi de instrumentos percusivos disponibles
-    
-    char Note[3] = " "; 
 
     while (true)
     {
@@ -171,43 +173,7 @@ int main(void)
             returnToPreviousMenu();
         }
 
-        if(PIEZO_FINISHED == piezoA.getPiezoStatus())                          //Actualizo y verifico el estado del transductor piezoeléctrico
-        {  
-            uint16_t piezoMili = 0;
-
-            piezoMili = adcToMilliVolts(piezoA.piezoMaxSampleValue);
-            piezoA.piezoMaxVelocity = piezoConvertVoltToVel(piezoMili); 
-            ledPad = 1;                                                         //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
-            
-            midiSendNoteOff(&midiMessageStruct, &uartSerialPort);               //Envío el mensaje de Note Off para no superponer notas
-/*
-            uint8_t hiHatPos = hiHatA.hiHatGetAperture();
-            switch(hiHatPos)
-            {
-                case OPEN:
-                    midiMessageStruct.note = HI_HAT_OPEN;                 
-                    break;
-
-                case HALF_OPEN:
-                    midiMessageStruct.note = HI_HAT_HALF_OPEN;
-                    break;
-
-                case CLOSE:
-                    midiMessageStruct.note = HI_HAT_CLOSED;
-                    break;
-
-                default:
-                    midiMessageStruct.note = CRASH_R_CHOKED; 
-                    break;                
-            }
-
-*/ 
-            midiMessageStruct.velocity = piezoA.piezoMaxVelocity;               //Cargo la velocity del mensaje               
-            midiSendNoteOn(&midiMessageStruct, &uartSerialPort);                //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
-           
-            ledPad = 0;                                                         //Apago el Led para indicar que se envió el mensaje correspondiente
-            piezoA.piezoTransducerInit();
-        }
+        kit.processHits();
 
         delay(2);
     }
@@ -215,23 +181,18 @@ int main(void)
 }
 
 //=====[Implementations of public functions]===================================
-void visualInterfaceInit(DigitalOut * Led)
+void visualInterfaceInit()
 {
-    Led->write(0);                                                  //Inicializo el led del drum pad apagado
-
     displayInit(DISPLAY_TYPE_GLCD_ST7920, DISPLAY_CONNECTION_SPI); 
     displayModeWrite(DISPLAY_MODE_CHAR);    
     displayClear();
+    displayCharPositionWrite(0,0);
+    displayStringWrite("MIDI Drum Pad v1");
+    displayCharPositionWrite(4,2);
+    displayStringWrite("  PLAY");
+    displayCharPositionWrite(4,3);
+    displayStringWrite("  CONFIG");
 }
-/*
-void visualInterfaceUpdate()
-{
-    displayCharPositionWrite (0,1);                                     
-    displayStringWrite("                ");                             //Limpio la pantalla del display
-    displayCharPositionWrite (0,1);
-    displayStringWrite(instrumentNoteName[noteIndex]);                  //Imprimo el nombre de la nota a ejecutar
-}
-*/
 
 void updateDisplay() {
     // Actualizar la pantalla según el estado actual y el índice del menú

@@ -31,7 +31,6 @@ void drumkit::processHits()
     {
         if (drumPads[i]->getDrumpadCheck() == ACTIVE) 
         {
-
             midiSendNoteOn(drumPads[i]->drumpadmidiMessage, drumkitUARTSerial);
             midiSendNoteOn(drumPads[i]->drumpadmidiMessage, drumkitBTSerial);
             drumPads[i]->drumpadLedOff();
