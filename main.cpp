@@ -151,7 +151,8 @@ int main(void)
 
     while (true)
     {
-        /** Actualizo la maquina de estados
+        /*
+        * Actualizo la maquina de estados
         *   que gestiona el debounce de los
         *   pulsadores   
         */
@@ -202,7 +203,7 @@ int main(void)
             }
 
             midiMessageStruct.velocity = piezoA.piezoMaxVelocity;               //Cargo la velocity del mensaje               
-            midiSendNoteOn(&midiMessageStruct, &uartBle);                //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
+            midiSendNoteOn(&midiMessageStruct, &uartBle);                       //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
            
             ledPad = 0;                                                         //Apago el Led para indicar que se envió el mensaje correspondiente
             piezoA.piezoTransducerInit();
@@ -221,16 +222,9 @@ int main(void)
             noteIndex--;                                                        //Decremento el indice de navegación de notas
             if (noteIndex < 0) noteIndex = numOfInstrumentNotes - 1;            //Controlo que el indice no se vaya de rango
             visualInterfaceUpdate();
-            
-            displayCharPositionWrite (7,2);
-            displayStringWrite("    "); 
-            sprintf(Note, "%.0hhu", encoder.rotaryEncoderGetCount());
-            displayCharPositionWrite (7,2);
-            displayStringWrite(Note); 
         }
         */
 
-    
         delay(2);
     }
 
@@ -241,8 +235,8 @@ void visualInterfaceInit(DigitalOut * Led)
 {
     Led->write(0);                                                  //Inicializo el led del drum pad apagado
 
-    displayInit( DISPLAY_TYPE_GLCD_ST7920, DISPLAY_CONNECTION_SPI); 
-    displayModeWrite( DISPLAY_MODE_CHAR );    
+    displayInit(DISPLAY_TYPE_GLCD_ST7920, DISPLAY_CONNECTION_SPI); 
+    displayModeWrite(DISPLAY_MODE_CHAR);    
     displayClear();
 }
 /*

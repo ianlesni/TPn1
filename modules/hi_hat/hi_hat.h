@@ -41,11 +41,8 @@ class hiHat{
         uint16_t hiHatAperture;
     private:
         void hiHatIntCallback();
-
-
         AnalogIn hiHatAD;               
         InterruptIn hiHatInterruptPin;
-
         HI_HAT_STATE hiHatStatus;
 };
 
