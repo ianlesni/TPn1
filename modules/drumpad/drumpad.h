@@ -34,17 +34,21 @@ typedef enum{
 
 class drumpad{
     public:
-        drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezo, midiMessage_t * midiMessageStruct, UnbufferedSerial * drumpadSerialPort);   
+
+        drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezo, midiMessage_t * midiMessageStruct);   
         void drumpadInit();
-        DRUMPAD_STATE getDrumpadStatus(); 
+        DRUMPAD_STATE getDrumpadCheck(); 
         void drumpadProcessHit(); 
+        void drumpadLedOn();
+        void drumpadLedOff();
         uint8_t drumpadSens;
+        midiMessage_t * drumpadmidiMessage;
     private:
+
         uint8_t drumpadStatus;
         DigitalOut drumpadLed;
         piezoTransducer * drumpadPiezo;
-        midiMessage_t * drumpadmidiMessage;
-        UnbufferedSerial * drumpadSerial;
+
 };
 
 

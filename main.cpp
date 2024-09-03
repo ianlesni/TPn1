@@ -171,7 +171,6 @@ int main(void)
             returnToPreviousMenu();
         }
 
-        /*
         if(PIEZO_FINISHED == piezoA.getPiezoStatus())                          //Actualizo y verifico el estado del transductor piezoeléctrico
         {  
             uint16_t piezoMili = 0;
@@ -180,8 +179,8 @@ int main(void)
             piezoA.piezoMaxVelocity = piezoConvertVoltToVel(piezoMili); 
             ledPad = 1;                                                         //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
             
-            midiSendNoteOff(&midiMessageStruct, &uartBle);               //Envío el mensaje de Note Off para no superponer notas
-
+            midiSendNoteOff(&midiMessageStruct, &uartSerialPort);               //Envío el mensaje de Note Off para no superponer notas
+/*
             uint8_t hiHatPos = hiHatA.hiHatGetAperture();
             switch(hiHatPos)
             {
@@ -202,28 +201,13 @@ int main(void)
                     break;                
             }
 
+*/ 
             midiMessageStruct.velocity = piezoA.piezoMaxVelocity;               //Cargo la velocity del mensaje               
-            midiSendNoteOn(&midiMessageStruct, &uartBle);                       //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
+            midiSendNoteOn(&midiMessageStruct, &uartSerialPort);                //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
            
             ledPad = 0;                                                         //Apago el Led para indicar que se envió el mensaje correspondiente
             piezoA.piezoTransducerInit();
         }
-
-        if(true == drumPadButtons.button[0].releasedEvent)                      //Verifico si el pulsador upButton fué presionado
-        {
-            noteIndex++;                                                        //Incremento el indice de navegación de notas
-            
-            if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;               //Controlo que el indice no se vaya de rango     
-            visualInterfaceUpdate();   
-        }
-
-        if(true == drumPadButtons.button[1].releasedEvent)                      //Verifico si el pulsador downButton fué presionado
-        {
-            noteIndex--;                                                        //Decremento el indice de navegación de notas
-            if (noteIndex < 0) noteIndex = numOfInstrumentNotes - 1;            //Controlo que el indice no se vaya de rango
-            visualInterfaceUpdate();
-        }
-        */
 
         delay(2);
     }

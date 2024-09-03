@@ -17,8 +17,8 @@
 //=====[Declaration of private defines]========================================                                  
 
 //=====[Declaration of public classes]=====================================
-drumpad::drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezoTransducer, midiMessage_t * midiMessageStruct, UnbufferedSerial * drumpadSerialPort)
-      : drumpadLed(drumpadLedPin),drumpadPiezo(drumpadPiezoTransducer), drumpadmidiMessage(midiMessageStruct), drumpadSerial(drumpadSerialPort)
+drumpad::drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezoTransducer, midiMessage_t * midiMessageStruct)
+      : drumpadLed(drumpadLedPin),drumpadPiezo(drumpadPiezoTransducer), drumpadmidiMessage(midiMessageStruct)
 {}          
 
 void drumpad::drumpadInit()
@@ -31,14 +31,36 @@ void drumpad::drumpadInit()
 
 void drumpad::drumpadProcessHit()
 {
+    drumpadLedOn();
     drumpadPiezo->piezoMaxVelocity = piezoConvertVoltToVel(adcToMilliVolts(drumpadPiezo->piezoMaxSampleValue)); 
-    drumpadLed.write(1);                                                            //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
     drumpadmidiMessage->velocity = drumpadPiezo->piezoMaxVelocity;                  //Cargo la velocity del mensaje               
-    midiSendNoteOn(drumpadmidiMessage, drumpadSerial);                                   //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe    
+    drumpadPiezo->piezoTransducerInit();                                            //Re inicializo el piezo para reestablecer los valores
     drumpadLed.write(0);                                                            //Apago el Led para indicar que se envió el mensaje correspondiente
-    drumpadPiezo->piezoTransducerInit();
+
 }
 
+void drumpad::drumpadLedOn()
+{
+    drumpadLed.write(1);                                                            //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
+}
+
+void drumpad::drumpadLedOff()
+{
+    drumpadLed.write(0);                                                            //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
+}
+
+DRUMPAD_STATE drumpad::getDrumpadCheck()
+{
+    if(PIEZO_FINISHED == drumpadPiezo->getPiezoStatus())
+    {
+        drumpadProcessHit();
+        return ACTIVE;
+    }
+    else
+    {
+        return IDLE; 
+    }
+}
 //=====[Declaration of private data types]=====================================
 
 //=====[Declaration and initialization of public global objects]===============
