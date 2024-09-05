@@ -128,13 +128,17 @@ int main(void)
     midiMessage_t midiMessage1;
     drumpad pad1(LED1,&piezo1, &midiMessage1);
     //hiHat hiHatA(PinName::A1,PinName::PF_7, &piezoA);  
-
+    Ticker piezoBConvertionTicker;
+    piezoTransducer piezo2(PinName::A3, PinName::PG_1, &piezoBConvertionTicker);
+    midiMessage_t midiMessage2;
+    drumpad pad2(LED1,&piezo2, &midiMessage2);
     // Arreglo de punteros a drumpads
-    drumpad* pads[] = { &pad1};
+    drumpad* pads[] = { &pad2,&pad1};
     bool drumkitCommMode = 0;
-    drumkit kit(1, pads, &uartSerialPort, &uartBle, drumkitCommMode);
+    drumkit kit(2, pads, &uartSerialPort, &uartBle, drumkitCommMode);
 
     kit.init();
+    
     /** Creo los pulsadores necesarios para configurar el 
     *   sonido del drum pad    
     */
