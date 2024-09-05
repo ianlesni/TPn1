@@ -24,7 +24,7 @@ drumpad::drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezoTransducer
 void drumpad::drumpadInit()
 { 
     drumpadStatus = IDLE;
-    drumpadmidiMessage->note = SNARE;
+    drumpadmidiMessage->note = SIDE_STICK;
     drumpadmidiMessage->velocity = 0x94;
     drumpadLed.write(0);
 }

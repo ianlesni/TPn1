@@ -9,6 +9,7 @@
 #include "mbed.h"
 #include "arm_book_lib.h"
 #include "drumkit.h"
+#include "instrument.h"
 #include <cstdint>
 
 //=====[Declaration of private defines]========================================
@@ -22,6 +23,11 @@ void drumkit::init() {
     for (int i = 0; i < numOfPads; i++)
     {
         drumPads[i]->drumpadInit();
+
+        if (i == 0)
+        {
+            drumPads[i]->drumpadmidiMessage->note = RIDE;
+        }
     }
 }
 

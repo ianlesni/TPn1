@@ -121,7 +121,7 @@ int main(void)
     displayStringWrite("MIDI Drum Pad v1");
 
     UnbufferedSerial uartBle(PD_5, PD_6, 9600);
-    UnbufferedSerial uartSerialPort(USBTX, USBRX, 9600); 
+    UnbufferedSerial uartSerialPort(USBTX, USBRX, 115200); 
   
     Ticker piezoAConvertionTicker;
     piezoTransducer piezo1(PinName::A0, PinName::PF_9, &piezoAConvertionTicker);
