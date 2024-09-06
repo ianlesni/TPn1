@@ -13,7 +13,7 @@
 #include <cstdint>
 
 //=====[Declaration of private defines]========================================
-
+#define SENSIBILITY_LEVELS 4
 
 #define MAX_VEL 127                                                 /**< Máximo valor de velocity permitido */
 #define MIN_VEL 35                                                  /**< Máximo valor de velocity permitido (para valores menores se escucha muy poco) */
@@ -43,6 +43,7 @@ piezoTransducer::piezoTransducer(PinName piezoADPin, PinName piezoIntPin, Ticker
 
 int32_t slopeFixedPoint;            /**< Pendiente de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity */
 int32_t interceptFixedPoint;        /**< Ordenada al origen de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity  */
+
 
 
 void piezoTransducer::calculateSlopeIntercept()
@@ -102,28 +103,28 @@ void piezoTransducer::piezoReadAndGetMax()
     }
 }
 
-void piezoTransducer::setPiezoSensibility(piezoSensibility_t sensibility)
+void piezoTransducer::setPiezoSensibility(uint8_t sensibility)
 {
     switch (sensibility)
     {
         case SENSITIVITY_LOW:
-            piezoThresholdmV = 200;  // Aumenta el umbral, menos sensible
-            piezoMaxPeakVoltmV = 1800;
+            piezoThresholdmV = 1000;  // Aumenta el umbral, menos sensible
+            piezoMaxPeakVoltmV = 2000;
             break;
 
         case SENSITIVITY_MEDIUM:
             piezoThresholdmV = 150;  // Valor medio
-            piezoMaxPeakVoltmV = 1900;
+            piezoMaxPeakVoltmV = 1500;
             break;
 
         case SENSITIVITY_HIGH:
-            piezoThresholdmV = 100;  // Más sensible, umbral más bajo
+            piezoThresholdmV = 90;  // Más sensible, umbral más bajo
             piezoMaxPeakVoltmV = 2000;
             break;
 
         case SENSITIVITY_VERY_HIGH:
-            piezoThresholdmV = 50;   // Muy sensible
-            piezoMaxPeakVoltmV = 2100;
+            piezoThresholdmV = 90;   // Muy sensible
+            piezoMaxPeakVoltmV = 2200;
             break;
 
         default:

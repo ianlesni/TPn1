@@ -40,12 +40,19 @@ typedef enum{
 
 }piezoSensibility_t; 
 
+const uint8_t piezoSensibility[]
+{
+    SENSITIVITY_LOW,
+    SENSITIVITY_MEDIUM,
+    SENSITIVITY_HIGH,
+    SENSITIVITY_VERY_HIGH 
+};
 
 class piezoTransducer{
     public:
         piezoTransducer(PinName piezoADPin, PinName piezoIntPin,Ticker * piezoConvertionTicker);   
         void piezoTransducerInit();
-        void setPiezoSensibility(piezoSensibility_t sensibility);
+        void setPiezoSensibility(uint8_t sensibility);
         PIEZO_STATE getPiezoStatus();    
         uint16_t piezoMaxSampleValue;  
         uint16_t piezoMaxVelocity;  

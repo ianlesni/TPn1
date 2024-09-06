@@ -45,11 +45,11 @@ class drumpad{
         uint8_t drumpadSens;
         uint8_t drumpadNumber;
         midiMessage_t * drumpadmidiMessage;
+        piezoTransducer * drumpadPiezo;
     private:
 
         uint8_t drumpadStatus;
         DigitalOut drumpadLed;
-        piezoTransducer * drumpadPiezo;
 
 };
 

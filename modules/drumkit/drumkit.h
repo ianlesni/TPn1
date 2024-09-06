@@ -40,9 +40,9 @@ class drumkit {
         uint8_t drumkitVolume;
         uint8_t drumkitChannel;
         uint8_t communicationMode;
+        drumpad** drumPads;          // Arreglo de punteros a drumpads
     private:
         int numOfPads;               // Número de drumpads en el drumkit
-        drumpad** drumPads;          // Arreglo de punteros a drumpads
         UnbufferedSerial * drumkitUARTSerial;    // Puerto serial para enviar los mensajes MIDI
         UnbufferedSerial * drumkitBTSerial;    // Puerto serial para enviar los mensajes MIDI
 };

@@ -180,6 +180,7 @@ int main(void)
             break;
 
             case SET_DRUMPAD_NOTE:
+            case SET_DRUMPAD_SENSIBILITY:
                 handleMenuNavigation();
                 updateDisplay();
 
@@ -578,7 +579,7 @@ void handleMenuNavigation()
             break;
 
             case SET_DRUMPAD_SENSIBILITY:
-                encoder.handleMenuNavigation(&drumpadSensibility, 9);  
+                encoder.handleMenuNavigation(&drumpadSensibility, 4);  
             break;
 
             case MIDI_DRUMKIT_MENU:
@@ -706,11 +707,12 @@ void confirmSelection(drumkit * activedrumkit)
         case SET_DRUMPAD_SENSIBILITY:
             if(previousState == SET_DRUMPAD_SENSIBILITY)
             {
+                activedrumkit->drumPads[selectedDrumpad]->drumpadPiezo->setPiezoSensibility(piezoSensibility[drumpadSensibility]);
                 returnToPreviousMenu();
             }
             else
             {
-                encoder.handleMenuNavigation(&drumpadSensibility, 9);  
+                encoder.handleMenuNavigation(&drumpadSensibility, 4);  
             }
         break;
 
