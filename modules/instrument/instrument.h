@@ -13,7 +13,7 @@
 #include <cstdint>
 
 //=====[Declaration of public defines]=========================================
-
+#define NUMBER_OF_NOTES 17
 
 //=====[Declaration of public data types]======================================
 

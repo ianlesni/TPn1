@@ -36,12 +36,14 @@ class drumpad{
     public:
 
         drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezo, midiMessage_t * midiMessageStruct);   
-        void drumpadInit();
+        void drumpadInit(uint8_t dpNumber);
         DRUMPAD_STATE getDrumpadCheck(); 
         void drumpadProcessHit(); 
         void drumpadLedOn();
         void drumpadLedOff();
+        void drumpadSetNote(uint8_t note);
         uint8_t drumpadSens;
+        uint8_t drumpadNumber;
         midiMessage_t * drumpadmidiMessage;
     private:
 

@@ -20,15 +20,21 @@ drumkit::drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort,
 
 
 void drumkit::init() {
-    for (int i = 0; i < numOfPads; i++)
+    for (uint8_t initIndex = 0; initIndex < numOfPads; initIndex++)
     {
-        drumPads[i]->drumpadInit();
+        drumPads[initIndex]->drumpadInit(initIndex);
 
-        if (i == 0)
+        if (initIndex == 0)
         {
-            drumPads[i]->drumpadmidiMessage->note = RIDE;
+            drumPads[initIndex]->drumpadmidiMessage->note = RIDE;
         }
     }
+}
+
+void drumkit::updateDrumkit(uint8_t drumkitNum, uint8_t drumpadNum, uint8_t drumpadNote)
+{
+    drumkitNumber = drumkitNum;
+    drumPads[drumpadNum]->drumpadmidiMessage->note = instrumentNote[drumpadNote];
 }
 
 void drumkit::processHits() 
@@ -37,8 +43,19 @@ void drumkit::processHits()
     {
         if (drumPads[i]->getDrumpadCheck() == ACTIVE) 
         {
-            midiSendNoteOn(drumPads[i]->drumpadmidiMessage, drumkitUARTSerial);
-            midiSendNoteOn(drumPads[i]->drumpadmidiMessage, drumkitBTSerial);
+            switch(communicationMode)
+            {
+                case UART:
+                midiSendNoteOn(drumPads[i]->drumpadmidiMessage, drumkitUARTSerial);
+
+                break;
+
+                case BT:
+                midiSendNoteOn(drumPads[i]->drumpadmidiMessage, drumkitBTSerial);
+                break;
+                
+            }
+
             drumPads[i]->drumpadLedOff();
 
         }

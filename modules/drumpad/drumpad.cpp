@@ -21,14 +21,19 @@ drumpad::drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezoTransducer
       : drumpadLed(drumpadLedPin),drumpadPiezo(drumpadPiezoTransducer), drumpadmidiMessage(midiMessageStruct)
 {}          
 
-void drumpad::drumpadInit()
+void drumpad::drumpadInit(uint8_t dpNumber)
 { 
+    drumpadNumber = dpNumber;
     drumpadStatus = IDLE;
     drumpadmidiMessage->note = SIDE_STICK;
     drumpadmidiMessage->velocity = 0x94;
     drumpadLed.write(0);
 }
 
+void drumpad::drumpadSetNote(uint8_t note)
+{
+    drumpadmidiMessage->note = note;
+}
 void drumpad::drumpadProcessHit()
 {
     drumpadLedOn();

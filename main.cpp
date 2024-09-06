@@ -20,7 +20,15 @@
 #include "rotary_encoder.h"
 
 //=====[Declaration of defines]================================================
+const typedef enum{
+    USB_CONN = 0,
+    BT_CONN = 1
+}SET_USB_CONN_OPTIONS;
 
+const typedef enum{
+    BT_ON = 0,
+    BT_OFF = 1
+}SET_BT_CONN_OPTIONS;
 // Definición de estados del sistema
 enum DrumPadState {
     MAIN_MENU,
@@ -55,6 +63,8 @@ int8_t midiDrumkitMenuIndex = 0;
 int8_t connectionMenuIndex = 0;
 int8_t setUSBConnIndex = 0;
 int8_t setBTConnIndex = 0;
+int8_t selectedDrumpad = 0;
+int8_t selectedNote = 0;
 
 // variables auxiliares para debugear la navegacion por el menu
 int8_t drumkitChannel = 0; //de 0 a 10
@@ -108,7 +118,7 @@ void piezoReadAndGetMax(void);
 void updateDisplay(void);
 void handleMenuNavigation(void);
 void confirmButtonPressed(void);
-void confirmSelection(void);
+void confirmSelection(drumkit * activedrumkit); ////////<----------------esto tiene que recibir por referencia un drumKit asi sabemos que hacer con los datos
 void returnToPreviousMenu(void); 
 
 //=====[Main function]=========================================================
@@ -157,27 +167,50 @@ int main(void)
 
     while (true)
     {
-        /*
-        * Actualizo la maquina de estados
-        *   que gestiona el debounce de los
-        *   pulsadores   
-        */
         debounceButtonUpdate(&drumPadButtons);
 
-        handleMenuNavigation();
-        updateDisplay();
-
-        if (true == drumPadButtons.button[1].releasedEvent)  //Pulsador Encoder
+        switch (currentState)
         {
-            confirmSelection();
-        }
+            case PLAY_SCREEN:
+                if (true == drumPadButtons.button[0].releasedEvent)  //Pulsador USER
+                {
+                    returnToPreviousMenu();
+                }
+                kit.processHits();
+            break;
 
-        if (true == drumPadButtons.button[0].releasedEvent)  //Pulsador USER
-        {
-            returnToPreviousMenu();
-        }
+            case SET_DRUMPAD_NOTE:
+                handleMenuNavigation();
+                updateDisplay();
 
-        kit.processHits();
+                if (true == drumPadButtons.button[1].releasedEvent)  //Pulsador Encoder
+                {
+                    confirmSelection(&kit);
+                }
+
+                if (true == drumPadButtons.button[0].releasedEvent)  //Pulsador USER
+                {
+                    returnToPreviousMenu();
+                }
+                kit.processHits();
+            break;
+
+
+            default:
+                handleMenuNavigation();
+                updateDisplay();
+
+                if (true == drumPadButtons.button[1].releasedEvent)  //Pulsador Encoder
+                {
+                    confirmSelection(&kit);
+                }
+
+                if (true == drumPadButtons.button[0].releasedEvent)  //Pulsador USER
+                {
+                    returnToPreviousMenu();
+                }
+            break;
+        }
 
         delay(2);
     }
@@ -336,8 +369,10 @@ void updateDisplay() {
                 displayClear();
                 displayCharPositionWrite(0,0);
                 displayStringWrite("  DrumPad N:__");
-                displayCharPositionWrite(0,2);
+                displayCharPositionWrite(0,1);
                 displayStringWrite("  Note N:___");
+                displayCharPositionWrite(0,2);
+                displayStringWrite(instrumentNoteName[drumpadNote]);                  //Imprimo el nombre de la nota a ejecutar
                 displayCharPositionWrite(0,3);
                 displayStringWrite("  SensibiLity:__");
             }
@@ -346,7 +381,7 @@ void updateDisplay() {
             {   
                 displayCharPositionWrite(0,0);
                 displayStringWrite("> ");
-                displayCharPositionWrite(0,2);
+                displayCharPositionWrite(0,1);
                 displayStringWrite("  ");
                 displayCharPositionWrite(0,3);
                 displayStringWrite("  ");
@@ -355,7 +390,7 @@ void updateDisplay() {
             {
                 displayCharPositionWrite(0,0);
                 displayStringWrite("  ");
-                displayCharPositionWrite(0,2);
+                displayCharPositionWrite(0,1);
                 displayStringWrite("> ");
                 displayCharPositionWrite(0,3);
                 displayStringWrite("  ");
@@ -364,7 +399,7 @@ void updateDisplay() {
             {
                 displayCharPositionWrite(0,0);
                 displayStringWrite("  ");                
-                displayCharPositionWrite(0,2);
+                displayCharPositionWrite(0,1);
                 displayStringWrite("  ");
                 displayCharPositionWrite(0,3);
                 displayStringWrite("> ");
@@ -382,10 +417,17 @@ void updateDisplay() {
         break;
 
         case SET_DRUMPAD_NOTE:
-            displayCharPositionWrite(0,2);
+            displayCharPositionWrite(0,1);
             displayStringWrite("  Note N:   ");
+            sprintf(drumpadNumberstr, "%.0hhu", selectedDrumpad);
+            displayCharPositionWrite (13,0);
+
             sprintf(numOfInstrumentNotesstr, "%.0hhu", drumpadNote);
-            displayCharPositionWrite (10,2);
+            displayCharPositionWrite(0,2);
+            displayStringWrite("                ");
+            displayCharPositionWrite(0,2);
+            displayStringWrite(instrumentNoteName[drumpadNote]);                  //Imprimo el nombre de la nota a ejecutar
+            displayCharPositionWrite (10,1);
             displayStringWrite(numOfInstrumentNotesstr); 
             previousState = SET_DRUMPAD_NOTE;         
         break;
@@ -528,11 +570,11 @@ void handleMenuNavigation()
             break;
 
             case SET_DRUMPAD_NUMBER:
-                encoder.handleMenuNavigation(&drumpadNumber, 4);  //Con define 
+                encoder.handleMenuNavigation(&drumpadNumber, NUMBER_OF_DRUMPADS_MAX);   
             break;
 
             case SET_DRUMPAD_NOTE:
-                encoder.handleMenuNavigation(&drumpadNote, 14);  //Que sea con un define          
+                encoder.handleMenuNavigation(&drumpadNote, NUMBER_OF_NOTES);           
             break;
 
             case SET_DRUMPAD_SENSIBILITY:
@@ -570,7 +612,7 @@ void handleMenuNavigation()
 
 }
 
-void confirmSelection() 
+void confirmSelection(drumkit * activedrumkit) 
 {
     switch (currentState) 
     {
@@ -621,7 +663,7 @@ void confirmSelection()
         case DRUMPAD_MENU:
             if (drumpadMenuIndex == 0) 
             {
-                //Selección de numero de drumpad
+                
                 currentState = SET_DRUMPAD_NUMBER;
             } 
             else if (drumpadMenuIndex == 1) 
@@ -638,6 +680,7 @@ void confirmSelection()
         case SET_DRUMPAD_NUMBER:
             if(previousState == SET_DRUMPAD_NUMBER)
             {
+                selectedDrumpad = drumpadNumber;//Selección de numero de drumpad
                 returnToPreviousMenu();
             }
             else
@@ -649,11 +692,14 @@ void confirmSelection()
         case SET_DRUMPAD_NOTE:
             if(previousState == SET_DRUMPAD_NOTE)
             {
+                selectedNote = drumpadNote;
+                activedrumkit->updateDrumkit(0,selectedDrumpad, selectedNote);               
                 returnToPreviousMenu();
             }
             else
             {
                 encoder.handleMenuNavigation(&drumpadNote, 14);  //Que sea con un define
+
             }
         break;
 
@@ -693,26 +739,26 @@ void confirmSelection()
         break;
 
         case SET_USB_CONN:
-            if (setUSBConnIndex == 0) 
+            if (setUSBConnIndex == USB_CONN) 
             { 
-                //le aviso al drum pad que va a transmitir por UART
+                activedrumkit->communicationMode = UART;    //lo configuro para comunicar por UART
                 returnToPreviousMenu();
             } 
-            else if (setUSBConnIndex == 1) 
+            else if (setUSBConnIndex == BT_CONN) 
             {  
-                //le aviso al drum pad que no va a transmitir por UART
+                activedrumkit->communicationMode = BT;    //lo configuro para comunicar por BT
                 returnToPreviousMenu();
 
             }  
         break;
 
         case SET_BT_CONN:
-            if (setBTConnIndex == 0) 
+            if (setBTConnIndex == BT_ON) 
             { 
                 //lo prendo
                 returnToPreviousMenu();
             } 
-            else if (setBTConnIndex == 1) 
+            else if (setBTConnIndex == BT_OFF) 
             {  
                 //lo apago
                 returnToPreviousMenu();

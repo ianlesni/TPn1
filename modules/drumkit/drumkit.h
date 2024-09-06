@@ -17,6 +17,9 @@
 
 
 //=====[Declaration of public defines]=========================================
+#define NUMBER_OF_DRUMPADS_MAX 4
+
+
 typedef enum{
     
     UART = 0,     
@@ -31,10 +34,12 @@ class drumkit {
         
         drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort, UnbufferedSerial * BTserialPort, bool commMode); // Constructor: recibe la cantidad de pads, un arreglo de drumpads y dos puertos serial  
         void init(); // Inicializo todos los drumpads del drumkit
-        void processHits(); // Proceso los golpes de todos los drumpads
+        void processHits(void); // Proceso los golpes de todos los drumpads
+        void updateDrumkit(uint8_t drumkitNum, uint8_t drumpadNum, uint8_t drumpadNote);
+        uint8_t drumkitNumber;
         uint8_t drumkitVolume;
         uint8_t drumkitChannel;
-
+        uint8_t communicationMode;
     private:
         int numOfPads;               // Número de drumpads en el drumkit
         drumpad** drumPads;          // Arreglo de punteros a drumpads
