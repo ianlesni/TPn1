@@ -18,7 +18,8 @@
  * una nota de un instrumento específico.
  */
 const uint8_t instrumentNote[] = {
-
+    
+    0,                     /**< Nada */                
     KICK,                  /**< Bombo */
     SNARE,                 /**< Caja */
     SIDE_STICK,            /**< Golpe en el aro */
@@ -45,6 +46,7 @@ const uint8_t instrumentNote[] = {
  */
 const char * instrumentNoteName[] = {
 
+    "",                      /**< Nada */
     "KICK",                  /**< Bombo */
     "SNARE",                 /**< Caja */
     "SIDE_STICK",            /**< Golpe en el aro */

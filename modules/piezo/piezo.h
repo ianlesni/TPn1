@@ -31,19 +31,31 @@ typedef enum{
 
 }PIEZO_STATE; 
 
+typedef enum{
+    
+    SENSITIVITY_LOW = 0,
+    SENSITIVITY_MEDIUM = 1,
+    SENSITIVITY_HIGH = 2,
+    SENSITIVITY_VERY_HIGH = 3
+
+}piezoSensibility_t; 
 
 
 class piezoTransducer{
     public:
         piezoTransducer(PinName piezoADPin, PinName piezoIntPin,Ticker * piezoConvertionTicker);   
         void piezoTransducerInit();
+        void setPiezoSensibility(piezoSensibility_t sensibility);
         PIEZO_STATE getPiezoStatus();    
         uint16_t piezoMaxSampleValue;  
         uint16_t piezoMaxVelocity;  
+        int16_t piezoThresholdmV;
+        int16_t piezoMaxPeakVoltmV;
     private:
         void piezoIntCallback();
         void piezoReadAndGetMax();
         void piezoTransducerReset();
+        void calculateSlopeIntercept();
 
         Ticker * piezoConvertionTicker;
         AnalogIn piezoAD;

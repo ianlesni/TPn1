@@ -14,6 +14,7 @@
 
 //=====[Declaration of private defines]========================================
 
+
 #define MAX_VEL 127                                                 /**< Máximo valor de velocity permitido */
 #define MIN_VEL 35                                                  /**< Máximo valor de velocity permitido (para valores menores se escucha muy poco) */
 #define DELTA_VEL (MAX_VEL - MIN_VEL)                               /**< Variacion entre el máximo y mínimo valor de velocity permitido*/
@@ -43,14 +44,17 @@ piezoTransducer::piezoTransducer(PinName piezoADPin, PinName piezoIntPin, Ticker
 int32_t slopeFixedPoint;            /**< Pendiente de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity */
 int32_t interceptFixedPoint;        /**< Ordenada al origen de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity  */
 
-static void calculateSlopeIntercept()
+
+void piezoTransducer::calculateSlopeIntercept()
 {
-    slopeFixedPoint = TO_FIXED_POINT((float)DELTA_VEL / DELTA_VOLT);                            /**< Pendiente de la recta de conversión */
-    interceptFixedPoint = TO_FIXED_POINT(MIN_VEL) - PIEZO_THRESHOLD_mV * slopeFixedPoint;       /**< Ordenada al origen de la recta de conversión */ 
+    slopeFixedPoint = TO_FIXED_POINT((float)DELTA_VEL / (piezoMaxPeakVoltmV - piezoThresholdmV));                            /**< Pendiente de la recta de conversión */
+    interceptFixedPoint = TO_FIXED_POINT(MIN_VEL) - piezoThresholdmV * slopeFixedPoint;       /**< Ordenada al origen de la recta de conversión */ 
 }
 
 void piezoTransducer::piezoTransducerInit() 
 {
+    piezoThresholdmV = 120;
+    piezoMaxPeakVoltmV = 1800;
     calculateSlopeIntercept(); 
     piezoMaxSampleValue = 0;
     piezoMaxVelocity = 0;
@@ -96,6 +100,41 @@ void piezoTransducer::piezoReadAndGetMax()
         piezoTransducerReset();
         piezoStatus = PIEZO_FINISHED; 
     }
+}
+
+void piezoTransducer::setPiezoSensibility(piezoSensibility_t sensibility)
+{
+    switch (sensibility)
+    {
+        case SENSITIVITY_LOW:
+            piezoThresholdmV = 200;  // Aumenta el umbral, menos sensible
+            piezoMaxPeakVoltmV = 1800;
+            break;
+
+        case SENSITIVITY_MEDIUM:
+            piezoThresholdmV = 150;  // Valor medio
+            piezoMaxPeakVoltmV = 1900;
+            break;
+
+        case SENSITIVITY_HIGH:
+            piezoThresholdmV = 100;  // Más sensible, umbral más bajo
+            piezoMaxPeakVoltmV = 2000;
+            break;
+
+        case SENSITIVITY_VERY_HIGH:
+            piezoThresholdmV = 50;   // Muy sensible
+            piezoMaxPeakVoltmV = 2100;
+            break;
+
+        default:
+            // En caso de valor fuera de rango, mantener sensibilidad media
+            piezoThresholdmV = 150;
+            piezoMaxPeakVoltmV = 1900;
+            break;
+    }
+
+    // Recalculo los valores de conversión con los nuevos parámetros
+    calculateSlopeIntercept();    
 }
 //=====[Declaration of private data types]=====================================
 

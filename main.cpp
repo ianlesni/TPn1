@@ -698,7 +698,7 @@ void confirmSelection(drumkit * activedrumkit)
             }
             else
             {
-                encoder.handleMenuNavigation(&drumpadNote, 14);  //Que sea con un define
+                encoder.handleMenuNavigation(&drumpadNote, NUMBER_OF_NOTES);  //Que sea con un define
 
             }
         break;
@@ -728,11 +728,11 @@ void confirmSelection(drumkit * activedrumkit)
         break;
 
         case CONNECTION_MENU:
-            if (connectionMenuIndex == 0) 
+            if (connectionMenuIndex == USB_CONN) 
             { 
                 currentState = SET_USB_CONN;
             } 
-            else if (connectionMenuIndex == 1) 
+            else if (connectionMenuIndex == BT_CONN) 
             {  
                 currentState = SET_BT_CONN;
             }      
@@ -755,12 +755,12 @@ void confirmSelection(drumkit * activedrumkit)
         case SET_BT_CONN:
             if (setBTConnIndex == BT_ON) 
             { 
-                //lo prendo
+                activedrumkit->communicationMode = BT;    //lo configuro para comunicar por BT
                 returnToPreviousMenu();
             } 
             else if (setBTConnIndex == BT_OFF) 
             {  
-                //lo apago
+                //lo apago ->>> tneog que ver como apagarlo o si es necesario apagarlo...
                 returnToPreviousMenu();
             }  
         break;

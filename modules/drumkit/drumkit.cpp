@@ -20,6 +20,9 @@ drumkit::drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort,
 
 
 void drumkit::init() {
+
+    communicationMode = UART;
+
     for (uint8_t initIndex = 0; initIndex < numOfPads; initIndex++)
     {
         drumPads[initIndex]->drumpadInit(initIndex);
