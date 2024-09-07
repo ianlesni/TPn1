@@ -66,6 +66,7 @@ void midiSendNoteOn (midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias
  */
 void midiSendNoteOff (midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias);
 
+void setMIDIChannel(uint8_t channel);
 //=====[#include guards - end]=================================================
 
 #endif // _MIDI_SERIAL_H_

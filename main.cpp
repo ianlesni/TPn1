@@ -599,7 +599,7 @@ void handleMenuNavigation()
             break;
 
             case SET_DRUMKIT_CHANNEL:
-                encoder.handleMenuNavigation(&drumkitChannel, 10);
+                encoder.handleMenuNavigation(&drumkitChannel, 16);
             break;
 
             case SET_DRUMKIT_VOLUME:
@@ -770,6 +770,7 @@ void confirmSelection(drumkit * activedrumkit)
         case SET_DRUMKIT_CHANNEL:
             if(previousState == SET_DRUMKIT_CHANNEL)
             {
+                setMIDIChannel(drumkitChannel);
                 returnToPreviousMenu();
             }
             else

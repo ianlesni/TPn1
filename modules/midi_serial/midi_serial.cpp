@@ -12,9 +12,12 @@
 
 //=====[Declaration of private defines]========================================
 
-
+#define DEFAULT_CHANNEL 0
 
 //=====[Declaration of private data types]=====================================
+uint8_t noteOn = 0x90;
+uint8_t noteOff = 0x80;
+
 
 /*!
  * \enum MIDI_COMMAND
@@ -49,6 +52,12 @@ typedef enum{
 static void initializaMIDISerialPort(mbed::UnbufferedSerial * alias);
 
 //=====[Implementations of public functions]===================================
+void setMIDIChannel(uint8_t channel)
+{
+    noteOn = 0x90 + channel;
+    noteOff = 0x80 + channel;
+}
+
 void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t * midiMessage)
 {
     initializaMIDISerialPort(alias);
@@ -59,7 +68,7 @@ void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t * midiMe
 
 void midiSendNoteOn(midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias)
 {               
-    midiMessage->command = NOTE_ON;             //Asigno comando de Note On en canal 0
+    midiMessage->command = noteOn;             //Asigno comando de Note On en canal 0
     alias->write(&midiMessage->command, 1);     //Envío el comando y su canal
     alias->write(&midiMessage->note, 1);        //Envío la nota       
     alias->write(&midiMessage->velocity, 1);    //Envío el valor de velocity 
@@ -67,7 +76,7 @@ void midiSendNoteOn(midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias)
 
 void midiSendNoteOff(midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias)
 {
-    midiMessage->command = NOTE_OFF;                  //Asigno comando de Note Off en canal 0
+    midiMessage->command = noteOff;                  //Asigno comando de Note Off en canal 0
     alias->write(&midiMessage->command, 1);           //Envío el comando y su canal
     alias->write(&midiMessage->note, 1);              //Envío la nota
     alias->write(&midiMessage->velocity, 1);          //Envío el valor de velocity de apagado        

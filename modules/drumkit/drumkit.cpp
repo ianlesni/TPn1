@@ -22,6 +22,8 @@ drumkit::drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort,
 void drumkit::init() {
 
     communicationMode = UART;
+    drumkitChannel = 0;
+    setMIDIChannel(drumkitChannel);
 
     for (uint8_t initIndex = 0; initIndex < numOfPads; initIndex++)
     {
