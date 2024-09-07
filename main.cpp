@@ -485,7 +485,7 @@ void updateDisplay() {
             displayCharPositionWrite(4,3);
             displayStringWrite("  Volume:  ");
             sprintf(drumkitVolumestr, "%.0hhu", drumkitVolume = drumkitVolume);
-            displayCharPositionWrite (13,3);
+            displayCharPositionWrite (14,3);
             displayStringWrite(drumkitVolumestr); 
             previousState = SET_DRUMKIT_VOLUME; 
         break;        
