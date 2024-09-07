@@ -17,7 +17,7 @@
 //=====[Declaration of private data types]=====================================
 uint8_t noteOn = 0x90;
 uint8_t noteOff = 0x80;
-
+uint8_t controlChangeVolume = 0xB0;
 
 /*!
  * \enum MIDI_COMMAND
@@ -56,6 +56,7 @@ void setMIDIChannel(uint8_t channel)
 {
     noteOn = 0x90 + channel;
     noteOff = 0x80 + channel;
+    controlChangeVolume = 0xB0 + channel;
 }
 
 void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t * midiMessage)
@@ -64,6 +65,24 @@ void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t * midiMe
     midiMessage->command = 0x00;
     midiMessage->note = 0x00;
     midiMessage->velocity = 0x00;
+}
+
+void midiControlChangeVolume(uint8_t volume,uint8_t channel, mbed::UnbufferedSerial * alias)
+{
+    if (volume > 127)
+    {
+        volume = 127;
+    }
+    if (volume < 0)
+    {
+        volume = 0;
+    }
+    controlChangeVolume = 0xB0 + channel;
+    uint8_t controllerNumber = 0x3F;
+
+    alias->write(&controlChangeVolume, 1);     
+    alias->write(&controllerNumber, 1);            
+    alias->write(&volume, 1);    
 }
 
 void midiSendNoteOn(midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias)

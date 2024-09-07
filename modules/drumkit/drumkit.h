@@ -36,6 +36,7 @@ class drumkit {
         void init(); // Inicializo todos los drumpads del drumkit
         void processHits(void); // Proceso los golpes de todos los drumpads
         void updateDrumkit(uint8_t drumkitNum, uint8_t drumpadNum, uint8_t drumpadNote);
+        void drumkitVolumeUpdate();
         uint8_t drumkitNumber;
         uint8_t drumkitVolume;
         uint8_t drumkitChannel;

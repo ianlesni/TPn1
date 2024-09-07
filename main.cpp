@@ -181,6 +181,7 @@ int main(void)
 
             case SET_DRUMPAD_NOTE:
             case SET_DRUMPAD_SENSIBILITY:
+            case SET_DRUMKIT_VOLUME:
                 handleMenuNavigation();
                 updateDisplay();
 
@@ -474,7 +475,7 @@ void updateDisplay() {
         case SET_DRUMKIT_CHANNEL:
             displayCharPositionWrite(4,2);
             displayStringWrite("  Channel:  ");
-            sprintf(drumkitchannelstr, "%.0hhu", drumkitChannel);
+            sprintf(drumkitchannelstr, "%.0hhu", drumkitChannel =  drumkitChannel);
             displayCharPositionWrite (14,2);
             displayStringWrite(drumkitchannelstr); 
             previousState = SET_DRUMKIT_CHANNEL; 
@@ -483,7 +484,7 @@ void updateDisplay() {
         case SET_DRUMKIT_VOLUME:
             displayCharPositionWrite(4,3);
             displayStringWrite("  Volume:  ");
-            sprintf(drumkitVolumestr, "%.0hhu", drumkitVolume);
+            sprintf(drumkitVolumestr, "%.0hhu", drumkitVolume = drumkitVolume);
             displayCharPositionWrite (13,3);
             displayStringWrite(drumkitVolumestr); 
             previousState = SET_DRUMKIT_VOLUME; 
@@ -770,11 +771,13 @@ void confirmSelection(drumkit * activedrumkit)
         case SET_DRUMKIT_CHANNEL:
             if(previousState == SET_DRUMKIT_CHANNEL)
             {
-                setMIDIChannel(drumkitChannel);
+                activedrumkit->drumkitChannel = drumkitChannel;
+                setMIDIChannel(activedrumkit->drumkitChannel);
                 returnToPreviousMenu();
             }
             else
             {
+
                 encoder.handleMenuNavigation(&drumkitChannel, 10);  //Sacar esto de aca
             }
         break;
@@ -782,6 +785,8 @@ void confirmSelection(drumkit * activedrumkit)
         case SET_DRUMKIT_VOLUME:
             if(previousState == SET_DRUMKIT_VOLUME)
             {
+                activedrumkit->drumkitVolume = drumkitVolume;
+                activedrumkit->drumkitVolumeUpdate();
                 returnToPreviousMenu();
             }
             else

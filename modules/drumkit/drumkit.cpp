@@ -42,6 +42,22 @@ void drumkit::updateDrumkit(uint8_t drumkitNum, uint8_t drumpadNum, uint8_t drum
     drumPads[drumpadNum]->drumpadmidiMessage->note = instrumentNote[drumpadNote];
 }
 
+void drumkit::drumkitVolumeUpdate()
+{
+        switch(communicationMode)
+    {
+        case UART:
+
+        midiControlChangeVolume(drumkitVolume, drumkitChannel, drumkitUARTSerial);
+        break;
+
+        case BT:
+        midiControlChangeVolume(drumkitVolume, drumkitChannel, drumkitBTSerial);
+        break;
+        
+    }
+}
+
 void drumkit::processHits() 
 {
     for (int i = 0; i < numOfPads; i++) 
