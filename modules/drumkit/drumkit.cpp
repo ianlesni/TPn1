@@ -29,9 +29,9 @@ void drumkit::init() {
     {
         drumPads[initIndex]->drumpadInit(initIndex);
 
-        if (initIndex == 0)
+        if (initIndex == 0) //el drumpad 0 es el hihat
         {
-            drumPads[initIndex]->drumpadmidiMessage->note = RIDE;
+            drumPads[initIndex]->hiHatControl = 1;
         }
     }
 }
@@ -60,24 +60,46 @@ void drumkit::drumkitVolumeUpdate()
 
 void drumkit::processHits() 
 {
-    for (int i = 0; i < numOfPads; i++) 
+    for (int drumpadIndex = 0; drumpadIndex < numOfPads; drumpadIndex++) 
     {
-        if (drumPads[i]->getDrumpadCheck() == ACTIVE) 
+        if (drumPads[drumpadIndex]->getDrumpadCheck() == ACTIVE) 
         {
+            if(drumpadIndex == 0) //Si es el hiHat actualizo la nota en funcion de la apertura del pedal de control
+            {   
+                uint8_t hiHatPos = drumPads[drumpadIndex]->hiHatControllerPedal->hiHatGetAperture();
+                switch(hiHatPos)
+                {
+                    case OPEN:
+                        drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_OPEN;                 
+                        break;
+
+                    case HALF_OPEN:
+                        drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_HALF_OPEN;
+                        break;
+
+                    case CLOSE:
+                        drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_CLOSED;
+                        break;
+
+                    default:
+                        drumPads[drumpadIndex]->drumpadmidiMessage->note = CRASH_R_CHOKED; 
+                        break;                
+                }
+            }
+
             switch(communicationMode)
             {
                 case UART:
-                midiSendNoteOn(drumPads[i]->drumpadmidiMessage, drumkitUARTSerial);
+                midiSendNoteOn(drumPads[drumpadIndex]->drumpadmidiMessage, drumkitUARTSerial);
 
                 break;
 
                 case BT:
-                midiSendNoteOn(drumPads[i]->drumpadmidiMessage, drumkitBTSerial);
-                break;
-                
+                midiSendNoteOn(drumPads[drumpadIndex]->drumpadmidiMessage, drumkitBTSerial);
+                break;               
             }
 
-            drumPads[i]->drumpadLedOff();
+            drumPads[drumpadIndex]->drumpadLedOff();
 
         }
     }

@@ -16,13 +16,13 @@
 //=====[Declaration of private defines]========================================
 
 #define OPEN_THRESHOLD_mV 2100                                       /**< Umbral de voltaje para considerar que el hi hat esá abierto [mv] */                            
-#define CLOSE_THRESHOLD_mV 220                                      
+#define CLOSE_THRESHOLD_mV 450                                      
 
 #define ADC_MAX_VALUE 65535                                         /**< valor máximo que devuelve read_u16() */
 #define ADC_VOLTAGE_SCALE 3300                                      /**< Valor de voltaje máximo [mV] que corresponde al valor máximo que devuelve read_u16() (65535) */
 
 //=====[Declaration of public classes]=====================================
-hiHat::hiHat(PinName hiHatADPin, PinName hiHatIntPin, piezoTransducer * hiHatPiezo)
+hiHat::hiHat(PinName hiHatADPin, PinName hiHatIntPin)
     : hiHatAD(hiHatADPin),       
       hiHatInterruptPin(hiHatIntPin)
       //Acá no cargo ninguna cosa del hiHatPiezo

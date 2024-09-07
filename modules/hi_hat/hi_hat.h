@@ -34,7 +34,7 @@ typedef enum{
 
 class hiHat{
     public:
-        hiHat(PinName hiHatAD, PinName hiHatIntPin, piezoTransducer * hiHatPiezo);   
+        hiHat(PinName hiHatAD, PinName hiHatIntPin);   
         void hiHatInit();
         HI_HAT_STATE gethiHatStatus(); 
         HI_HAT_STATE hiHatGetAperture();   

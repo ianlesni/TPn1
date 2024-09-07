@@ -133,17 +133,25 @@ int main(void)
     UnbufferedSerial uartBle(PD_5, PD_6, 9600);
     UnbufferedSerial uartSerialPort(USBTX, USBRX, 115200); 
   
+    hiHat hiHatController(PinName::A1,PinName::PF_7);
+    /*
+    Ticker piezo0ConvertionTicker;
+    piezoTransducer piezo0(PinName::A2, PinName::PE_6, &piezo0ConvertionTicker);
+    midiMessage_t midiMessage0;
+    drumpad pad0(LED1,&piezo0, &midiMessage0,&hiHatController);
+    */
+
     Ticker piezoAConvertionTicker;
     piezoTransducer piezo1(PinName::A0, PinName::PF_9, &piezoAConvertionTicker);
     midiMessage_t midiMessage1;
-    drumpad pad1(LED1,&piezo1, &midiMessage1);
+    drumpad pad1(LED1,&piezo1, &midiMessage1,&hiHatController);
     //hiHat hiHatA(PinName::A1,PinName::PF_7, &piezoA);  
     Ticker piezoBConvertionTicker;
     piezoTransducer piezo2(PinName::A3, PinName::PG_1, &piezoBConvertionTicker);
     midiMessage_t midiMessage2;
-    drumpad pad2(LED1,&piezo2, &midiMessage2);
+    drumpad pad2(LED1,&piezo2, &midiMessage2,NULL);
     // Arreglo de punteros a drumpads
-    drumpad* pads[] = { &pad2,&pad1};
+    drumpad* pads[] = { &pad1,&pad2};
     bool drumkitCommMode = 0;
     drumkit kit(2, pads, &uartSerialPort, &uartBle, drumkitCommMode);
 

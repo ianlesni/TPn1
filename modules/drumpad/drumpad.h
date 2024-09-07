@@ -12,6 +12,7 @@
 
 #include <cstdint>
 #include "piezo.h"
+#include "hi_hat.h"
 #include "midi_serial.h"
 #include "mbed.h"
 
@@ -35,7 +36,7 @@ typedef enum{
 class drumpad{
     public:
 
-        drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezo, midiMessage_t * midiMessageStruct);   
+        drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezo, midiMessage_t * midiMessageStruct, hiHat * hiHatController);   
         void drumpadInit(uint8_t dpNumber);
         DRUMPAD_STATE getDrumpadCheck(); 
         void drumpadProcessHit(); 
@@ -44,8 +45,10 @@ class drumpad{
         void drumpadSetNote(uint8_t note);
         uint8_t drumpadSens;
         uint8_t drumpadNumber;
+        bool hiHatControl;
         midiMessage_t * drumpadmidiMessage;
         piezoTransducer * drumpadPiezo;
+        hiHat * hiHatControllerPedal;
     private:
 
         uint8_t drumpadStatus;

@@ -17,8 +17,8 @@
 //=====[Declaration of private defines]========================================                                  
 
 //=====[Declaration of public classes]=====================================
-drumpad::drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezoTransducer, midiMessage_t * midiMessageStruct)
-      : drumpadLed(drumpadLedPin),drumpadPiezo(drumpadPiezoTransducer), drumpadmidiMessage(midiMessageStruct)
+drumpad::drumpad(PinName drumpadLedPin, piezoTransducer * drumpadPiezoTransducer, midiMessage_t * midiMessageStruct, hiHat * hiHatController)
+      : drumpadLed(drumpadLedPin),drumpadPiezo(drumpadPiezoTransducer), drumpadmidiMessage(midiMessageStruct), hiHatControllerPedal(hiHatController)
 {}          
 
 void drumpad::drumpadInit(uint8_t dpNumber)
@@ -28,6 +28,8 @@ void drumpad::drumpadInit(uint8_t dpNumber)
     drumpadmidiMessage->note = SIDE_STICK;
     drumpadmidiMessage->velocity = 0x94;
     drumpadLed.write(0);
+    hiHatControl = 0;
+    hiHatControllerPedal->hiHatInit();
 }
 
 void drumpad::drumpadSetNote(uint8_t note)
@@ -40,8 +42,7 @@ void drumpad::drumpadProcessHit()
     drumpadPiezo->piezoMaxVelocity = piezoConvertVoltToVel(adcToMilliVolts(drumpadPiezo->piezoMaxSampleValue)); 
     drumpadmidiMessage->velocity = drumpadPiezo->piezoMaxVelocity;                  //Cargo la velocity del mensaje               
     drumpadPiezo->piezoTransducerInit();                                            //Re inicializo el piezo para reestablecer los valores
-    drumpadLed.write(0);                                                            //Apago el Led para indicar que se envió el mensaje correspondiente
-
+    
 }
 
 void drumpad::drumpadLedOn()
