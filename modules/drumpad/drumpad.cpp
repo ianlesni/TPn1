@@ -27,6 +27,7 @@ void drumpad::drumpadInit(uint8_t dpNumber)
     drumpadStatus = IDLE;
     drumpadmidiMessage->note = SIDE_STICK;
     drumpadmidiMessage->velocity = 0x94;
+    drumpadSens = SENSITIVITY_MEDIUM;
     drumpadLed.write(0);
     hiHatControl = 0;
     hiHatControllerPedal->hiHatInit();

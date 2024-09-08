@@ -84,5 +84,66 @@ uint8_t  getNumOfInstrumentNotes()
     uint8_t numOfInstrumentNotes = sizeof(instrumentNote) / sizeof(instrumentNote[0]);  //Calculo el número total de notas midi de instrumentos percusivos disponibles
     return numOfInstrumentNotes;
 }
+uint8_t getNoteIndex(uint8_t midiNote)
+{
+    switch(midiNote)
+    {
+        case 0:
+            return 0;
+        break;
+        case KICK:
+            return 1;
+        break; 
+        case SNARE:       
+            return 2;
+        break;
+        case SIDE_STICK:       
+            return 3;
+        break;
+        case HI_HAT_CLOSED:
+            return 4;
+        break; 
+        case HI_HAT_HALF_OPEN:       
+            return 5;
+        break;
+        case HI_HAT_OPEN:       
+            return 6;
+        break;
+        case HH_Pedal_CHICK:
+            return 7;
+        break; 
+        case TOM_HI:       
+            return 8;
+        break;
+        case TOM_MID:       
+            return 9;
+        break;
+        case TOM_LOW:
+            return 10;
+        break; 
+        case RIDE:       
+            return 11;
+        break;
+        case BELL:       
+            return 12;
+        break;
+        case CRASH_L:       
+            return 13;
+        break;
+        case CRASH_R:       
+            return 14;
+        break;
+        case CRASH_R_CHOKED:
+            return 15;
+        break; 
+        case CHINA:       
+            return 16;
+        break;
+        case SPLASH:       
+            return 17;
+        break;
+    }
+        return 18;
+}
 
 /*** end of file ***/

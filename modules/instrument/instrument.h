@@ -53,7 +53,7 @@ extern const char * instrumentNoteName[];
 
 //=====[Declarations (prototypes) of public functions]=========================
 uint8_t getNumOfInstrumentNotes (void);
-
+uint8_t getNoteIndex(uint8_t midiNote);
 
 
 #endif // _INSTRUMET_H_

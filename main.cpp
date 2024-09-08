@@ -67,6 +67,9 @@ int8_t selectedDrumpad = 0;
 int8_t selectedNote = 0;
 int8_t selectedSensibility = 0;
 int8_t selectedConn = 0;
+int8_t selectedChannel = 0;
+int8_t selectedVolume = 0;
+bool   volumeFromMainMenu = true; //variable auxiliar para utilizar la función de volumen en 2 menus
 
 // variables auxiliares para debugear la navegacion por el menu
 int8_t drumkitChannel = 0; //de 0 a 10
@@ -117,7 +120,7 @@ void piezoDetectorACallback (void);
 void piezoReadAndGetMax(void);
 
 //Menu
-void updateDisplay(void);
+void updateDisplay(drumkit * activedrumkit);
 void handleMenuNavigation(void);
 void confirmButtonPressed(void);
 void confirmSelection(drumkit * activedrumkit); ////////<----------------esto tiene que recibir por referencia un drumKit asi sabemos que hacer con los datos
@@ -178,6 +181,7 @@ int main(void)
     while (true)
     {
         debounceButtonUpdate(&drumPadButtons);
+        updateDisplay(&kit);
 
         switch (currentState)
         {
@@ -194,7 +198,7 @@ int main(void)
             case SET_DRUMPAD_SENSIBILITY:
             case SET_DRUMKIT_VOLUME:
                 handleMenuNavigation();
-                updateDisplay();
+                updateDisplay(&kit);
 
                 if (true == drumPadButtons.button[1].releasedEvent)  //Pulsador Encoder
                 {
@@ -211,7 +215,7 @@ int main(void)
 
             default:
                 handleMenuNavigation();
-                updateDisplay();
+                updateDisplay(&kit);
 
                 if (true == drumPadButtons.button[1].releasedEvent)  //Pulsador Encoder
                 {
@@ -236,15 +240,9 @@ void visualInterfaceInit()
     displayInit(DISPLAY_TYPE_GLCD_ST7920, DISPLAY_CONNECTION_SPI); 
     displayModeWrite(DISPLAY_MODE_CHAR);    
     displayClear();
-    displayCharPositionWrite(0,0);
-    displayStringWrite("MIDI Drum Pad v1");
-    displayCharPositionWrite(4,2);
-    displayStringWrite("  PLAY");
-    displayCharPositionWrite(4,3);
-    displayStringWrite("  CONFIG");
 }
 
-void updateDisplay() {
+void updateDisplay(drumkit * activedrumkit) {
     // Actualizar la pantalla según el estado actual y el índice del menú
     switch (currentState)
     {
@@ -254,24 +252,42 @@ void updateDisplay() {
                 displayClear();
                 displayCharPositionWrite(0,0);
                 displayStringWrite("MIDI Drum Pad v1");
-                displayCharPositionWrite(4,2);
+                displayCharPositionWrite(2,1);
                 displayStringWrite("  PLAY");
-                displayCharPositionWrite(4,3);
+                displayCharPositionWrite(2,2);
                 displayStringWrite("  CONFIG");
+                displayCharPositionWrite(2,3);
+                displayStringWrite("  Volume:    ");
+                sprintf(drumkitVolumestr, "%.0hhu", activedrumkit->drumkitVolume);
+                displayCharPositionWrite (12,3);             
+                displayStringWrite(drumkitVolumestr);
             }
             if (mainMenuIndex == 0) 
             {   
-                displayCharPositionWrite(4,3);
-                displayStringWrite("  ");
-                displayCharPositionWrite(4,2);
+                displayCharPositionWrite(2,1);
                 displayStringWrite("> ");
+                displayCharPositionWrite(2,2);
+                displayStringWrite("  ");
+                displayCharPositionWrite(2,3);
+                displayStringWrite("  ");                
             }
             if (mainMenuIndex == 1) 
             {
-                displayCharPositionWrite(4,2);
+                displayCharPositionWrite(2,1);
                 displayStringWrite("  ");
-                displayCharPositionWrite(4,3);
-                displayStringWrite("> CONFIG");
+                displayCharPositionWrite(2,2);
+                displayStringWrite("> ");
+                displayCharPositionWrite(2,3);
+                displayStringWrite("  ");  
+            }
+            if (mainMenuIndex == 2) 
+            {
+                displayCharPositionWrite(2,1);
+                displayStringWrite("  ");
+                displayCharPositionWrite(2,2);
+                displayStringWrite("  ");
+                displayCharPositionWrite(2,3);
+                displayStringWrite("> ");  
             }
             previousState = MAIN_MENU;
         break;
@@ -400,12 +416,12 @@ void updateDisplay() {
                 displayCharPositionWrite(4,3);
                 displayStringWrite("> ");
             }   
-            
+
             previousState = DRUMKIT_MENU;        
         break;
 
         case DRUMPAD_MENU:
-            if(currentState != previousState && previousState != SET_DRUMPAD_NUMBER && previousState != SET_DRUMPAD_NOTE && previousState != SET_DRUMPAD_SENSIBILITY) 
+            if(currentState != previousState && previousState != SET_DRUMPAD_NOTE && previousState != SET_DRUMPAD_SENSIBILITY) 
             {
                 displayClear();
                 displayCharPositionWrite(0,0);
@@ -416,17 +432,17 @@ void updateDisplay() {
 
                 displayCharPositionWrite(0,1);
                 displayStringWrite("  Note N:  ");
-                sprintf(numOfInstrumentNotesstr, "%.0hhu", selectedNote);
+                sprintf(numOfInstrumentNotesstr, "%.0hhu", getNoteIndex(activedrumkit->drumPads[selectedDrumpad]->drumpadmidiMessage->note));
                 displayCharPositionWrite (10,1);
                 displayStringWrite(numOfInstrumentNotesstr); 
                 displayCharPositionWrite(0,2);
                 displayStringWrite("                ");
                 displayCharPositionWrite(0,2);
-                displayStringWrite(instrumentNoteName[selectedNote]);                  //Imprimo el nombre de la nota a ejecutar
+                displayStringWrite(instrumentNoteName[getNoteIndex(activedrumkit->drumPads[selectedDrumpad]->drumpadmidiMessage->note)]);                  //Imprimo el nombre de la nota a ejecutar
                 
                 displayCharPositionWrite(0,3);
                 displayStringWrite("  SensibiLity:  ");
-                sprintf(drumpadSensibilitystr, "%.0hhu", selectedSensibility);
+                sprintf(drumpadSensibilitystr, "%.0hhu", activedrumkit->drumPads[selectedDrumpad]->drumpadSens);
                 displayCharPositionWrite (14,3);
                 displayStringWrite(drumpadSensibilitystr); 
             }
@@ -506,13 +522,13 @@ void updateDisplay() {
                 displayStringWrite("MIDIDrumkit Conf");
                 displayCharPositionWrite(2,2);
                 displayStringWrite("  Channel:  ");
-                sprintf(drumkitchannelstr, "%.0hhu", drumkitChannel =  drumkitChannel);
+                sprintf(drumkitchannelstr, "%.0hhu", activedrumkit->drumkitChannel);
                 displayCharPositionWrite (12,2);
                 displayStringWrite(drumkitchannelstr); 
 
                 displayCharPositionWrite(2,3);
-                displayStringWrite("  Volume:   ");
-                sprintf(drumkitVolumestr, "%.0hhu", drumkitVolume = drumkitVolume);
+                displayStringWrite("  Volume:    ");
+                sprintf(drumkitVolumestr, "%.0hhu", activedrumkit->drumkitVolume);
                 displayCharPositionWrite (12,3);             
                 displayStringWrite(drumkitVolumestr); 
             }
@@ -545,7 +561,7 @@ void updateDisplay() {
 
         case SET_DRUMKIT_VOLUME:
             displayCharPositionWrite(2,3);
-            displayStringWrite("  Volume:   ");
+            displayStringWrite("  Volume:    ");
             sprintf(drumkitVolumestr, "%.0hhu", drumkitVolume = drumkitVolume);
             displayCharPositionWrite (12,3);             
             displayStringWrite(drumkitVolumestr); 
@@ -562,7 +578,7 @@ void handleMenuNavigation()
         switch (currentState) 
         {
             case MAIN_MENU:
-                encoder.handleMenuNavigation(&mainMenuIndex, 2);    
+                encoder.handleMenuNavigation(&mainMenuIndex, 3);    
             break;
 
             case CONFIG_MENU:
@@ -617,6 +633,7 @@ void confirmSelection(drumkit * activedrumkit)
     switch (currentState) 
     {
         case MAIN_MENU:
+            volumeFromMainMenu = true;
             if (mainMenuIndex == 0) 
             {
                 currentState = PLAY_SCREEN; 
@@ -624,6 +641,10 @@ void confirmSelection(drumkit * activedrumkit)
             else if (mainMenuIndex == 1) 
             {
                 currentState = CONFIG_MENU;
+            }
+            else if (mainMenuIndex == 2) 
+            {
+                currentState = SET_DRUMKIT_VOLUME;
             }
         break;
 
@@ -717,6 +738,7 @@ void confirmSelection(drumkit * activedrumkit)
         break;
 
         case MIDI_DRUMKIT_MENU:
+            volumeFromMainMenu = false;
             if (midiDrumkitMenuIndex == 0) 
             {
                 currentState = SET_DRUMKIT_CHANNEL;
@@ -725,7 +747,7 @@ void confirmSelection(drumkit * activedrumkit)
             {
                 currentState = SET_DRUMKIT_VOLUME;
             }      
-
+            activedrumkit->drumkitVolumeUpdate();
         break;
 
         case CONNECTION_MENU:
@@ -758,7 +780,7 @@ void confirmSelection(drumkit * activedrumkit)
         break;
 
         case SET_DRUMKIT_VOLUME:
-            if(previousState == SET_DRUMKIT_VOLUME)
+            if(previousState == SET_DRUMKIT_VOLUME || previousState ==MAIN_MENU)
             {
                 activedrumkit->drumkitVolume = drumkitVolume;
                 activedrumkit->drumkitVolumeUpdate();
@@ -773,7 +795,7 @@ void confirmSelection(drumkit * activedrumkit)
         default:
         break;
     }
-    updateDisplay();
+    //updateDisplay(&kit);
 }
 
 void returnToPreviousMenu() 
@@ -802,9 +824,19 @@ void returnToPreviousMenu()
         case SET_DRUMPAD_SENSIBILITY:
             currentState = DRUMPAD_MENU;
         break;
-            
+
+        case SET_DRUMKIT_VOLUME:  
+          if(volumeFromMainMenu == true)
+          {
+            currentState = MAIN_MENU;              
+          }
+          else
+          {
+            currentState = MIDI_DRUMKIT_MENU;
+          }
+
+        break;
         case SET_DRUMKIT_CHANNEL:
-        case SET_DRUMKIT_VOLUME:
             currentState = MIDI_DRUMKIT_MENU;
         break;
 
@@ -816,5 +848,5 @@ void returnToPreviousMenu()
         default:
         break;
     }
-    updateDisplay();
+    //updateDisplay(&kit);
 }

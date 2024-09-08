@@ -10,6 +10,7 @@
 #include "arm_book_lib.h"
 #include "drumkit.h"
 #include "instrument.h"
+#include "midi_serial.h"
 #include <cstdint>
 
 //=====[Declaration of private defines]========================================
@@ -22,8 +23,10 @@ drumkit::drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort,
 void drumkit::init() {
 
     communicationMode = UART;
-    drumkitChannel = 0;
+    drumkitChannel = 1;
+    drumkitVolume = 64;
     setMIDIChannel(drumkitChannel);
+    midiControlChangeVolume(drumkitVolume, drumkitChannel, drumkitUARTSerial);
 
     for (uint8_t initIndex = 0; initIndex < numOfPads; initIndex++)
     {
@@ -34,6 +37,9 @@ void drumkit::init() {
             drumPads[initIndex]->hiHatControl = 1;
         }
     }
+    drumPads[0]->drumpadmidiMessage->note = HI_HAT_HALF_OPEN;
+    drumPads[1]->drumpadmidiMessage->note = SNARE;
+    drumPads[2]->drumpadmidiMessage->note = KICK;    
 }
 
 void drumkit::updateDrumkit(uint8_t drumkitNum, uint8_t drumpadNum, uint8_t drumpadNote)
