@@ -124,7 +124,7 @@ void updateDisplay(drumkit * activedrumkit);
 void handleMenuNavigation(void);
 void confirmButtonPressed(void);
 void confirmSelection(drumkit * activedrumkit); ////////<----------------esto tiene que recibir por referencia un drumKit asi sabemos que hacer con los datos
-void returnToPreviousMenu(void); 
+void returnToPreviousMenu(drumkit * activedrumkit); 
 
 //=====[Main function]=========================================================
 int main(void)
@@ -181,15 +181,15 @@ int main(void)
     while (true)
     {
         debounceButtonUpdate(&drumPadButtons);
-        updateDisplay(&kit);
-
         switch (currentState)
         {
             case PLAY_SCREEN:
-                if (true == drumPadButtons.button[0].releasedEvent)  //Pulsador USER
+ 
+                if (true == drumPadButtons.button[1].releasedEvent)  //Pulsador Encoder
                 {
-                    returnToPreviousMenu();
+                    confirmSelection(&kit);
                 }
+
                 kit.processHits();
             break;
 
@@ -207,7 +207,7 @@ int main(void)
 
                 if (true == drumPadButtons.button[0].releasedEvent)  //Pulsador USER
                 {
-                    returnToPreviousMenu();
+                    returnToPreviousMenu(&kit);
                 }
                 kit.processHits();
             break;
@@ -224,7 +224,7 @@ int main(void)
 
                 if (true == drumPadButtons.button[0].releasedEvent)  //Pulsador USER
                 {
-                    returnToPreviousMenu();
+                    returnToPreviousMenu(&kit);
                 }
             break;
         }
@@ -648,6 +648,10 @@ void confirmSelection(drumkit * activedrumkit)
             }
         break;
 
+        case PLAY_SCREEN:
+            returnToPreviousMenu(activedrumkit);
+        break;
+
         case CONFIG_MENU:
             if (configMenuIndex == 0) 
             {
@@ -702,7 +706,7 @@ void confirmSelection(drumkit * activedrumkit)
             if(previousState == SET_DRUMPAD_NUMBER)
             {
                 selectedDrumpad = drumpadNumber;//Selección de numero de drumpad
-                returnToPreviousMenu();
+                returnToPreviousMenu(activedrumkit);
             }
             else
             {
@@ -715,7 +719,7 @@ void confirmSelection(drumkit * activedrumkit)
             {
                 selectedNote = drumpadNote;
                 activedrumkit->updateDrumkit(0,selectedDrumpad, selectedNote);               
-                returnToPreviousMenu();
+                returnToPreviousMenu(activedrumkit);
             }
             else
             {
@@ -729,7 +733,7 @@ void confirmSelection(drumkit * activedrumkit)
             {
                 selectedSensibility = drumpadSensibility;
                 activedrumkit->drumPads[selectedDrumpad]->drumpadPiezo->setPiezoSensibility(piezoSensibility[drumpadSensibility]);
-                returnToPreviousMenu();
+                returnToPreviousMenu(activedrumkit);
             }
             else
             {
@@ -755,13 +759,13 @@ void confirmSelection(drumkit * activedrumkit)
             { 
                 selectedConn = UART;
                 activedrumkit->communicationMode = selectedConn;
-                returnToPreviousMenu();
+                returnToPreviousMenu(activedrumkit);
             } 
             else if (connectionMenuIndex == BT_CONN) 
             {  
                 selectedConn = BT;
                 activedrumkit->communicationMode = selectedConn;
-                returnToPreviousMenu();
+                returnToPreviousMenu(activedrumkit);
             }      
         break;
 
@@ -770,7 +774,7 @@ void confirmSelection(drumkit * activedrumkit)
             {
                 activedrumkit->drumkitChannel = drumkitChannel;
                 setMIDIChannel(activedrumkit->drumkitChannel);
-                returnToPreviousMenu();
+                returnToPreviousMenu(activedrumkit);
             }
             else
             {
@@ -784,7 +788,7 @@ void confirmSelection(drumkit * activedrumkit)
             {
                 activedrumkit->drumkitVolume = drumkitVolume;
                 activedrumkit->drumkitVolumeUpdate();
-                returnToPreviousMenu();
+                returnToPreviousMenu(activedrumkit);
             }
             else
             {
@@ -795,10 +799,10 @@ void confirmSelection(drumkit * activedrumkit)
         default:
         break;
     }
-    //updateDisplay(&kit);
+    updateDisplay(activedrumkit);
 }
 
-void returnToPreviousMenu() 
+void returnToPreviousMenu(drumkit * activedrumkit) 
 {
     switch (currentState) 
     {
@@ -848,5 +852,5 @@ void returnToPreviousMenu()
         default:
         break;
     }
-    //updateDisplay(&kit);
+    updateDisplay(activedrumkit);
 }
