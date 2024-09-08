@@ -50,7 +50,7 @@ void rotaryEncoder::rotaryEncoderCallback()
         if(0 == dtStatus)
         {          
             (*rotationCounter) --;
-            if((*rotationCounter) <= 0)
+            if((*rotationCounter) < 0)
             {
                 (*rotationCounter) = maxRotationCounterValue - 1;
             }
