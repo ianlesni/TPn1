@@ -41,8 +41,7 @@ void drumpad::drumpadProcessHit()
     drumpadLedOn();
     drumpadPiezo->piezoMaxVelocity = piezoConvertVoltToVel(adcToMilliVolts(drumpadPiezo->piezoMaxSampleValue)); 
     drumpadmidiMessage->velocity = drumpadPiezo->piezoMaxVelocity;                  //Cargo la velocity del mensaje               
-    drumpadPiezo->piezoTransducerInit();                                            //Re inicializo el piezo para reestablecer los valores
-    
+    drumpadPiezo->piezoTransducerInit();                                            //Re inicializo el piezo para reestablecer los valores    
 }
 
 void drumpad::drumpadLedOn()

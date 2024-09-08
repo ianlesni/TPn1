@@ -17,7 +17,7 @@
 
 
 //=====[Declaration of public defines]=========================================
-#define NUMBER_OF_DRUMPADS_MAX 4
+#define NUMBER_OF_DRUMPADS_MAX 3
 
 
 typedef enum{

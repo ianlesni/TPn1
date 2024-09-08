@@ -13,7 +13,7 @@
 #include <cstdint>
 
 //=====[Declaration of private defines]========================================
-#define SENSIBILITY_LEVELS 4
+
 
 #define MAX_VEL 127                                                 /**< Máximo valor de velocity permitido */
 #define MIN_VEL 35                                                  /**< Máximo valor de velocity permitido (para valores menores se escucha muy poco) */

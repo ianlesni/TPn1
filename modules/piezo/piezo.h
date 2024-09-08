@@ -15,7 +15,7 @@
 
 
 //=====[Declaration of public defines]=========================================
-
+#define SENSIBILITY_LEVELS 4
 //=====[Declaration of public data types]======================================
 
 /*!

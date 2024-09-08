@@ -65,6 +65,8 @@ int8_t setUSBConnIndex = 0;
 int8_t setBTConnIndex = 0;
 int8_t selectedDrumpad = 0;
 int8_t selectedNote = 0;
+int8_t selectedSensibility = 0;
+int8_t selectedConn = 0;
 
 // variables auxiliares para debugear la navegacion por el menu
 int8_t drumkitChannel = 0; //de 0 a 10
@@ -187,6 +189,7 @@ int main(void)
                 kit.processHits();
             break;
 
+            case DRUMPAD_MENU:
             case SET_DRUMPAD_NOTE:
             case SET_DRUMPAD_SENSIBILITY:
             case SET_DRUMKIT_VOLUME:
@@ -289,27 +292,54 @@ void updateDisplay() {
                 displayClear();
                 displayCharPositionWrite(0,0);
                 displayStringWrite("CONFIG MENU");
-                displayCharPositionWrite(4,2);
+                displayCharPositionWrite(0,2);
                 displayStringWrite("  DRUMKIT");
-                displayCharPositionWrite(4,3);
-                displayStringWrite("  CONNECTION");
+                displayCharPositionWrite(0,3);
+                displayStringWrite("  CONN:   ");
+                switch(selectedConn)
+                {
+                    case UART:
+                        displayCharPositionWrite(8,3);
+                        displayStringWrite("UART");
+                    break;
+                    case BT:
+                        displayCharPositionWrite(8,3);
+                        displayStringWrite("BT  ");
+                    break;
+                }
             }
 
             if (configMenuIndex == 0) 
             {
-                displayCharPositionWrite(4,3);
+                displayCharPositionWrite(0,3);
                 displayStringWrite("  ");
-                displayCharPositionWrite(4,2);
+                displayCharPositionWrite(0,2);
                 displayStringWrite("> ");
             }          
             if (configMenuIndex == 1) 
             {
-                displayCharPositionWrite(4,2);
+                displayCharPositionWrite(0,2);
                 displayStringWrite("  ");
-                displayCharPositionWrite(4,3);
+                displayCharPositionWrite(0,3);
                 displayStringWrite("> ");
             }
+
             previousState = CONFIG_MENU;
+        break;
+
+        case CONNECTION_MENU:
+            if (connectionMenuIndex == USB_CONN) 
+            {
+                displayCharPositionWrite(8,3);
+                displayStringWrite("UART");
+            }          
+            if (connectionMenuIndex == BT_CONN) 
+            {
+                displayCharPositionWrite(8,3);
+                displayStringWrite("BT  ");
+            }
+
+            previousState = CONNECTION_MENU;
         break;
 
         case DRUMKIT_MENU:
@@ -370,6 +400,7 @@ void updateDisplay() {
                 displayCharPositionWrite(4,3);
                 displayStringWrite("> ");
             }   
+            
             previousState = DRUMKIT_MENU;        
         break;
 
@@ -378,13 +409,26 @@ void updateDisplay() {
             {
                 displayClear();
                 displayCharPositionWrite(0,0);
-                displayStringWrite("  DrumPad N:__");
+                displayStringWrite("  DrumPad N:  ");
+                sprintf(drumpadNumberstr, "%.0hhu", selectedDrumpad);
+                displayCharPositionWrite (13,0);
+                displayStringWrite(drumpadNumberstr);
+
                 displayCharPositionWrite(0,1);
-                displayStringWrite("  Note N:___");
+                displayStringWrite("  Note N:  ");
+                sprintf(numOfInstrumentNotesstr, "%.0hhu", selectedNote);
+                displayCharPositionWrite (10,1);
+                displayStringWrite(numOfInstrumentNotesstr); 
                 displayCharPositionWrite(0,2);
-                displayStringWrite(instrumentNoteName[drumpadNote]);                  //Imprimo el nombre de la nota a ejecutar
+                displayStringWrite("                ");
+                displayCharPositionWrite(0,2);
+                displayStringWrite(instrumentNoteName[selectedNote]);                  //Imprimo el nombre de la nota a ejecutar
+                
                 displayCharPositionWrite(0,3);
-                displayStringWrite("  SensibiLity:__");
+                displayStringWrite("  SensibiLity:  ");
+                sprintf(drumpadSensibilitystr, "%.0hhu", selectedSensibility);
+                displayCharPositionWrite (14,3);
+                displayStringWrite(drumpadSensibilitystr); 
             }
 
             if (drumpadMenuIndex == 0) 
@@ -431,14 +475,17 @@ void updateDisplay() {
             displayStringWrite("  Note N:   ");
             sprintf(drumpadNumberstr, "%.0hhu", selectedDrumpad);
             displayCharPositionWrite (13,0);
+            displayStringWrite(drumpadNumberstr);
 
             sprintf(numOfInstrumentNotesstr, "%.0hhu", drumpadNote);
+            displayCharPositionWrite (10,1);
+            displayStringWrite(numOfInstrumentNotesstr); 
+
             displayCharPositionWrite(0,2);
             displayStringWrite("                ");
             displayCharPositionWrite(0,2);
             displayStringWrite(instrumentNoteName[drumpadNote]);                  //Imprimo el nombre de la nota a ejecutar
-            displayCharPositionWrite (10,1);
-            displayStringWrite(numOfInstrumentNotesstr); 
+
             previousState = SET_DRUMPAD_NOTE;         
         break;
             
@@ -457,102 +504,53 @@ void updateDisplay() {
                 displayClear();
                 displayCharPositionWrite(0,0);
                 displayStringWrite("MIDIDrumkit Conf");
-                displayCharPositionWrite(4,2);
-                displayStringWrite("  Channel:__");
-                displayCharPositionWrite(4,3);
-                displayStringWrite("  Volume:___");
+                displayCharPositionWrite(2,2);
+                displayStringWrite("  Channel:  ");
+                sprintf(drumkitchannelstr, "%.0hhu", drumkitChannel =  drumkitChannel);
+                displayCharPositionWrite (12,2);
+                displayStringWrite(drumkitchannelstr); 
+
+                displayCharPositionWrite(2,3);
+                displayStringWrite("  Volume:   ");
+                sprintf(drumkitVolumestr, "%.0hhu", drumkitVolume = drumkitVolume);
+                displayCharPositionWrite (12,3);             
+                displayStringWrite(drumkitVolumestr); 
             }
 
             if (midiDrumkitMenuIndex == 0) 
             {
-                displayCharPositionWrite(4,2);
+                displayCharPositionWrite(2,2);
                 displayStringWrite("> ");
-                displayCharPositionWrite(4,3);
+                displayCharPositionWrite(2,3);
                 displayStringWrite("  ");
             }          
             if (midiDrumkitMenuIndex == 1) 
             {
-                displayCharPositionWrite(4,2);
+                displayCharPositionWrite(2,2);
                 displayStringWrite("  ");
-                displayCharPositionWrite(4,3);
+                displayCharPositionWrite(2,3);
                 displayStringWrite("> ");
             }
             previousState = MIDI_DRUMKIT_MENU;
         break;
 
         case SET_DRUMKIT_CHANNEL:
-            displayCharPositionWrite(4,2);
+            displayCharPositionWrite(2,2);
             displayStringWrite("  Channel:  ");
             sprintf(drumkitchannelstr, "%.0hhu", drumkitChannel =  drumkitChannel);
-            displayCharPositionWrite (14,2);
+            displayCharPositionWrite (12,2);
             displayStringWrite(drumkitchannelstr); 
             previousState = SET_DRUMKIT_CHANNEL; 
         break;
 
         case SET_DRUMKIT_VOLUME:
-            displayCharPositionWrite(4,3);
-            displayStringWrite("  Volume:  ");
+            displayCharPositionWrite(2,3);
+            displayStringWrite("  Volume:   ");
             sprintf(drumkitVolumestr, "%.0hhu", drumkitVolume = drumkitVolume);
-            displayCharPositionWrite (14,3);
+            displayCharPositionWrite (12,3);             
             displayStringWrite(drumkitVolumestr); 
             previousState = SET_DRUMKIT_VOLUME; 
         break;        
-
-        case CONNECTION_MENU:
-            if(currentState != previousState && previousState != SET_USB_CONN && previousState != SET_BT_CONN) 
-            {
-                displayClear();
-                displayCharPositionWrite(0,0);
-                displayStringWrite("CONNECTION Conf");
-                displayCharPositionWrite(4,2);
-                displayStringWrite("  USB:OFF");
-                displayCharPositionWrite(4,3);
-                displayStringWrite("  BT:OFF");
-            }
-            if (connectionMenuIndex == 0) 
-            {
-                displayCharPositionWrite(4,2);
-                displayStringWrite("> ");
-                displayCharPositionWrite(4,3);
-                displayStringWrite("  ");
-            }          
-            if (connectionMenuIndex == 1) 
-            {
-                displayCharPositionWrite(4,2);
-                displayStringWrite("  ");
-                displayCharPositionWrite(4,3);
-                displayStringWrite("> ");
-            }
-            previousState = CONNECTION_MENU;
-        break;
-
-        case SET_USB_CONN:
-            if (setUSBConnIndex == 0) 
-            {
-                displayCharPositionWrite(4,2);
-                displayStringWrite("  USB:OFF");
-            }          
-            if (setUSBConnIndex == 1) 
-            {
-                displayCharPositionWrite(4,2);
-                displayStringWrite("  USB:ON ");
-            }
-            previousState = SET_USB_CONN;            
-        break;
-
-        case SET_BT_CONN:
-            if (setBTConnIndex == 0) 
-            {
-                 displayCharPositionWrite(4,3);
-                displayStringWrite("  BT:OFF");
-            }          
-            if (setBTConnIndex == 1) 
-            {
-                displayCharPositionWrite(4,3);
-                displayStringWrite("  BT:ON ");
-            }
-            previousState = SET_USB_CONN; 
-        break;
 
         default:
         break;
@@ -588,7 +586,7 @@ void handleMenuNavigation()
             break;
 
             case SET_DRUMPAD_SENSIBILITY:
-                encoder.handleMenuNavigation(&drumpadSensibility, 4);  
+                encoder.handleMenuNavigation(&drumpadSensibility, SENSIBILITY_LEVELS);  
             break;
 
             case MIDI_DRUMKIT_MENU:
@@ -597,14 +595,6 @@ void handleMenuNavigation()
 
             case CONNECTION_MENU:
                 encoder.handleMenuNavigation(&connectionMenuIndex, 2);               
-            break;
-
-            case SET_USB_CONN:
-                encoder.handleMenuNavigation(&setUSBConnIndex, 2);               
-            break;
-
-            case SET_BT_CONN:
-                encoder.handleMenuNavigation(&setBTConnIndex, 2);               
             break;
 
             case SET_DRUMKIT_CHANNEL:
@@ -716,19 +706,19 @@ void confirmSelection(drumkit * activedrumkit)
         case SET_DRUMPAD_SENSIBILITY:
             if(previousState == SET_DRUMPAD_SENSIBILITY)
             {
+                selectedSensibility = drumpadSensibility;
                 activedrumkit->drumPads[selectedDrumpad]->drumpadPiezo->setPiezoSensibility(piezoSensibility[drumpadSensibility]);
                 returnToPreviousMenu();
             }
             else
             {
-                encoder.handleMenuNavigation(&drumpadSensibility, 4);  
+                encoder.handleMenuNavigation(&drumpadSensibility, SENSIBILITY_LEVELS);  
             }
         break;
 
         case MIDI_DRUMKIT_MENU:
             if (midiDrumkitMenuIndex == 0) 
             {
-                //Selección de numero de drumpad
                 currentState = SET_DRUMKIT_CHANNEL;
             } 
             else if (midiDrumkitMenuIndex == 1) 
@@ -741,39 +731,16 @@ void confirmSelection(drumkit * activedrumkit)
         case CONNECTION_MENU:
             if (connectionMenuIndex == USB_CONN) 
             { 
-                currentState = SET_USB_CONN;
+                selectedConn = UART;
+                activedrumkit->communicationMode = selectedConn;
+                returnToPreviousMenu();
             } 
             else if (connectionMenuIndex == BT_CONN) 
             {  
-                currentState = SET_BT_CONN;
+                selectedConn = BT;
+                activedrumkit->communicationMode = selectedConn;
+                returnToPreviousMenu();
             }      
-        break;
-
-        case SET_USB_CONN:
-            if (setUSBConnIndex == USB_CONN) 
-            { 
-                activedrumkit->communicationMode = UART;    //lo configuro para comunicar por UART
-                returnToPreviousMenu();
-            } 
-            else if (setUSBConnIndex == BT_CONN) 
-            {  
-                activedrumkit->communicationMode = BT;    //lo configuro para comunicar por BT
-                returnToPreviousMenu();
-
-            }  
-        break;
-
-        case SET_BT_CONN:
-            if (setBTConnIndex == BT_ON) 
-            { 
-                activedrumkit->communicationMode = BT;    //lo configuro para comunicar por BT
-                returnToPreviousMenu();
-            } 
-            else if (setBTConnIndex == BT_OFF) 
-            {  
-                //lo apago ->>> tneog que ver como apagarlo o si es necesario apagarlo...
-                returnToPreviousMenu();
-            }  
         break;
 
         case SET_DRUMKIT_CHANNEL:
