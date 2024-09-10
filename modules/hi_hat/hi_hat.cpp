@@ -22,29 +22,52 @@
 #define ADC_VOLTAGE_SCALE 3300                                      /**< Valor de voltaje máximo [mV] que corresponde al valor máximo que devuelve read_u16() (65535) */
 
 //=====[Declaration of public classes]=====================================
-hiHat::hiHat(PinName hiHatADPin, PinName hiHatIntPin)
+hiHat::hiHat(PinName hiHatADPin, PinName hiHatIntPin,Ticker * hiHatTicker)
     : hiHatAD(hiHatADPin),       
-      hiHatInterruptPin(hiHatIntPin)
+      hiHatInterruptPin(hiHatIntPin),
+      hiHatChickPedalTicker(hiHatTicker)
       //Acá no cargo ninguna cosa del hiHatPiezo
 
 {
+    hiHatInterruptPin.mode(PullUp);
     hiHatInterruptPin.fall(callback(this, &hiHat::hiHatIntCallback));
 }
 
 void hiHat::hiHatInit()
 { 
     hiHatStatus = OPEN;
+    pedalChick = false;
+    hHflag = 0;
     hiHatAperture = ADC_MAX_VALUE;
+}
+void hiHat::resetPedalChick()
+{
+    pedalChick = false; 
 }
 
 HI_HAT_STATE hiHat::gethiHatStatus()
 {
     return hiHatStatus;
 }
+void hiHat::hiHatTickerCallback()
+{
+    if( 0 == hiHatInterruptPin.read())
+    {
+        pedalChick = true;//mandar el comando midi de hi hat close
+    }
+    else if( 1 == hiHatInterruptPin.read())
+    {
+        pedalChick = false;//mandar el comando midi de hi hat close
+    }
+
+    hiHatChickPedalTicker->detach();
+    hiHatInterruptPin.enable_irq();  
+}
 
 void hiHat::hiHatIntCallback()
-{
-    //mandar el comando midi de hi hat close
+{   
+        hiHatInterruptPin.disable_irq();
+        hiHatChickPedalTicker->attach(callback(this,&hiHat::hiHatTickerCallback), 20ms);   
 }
 
 

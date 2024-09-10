@@ -138,7 +138,8 @@ int main(void)
     UnbufferedSerial uartBle(PD_5, PD_6, 9600);
     UnbufferedSerial uartSerialPort(USBTX, USBRX, 115200); 
   
-    hiHat hiHatController(PinName::A1,PinName::PF_7);
+    Ticker hHChickPedalTicker;
+    hiHat hiHatController(PinName::A1,PinName::PF_7,&hHChickPedalTicker);
     Ticker piezo0ConvertionTicker;
     piezoTransducer piezo0(PinName::A2, PinName::PE_6, &piezo0ConvertionTicker);
     midiMessage_t midiMessage0;
@@ -297,7 +298,11 @@ void updateDisplay(drumkit * activedrumkit) {
             {
                 displayClear();
                 displayCharPositionWrite(0,0);
-                displayStringWrite("Playing...");
+                displayStringWrite("MIDI Drumpad V1");
+                displayCharPositionWrite(2,1);
+                displayStringWrite("LET'S PLAY!!!");
+                displayCharPositionWrite(0,3);
+                displayStringWrite("(ianlesni)");
             }
            previousState = PLAY_SCREEN; 
         break;

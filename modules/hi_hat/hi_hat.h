@@ -34,13 +34,18 @@ typedef enum{
 
 class hiHat{
     public:
-        hiHat(PinName hiHatAD, PinName hiHatIntPin);   
+        hiHat(PinName hiHatAD, PinName hiHatIntPin, Ticker * hiHatChickPedalTicker);   
         void hiHatInit();
         HI_HAT_STATE gethiHatStatus(); 
-        HI_HAT_STATE hiHatGetAperture();   
+        HI_HAT_STATE hiHatGetAperture();  
+        void resetPedalChick(); 
+        void hiHatTickerCallback();
         uint16_t hiHatAperture;
+        bool pedalChick;
     private:
         void hiHatIntCallback();
+        uint8_t hHflag;
+        Ticker * hiHatChickPedalTicker;
         AnalogIn hiHatAD;               
         InterruptIn hiHatInterruptPin;
         HI_HAT_STATE hiHatStatus;

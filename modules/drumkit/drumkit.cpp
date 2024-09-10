@@ -68,29 +68,52 @@ void drumkit::processHits()
 {
     for (int drumpadIndex = 0; drumpadIndex < numOfPads; drumpadIndex++) 
     {
+            if(drumPads[0]->hiHatControllerPedal->pedalChick == true) //Verifico si se pisó el pedal
+            {
+                drumPads[0]->drumpadmidiMessage->note = HH_Pedal_CHICK;
+                drumPads[0]->drumpadmidiMessage->velocity = 0x2D;
+                drumPads[0]->hiHatControllerPedal->resetPedalChick();
+
+                    switch(communicationMode)
+                {
+                    case UART:
+                    midiSendNoteOn(drumPads[0]->drumpadmidiMessage, drumkitUARTSerial);
+
+                    break;
+
+                    case BT:
+                    midiSendNoteOn(drumPads[0]->drumpadmidiMessage, drumkitBTSerial);
+                    break;               
+                }
+            }
+
         if (drumPads[drumpadIndex]->getDrumpadCheck() == ACTIVE) 
         {
             if(drumpadIndex == 0) //Si es el hiHat actualizo la nota en funcion de la apertura del pedal de control
             {   
-                uint8_t hiHatPos = drumPads[drumpadIndex]->hiHatControllerPedal->hiHatGetAperture();
-                switch(hiHatPos)
-                {
-                    case OPEN:
-                        drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_OPEN;                 
-                        break;
 
-                    case HALF_OPEN:
-                        drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_HALF_OPEN;
-                        break;
 
-                    case CLOSE:
-                        drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_CLOSED;
-                        break;
+                    uint8_t hiHatPos = drumPads[drumpadIndex]->hiHatControllerPedal->hiHatGetAperture();
+                    switch(hiHatPos)
+                    {
+                        case OPEN:
+                            drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_OPEN;                 
+                            break;
 
-                    default:
-                        drumPads[drumpadIndex]->drumpadmidiMessage->note = CRASH_R_CHOKED; 
-                        break;                
-                }
+                        case HALF_OPEN:
+                            drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_HALF_OPEN;
+                            break;
+
+                        case CLOSE:
+                            drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_CLOSED;
+                            break;
+
+                        default:
+                            drumPads[drumpadIndex]->drumpadmidiMessage->note = CRASH_R_CHOKED; 
+                            break;                
+                    }
+                
+
             }
 
             switch(communicationMode)
