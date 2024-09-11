@@ -230,7 +230,7 @@ int main(void)
             break;
         }
 
-        delay(2);
+        delay(1);
     }
 
 }
@@ -299,10 +299,12 @@ void updateDisplay(drumkit * activedrumkit) {
                 displayClear();
                 displayCharPositionWrite(0,0);
                 displayStringWrite("MIDI Drumpad V1");
-                displayCharPositionWrite(2,1);
-                displayStringWrite("LET'S PLAY!!!");
+                displayCharPositionWrite(0,1);
+                displayStringWrite("----------------");
+                displayCharPositionWrite(0,2);
+                displayStringWrite("|| LET'S PLAY ||");
                 displayCharPositionWrite(0,3);
-                displayStringWrite("(ianlesni)");
+                displayStringWrite("----------------");
             }
            previousState = PLAY_SCREEN; 
         break;

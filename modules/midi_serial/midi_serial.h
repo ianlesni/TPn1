@@ -67,7 +67,7 @@ void midiSendNoteOn (midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias
 void midiSendNoteOff (midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias);
 
 void setMIDIChannel(uint8_t channel);
-void midiControlChangeVolume(uint8_t volume, uint8_t channel, mbed::UnbufferedSerial * alias);
+void midiControlChangeVolume(uint8_t volume, int8_t channel, mbed::UnbufferedSerial * alias);
 //=====[#include guards - end]=================================================
 
 #endif // _MIDI_SERIAL_H_

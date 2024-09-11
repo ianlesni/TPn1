@@ -67,7 +67,7 @@ void initializaMIDISerial(mbed::UnbufferedSerial * alias, midiMessage_t * midiMe
     midiMessage->velocity = 0x00;
 }
 
-void midiControlChangeVolume(uint8_t volume,uint8_t channel, mbed::UnbufferedSerial * alias)
+void midiControlChangeVolume(uint8_t volume, int8_t channel, mbed::UnbufferedSerial * alias)
 {
     if (volume > 127)
     {
@@ -76,6 +76,11 @@ void midiControlChangeVolume(uint8_t volume,uint8_t channel, mbed::UnbufferedSer
     if (volume < 0)
     {
         volume = 0;
+    }
+    channel = channel - 1;
+    if(channel < 0)
+    {
+        channel = 0;
     }
     controlChangeVolume = 0xB0 + channel;
     uint8_t controllerNumber = 0x3F;
