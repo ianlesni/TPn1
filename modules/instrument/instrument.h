@@ -16,7 +16,7 @@
 #define NUMBER_OF_NOTES 17
 
 //=====[Declaration of public data types]======================================
-
+extern int8_t noteIndex;        /**< Indice para la navegación del arreglo de notas de intrumento */
 /*!
  * \enum INSTRUMENT_NOTES
  * \brief Enumeración notas midi
