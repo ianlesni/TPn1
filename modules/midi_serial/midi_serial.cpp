@@ -12,25 +12,12 @@
 
 //=====[Declaration of private defines]========================================
 
-#define DEFAULT_CHANNEL 0
+#define DEFAULT_CHANNEL 0           
 
 //=====[Declaration of private data types]=====================================
-uint8_t noteOn = 0x90;
-uint8_t noteOff = 0x80;
-uint8_t controlChangeVolume = 0xB0;
-
-/*!
- * \enum MIDI_COMMAND
- * \brief Enumeración de comandos MIDI. 
- *
- * Enumeración de los comandos necesarios para formar los mensajes MIDI para el canal 0.
- */
-typedef enum{
-
-        NOTE_ON = 0x90,     /**< Byte de comando Note On */
-        NOTE_OFF = 0x80     /**< Byte de comando Note Off */
-
-}MIDI_COMMAND; 
+uint8_t noteOn = 0x90;                  /**< Byte de comando Note On */
+uint8_t noteOff = 0x80;                 /**< Byte de comando Note Off */
+uint8_t controlChangeVolume = 0xB0;     /**< Byte de comando de control de volumen de track */
 
 //=====[Declaration and initialization of public global objects]===============
     UnbufferedSerial serialPort(USBTX, USBRX);                          
@@ -43,15 +30,11 @@ typedef enum{
 
 //=====[Declarations (prototypes) of private functions]========================
 
-/** Seteo las propiedades de la comuniación serie 
-*  acorde a las preferencias configuradas en el 
-*  software Hariless MIDI<->Serial Bridge
-*  (9600-8-N-1) 
-*  @param alias Puntero al objeto responsable de la comunicación serie.
-*/
-static void initializaMIDISerialPort(mbed::UnbufferedSerial * alias);
-
 //=====[Implementations of public functions]===================================
+
+/*
+* Modifica los bytes de comando en función del canal seleccionado
+*/
 void setMIDIChannel(uint8_t channel)
 {
     noteOn = 0x90 + channel;
@@ -83,7 +66,7 @@ void midiControlChangeVolume(uint8_t volume, int8_t channel, mbed::UnbufferedSer
         channel = 0;
     }
     controlChangeVolume = 0xB0 + channel;
-    uint8_t controllerNumber = 0x3F;
+    uint8_t controllerNumber = 0x3F;       /**< Numero de comando de control de Reaper */ 
 
     alias->write(&controlChangeVolume, 1);     
     alias->write(&controllerNumber, 1);            
@@ -92,7 +75,7 @@ void midiControlChangeVolume(uint8_t volume, int8_t channel, mbed::UnbufferedSer
 
 void midiSendNoteOn(midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias)
 {               
-    midiMessage->command = noteOn;             //Asigno comando de Note On en canal 0
+    midiMessage->command = noteOn;              //Asigno comando de Note On en canal 0
     alias->write(&midiMessage->command, 1);     //Envío el comando y su canal
     alias->write(&midiMessage->note, 1);        //Envío la nota       
     alias->write(&midiMessage->velocity, 1);    //Envío el valor de velocity 
@@ -107,7 +90,7 @@ void midiSendNoteOff(midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias
 }
 
 //=====[Implementations of private functions]==================================
-static void initializaMIDISerialPort(UnbufferedSerial * alias)
+void initializaMIDISerialPort(UnbufferedSerial * alias)
 {
     alias->baud(38400);
     alias->format(8,SerialBase::None,1);

@@ -2,8 +2,6 @@
 *
 * @brief A description of the module’s purpose.
 *
-* 
-* 
 */
 
 //=====[#include guards - begin]===============================================
@@ -40,33 +38,40 @@ typedef struct{
 /** Seteo las propiedades de la comuniación serie 
 *  acorde a las preferencias configuradas en el 
 *  software Hariless MIDI<->Serial Bridge
-*  (9600-8-N-1) y asigno valores iniciales al mensaje midi.
-*  @param alias Puntero al objeto responsable de la comunicación serie.
-*  @param midimessage Puntero a la estructura que representa el mensaje.
+*  (ej:9600-8-N-1) y asigno valores iniciales al mensaje midi
 */
 void initializaMIDISerial (mbed::UnbufferedSerial * alias, midiMessage_t * midiMessage);
 
+/** Seteo las propiedades de la comuniación serie 
+*  acorde a las preferencias configuradas en el 
+*  software Hariless MIDI<->Serial Bridge
+*  (9600-8-N-1) 
+*  @param alias Puntero al objeto responsable de la comunicación serie.
+*/
+void initializaMIDISerialPort(mbed::UnbufferedSerial * alias);
 /**
  * Transmisión a través de serial del mensaje midi de Note On
  *
  * Esta función permite enviar mensajes para que la nota comience a sonar en función de 
  * los parámetros de la estructura del mensaje
- *  @param alias Puntero al objeto responsable de la comunicación serie.
- *  @param midiMessage Puntero a la estructura que representa el mensaje.
  */
 void midiSendNoteOn (midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias);
 
 /**
  * Transmisión a través de serial del mensaje midi de Note Off
  *
- * Esta función permite enviar mensajes para que la nota comience a sonar en función de 
- * los parámetros de la estructura del mensaje
- *  @param alias Puntero al objeto responsable de la comunicación serie.
- *  @param midiMessage Puntero a la estructura que representa el mensaje.
- */
+ * Esta función permite enviar mensajes para que la nota deje de sonar 
+*/
 void midiSendNoteOff (midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias);
 
+/**
+* Define el canal MIDI del instrumento
+*/
 void setMIDIChannel(uint8_t channel);
+
+/*
+* Cambia el volumen del track asociado al instrumento 
+*/
 void midiControlChangeVolume(uint8_t volume, int8_t channel, mbed::UnbufferedSerial * alias);
 //=====[#include guards - end]=================================================
 
