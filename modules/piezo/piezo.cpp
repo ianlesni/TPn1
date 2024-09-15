@@ -1,6 +1,6 @@
 /** @file piezo.cpp
 *
-* @brief A description of the module’s purpose.
+* @brief Módulo para el manejo del transductor piezoeléctrico.
 *
 */
 
@@ -13,13 +13,11 @@
 #include <cstdint>
 
 //=====[Declaration of private defines]========================================
-
-
 #define MAX_VEL 127                                                 /**< Máximo valor de velocity permitido */
 #define MIN_VEL 35                                                  /**< Máximo valor de velocity permitido (para valores menores se escucha muy poco) */
 #define DELTA_VEL (MAX_VEL - MIN_VEL)                               /**< Variacion entre el máximo y mínimo valor de velocity permitido*/
 #define PIEZO_MAX_PEAK_VOLT_mV 2000                                 /**< Máximo valór de voltaje pico [mV] generado por el transductor piezoelectrico para el circuito de adqiusición actual*/
-#define PIEZO_THRESHOLD_mV 120                                       /**< Umbral de voltaje para la detección del golpe [mv] *///Nivel por encima del piso de ruido
+#define PIEZO_THRESHOLD_mV 120                                      /**< Umbral de voltaje para la detección del golpe [mv] *///Nivel por encima del piso de ruido
 #define DELTA_VOLT (PIEZO_MAX_PEAK_VOLT_mV - PIEZO_THRESHOLD_mV)    /**< Variación entre el valor máximo y mínimo de voltaje registrado por el transductor piezoelectrico*/
 
 #define NUMBER_OF_PIEZO_SAMPLES 20                                  /**< Número de total de muestras para el proceso de muestreo de la señal adquirida por el transductor piezoeléctrico */
@@ -33,6 +31,7 @@
 #define PIEZO_SAMPLING_DURATION_US 2000                             /**< Duración [us] del muestreo del pico de interes  */
 
 //=====[Declaration of public classes]=====================================
+
 piezoTransducer::piezoTransducer(PinName piezoADPin, PinName piezoIntPin, Ticker* ticker)
     : piezoAD(piezoADPin),       
       piezoInterruptPin(piezoIntPin),
@@ -45,24 +44,26 @@ int32_t slopeFixedPoint;            /**< Pendiente de la recta de conversión de
 int32_t interceptFixedPoint;        /**< Ordenada al origen de la recta de conversión de voltaje [mV] del transductor piezoeléctrico a velocity  */
 
 
-
 void piezoTransducer::calculateSlopeIntercept()
 {
-    slopeFixedPoint = TO_FIXED_POINT((float)DELTA_VEL / (piezoMaxPeakVoltmV - piezoThresholdmV));                            /**< Pendiente de la recta de conversión */
-    interceptFixedPoint = TO_FIXED_POINT(MIN_VEL) - piezoThresholdmV * slopeFixedPoint;       /**< Ordenada al origen de la recta de conversión */ 
+    slopeFixedPoint = TO_FIXED_POINT((float)DELTA_VEL / (piezoMaxPeakVoltmV - piezoThresholdmV));          /**< Pendiente de la recta de conversión */
+    interceptFixedPoint = TO_FIXED_POINT(MIN_VEL) - piezoThresholdmV * slopeFixedPoint;                    /**< Ordenada al origen de la recta de conversión */ 
 }
 
 void piezoTransducer::piezoTransducerInit() 
 {
-    piezoThresholdmV = 120;
-    piezoMaxPeakVoltmV = 1800;
-    calculateSlopeIntercept(); 
+    piezoThresholdmV = 120;        //Valor por defecto del umbral de golpe [mV]
+    piezoMaxPeakVoltmV = 1800;     //Pico de voltaje máximo [mV] por defecto
+    calculateSlopeIntercept();     //Calcula parámetros de conversión
     piezoMaxSampleValue = 0;
     piezoMaxVelocity = 0;
     elapsedADConvertionTime = 0;
     piezoStatus = PIEZO_IDLE;
 }
 
+/**
+* Reinicia el contador de conversiones y desvincula el Ticker de conversión. 
+*/
 void piezoTransducer::piezoTransducerReset() 
 {
     elapsedADConvertionTime = 0;
@@ -74,68 +75,78 @@ PIEZO_STATE piezoTransducer::getPiezoStatus()
     return piezoStatus;
 }
 
+/**
+ * Callback cuando se detecta un golpe (flanco descendente). 
+ * Inicia la conversión periódica del ADC para capturar el valor máximo.
+ */
 void piezoTransducer::piezoIntCallback()
 {
     piezoConvertionTicker->attach(callback(this,&piezoTransducer::piezoReadAndGetMax),100us);
 }
 
+/**
+ * Lee el valor del ADC y guarda el máximo. 
+ * Si el golpe es espurio (rebote rápido), descarta el valor.
+ */
 void piezoTransducer::piezoReadAndGetMax()
 {
-    uint16_t piezoSample = piezoAD.read_u16();
+    uint16_t piezoSample = piezoAD.read_u16();  //Tomo una muestra
 
     if(piezoSample > piezoMaxSampleValue)
     {
-        piezoMaxSampleValue = piezoSample;
+        piezoMaxSampleValue = piezoSample;      //Actualizo el valor máximo detectado
     }
 
-    elapsedADConvertionTime++;
+    elapsedADConvertionTime++;                  //Incrementa el contador de tiempo de conversión
 
-    if(4 == elapsedADConvertionTime && 1 == piezoInterruptPin.read())
+    if(4 == elapsedADConvertionTime && 1 == piezoInterruptPin.read())   //Condición caracteristica de los rebotes espurios -> transcurrieron 400us y nuevamente el comparador está en alto 
     {
         piezoMaxSampleValue = 0;
         piezoTransducerReset();
         piezoStatus = PIEZO_IDLE;
     }
-    if(20 == elapsedADConvertionTime)
+
+    if(20 == elapsedADConvertionTime)                                   //Transcurrieron 2ms -> duración típica de un golpe
     {
         piezoTransducerReset();
         piezoStatus = PIEZO_FINISHED; 
     }
 }
 
+
+/**
+ * Ajusta los parámetros de sensibilidad del transductor y recalcula la recta de conversión.
+ */
 void piezoTransducer::setPiezoSensibility(uint8_t sensibility)
 {
     switch (sensibility)
     {
         case SENSITIVITY_LOW:
-            piezoThresholdmV = 1000;  // Aumenta el umbral, menos sensible
+            piezoThresholdmV = 1000;  
             piezoMaxPeakVoltmV = 2000;
             break;
 
         case SENSITIVITY_MEDIUM:
-            piezoThresholdmV = 150;  // Valor medio
+            piezoThresholdmV = 150;  
             piezoMaxPeakVoltmV = 1500;
             break;
 
         case SENSITIVITY_HIGH:
-            piezoThresholdmV = 90;  // Más sensible, umbral más bajo
+            piezoThresholdmV = 90;  
             piezoMaxPeakVoltmV = 2000;
             break;
 
         case SENSITIVITY_VERY_HIGH:
-            piezoThresholdmV = 90;   // Muy sensible
+            piezoThresholdmV = 90;   
             piezoMaxPeakVoltmV = 2200;
             break;
 
-        default:
-            // En caso de valor fuera de rango, mantener sensibilidad media
+        default: // En caso de valor fuera de rango, mantener sensibilidad media
             piezoThresholdmV = 150;
             piezoMaxPeakVoltmV = 1900;
             break;
     }
-
-    // Recalculo los valores de conversión con los nuevos parámetros
-    calculateSlopeIntercept();    
+    calculateSlopeIntercept();    // Recalculo los parametros luego de ajustar la sensibilidad
 }
 //=====[Declaration of private data types]=====================================
 
@@ -147,45 +158,28 @@ void piezoTransducer::setPiezoSensibility(uint8_t sensibility)
 
 //=====[Declaration and initialization of private global variables]============
    
-
 //=====[Declarations (prototypes) of private functions]========================
 
-
 /**
- * Calculo de la pendiente y la ordenada al origen de la recta de conversión.
- * 
- * Esta función calcula la pendiente y la ordenada al origen de la recta de conversión
- * entre voltaje y velocity. Utiliza las constantes DELTA_VEL, DELTA_VOLT, MIN_VEL y PIEZO_THRESHOLD_mV. 
+ * Calcula la pendiente y la ordenada al origen de la recta de conversión.
  */
  static void calculateSlopeIntercept (void);
 
  /**
  * Conviersión de un valor de voltaje [mV] en un valor de velocity.
- * 
- * Esta función calcula y convierte un valor de voltaje [mV] registrado por el transductor
- * piezoeléctrico en un valor de celocity MIDI. El valor de velocity se calcula utilizando
- * la pendiente y la ordenada al origen previamente calculadas (slope e intercept).
- * 
- * @param piezoMaxValue Valor máximo de voltaje [mV] registrado por el transductor piezoeléctrico.
- * @return  Valor de velocity correspondiente ajustado dentro del rango permitido(0-127).
  */
  uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue);
 
 /**
  * Busqueda y devolución del valor máximo del golpe registrado por el transductor piezoeléctrico.
- * 
- * Esta función realiza un muestreo de la señal analógica proveniente del transductor piezoeléctrico
- * y determina el valor máximo de voltaje [mV] registrado durante el proceso de muestreo.
- * 
- * @param piezo Puntero a la estructura que representa el un transductor piezoeléctrico.
- * @return Valor máximo de voltaje [mV] registrado durante el muestreo.
  */
  uint16_t piezoSearchMax (piezo_t * piezo);
 
 //=====[Implementations of public functions]===================================
 
 //=====[Implementations of private functions]==================================
-uint16_t adcToMilliVolts(uint16_t adcValue) {
+uint16_t adcToMilliVolts(uint16_t adcValue) 
+{
     return ((adcValue * ADC_VOLTAGE_SCALE) / ADC_MAX_VALUE);
 }
 
