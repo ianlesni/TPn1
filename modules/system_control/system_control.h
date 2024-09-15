@@ -14,6 +14,13 @@
 #include "drumkit.h"
 #include "button.h"
 //=====[Declaration of public defines]=========================================
+#define NUM_OF_MAIN_MENU_OPTIONS 3
+#define NUM_OF_CONFIG_MENU_OPTIONS 2
+#define NUM_OF_DRUMKIT_MENU_OPTIONS 4
+#define NUM_OF_DRUMPAD_MENU_OPTIONS 3
+#define NUM_OF_MIDIDRUMKIT_MENU_OPTIONS 2
+#define NUM_OF_CONNECTION_MENU_OPTIONS 2
+
 const typedef enum{
     USB_CONN = 0,
     BT_CONN = 1
@@ -23,6 +30,7 @@ const typedef enum{
     BT_ON = 0,
     BT_OFF = 1
 }SET_BT_CONN_OPTIONS;
+
 // Definición de estados del sistema
 enum DrumPadState {
     MAIN_MENU,
@@ -43,6 +51,46 @@ enum DrumPadState {
     SET_BT_CONN,
     IDLE_STATE
 };
+
+// Enumeración para el menú principal
+typedef enum {
+    MAIN_MENU_PLAY = 0,
+    MAIN_MENU_CONFIG = 1,
+    MAIN_MENU_SET_VOLUME = 2
+} MainMenuIndexOptions;
+
+// Enumeración para el menú de configuración
+typedef enum {
+    CONFIG_MENU_DRUMKIT = 0,
+    CONFIG_MENU_CONNECTION = 1
+} ConfigMenuIndexOptions;
+
+// Enumeración para el submenú de drumkit
+typedef enum {
+    DRUMKIT_MENU_NUMBER = 0,
+    DRUMKIT_MENU_PADS = 1,
+    DRUMKIT_MENU_MIDI = 2,
+    DRUMKIT_MENU_SAVE = 3
+} DrumkitMenuIndexOptions;
+
+// Enumeración para el submenú de pads
+typedef enum {
+    DRUMPAD_MENU_NUMBER = 0,
+    DRUMPAD_MENU_NOTE = 1,
+    DRUMPAD_MENU_SENSIBILITY = 2
+} DrumpadMenuIndexOptions;
+
+// Enumeración para el submenú MIDI del drumkit
+typedef enum {
+    MIDI_DRUMKIT_MENU_CHANNEL = 0,
+    MIDI_DRUMKIT_MENU_VOLUME = 1
+} MidiDrumkitMenuIndexOptions;
+
+// Enumeración para el menú de conexión
+typedef enum {
+    CONNECTION_MENU_USB = 0,
+    CONNECTION_MENU_BT = 1
+} ConnectionMenuIndexOptions;
 
 // Estados de control de maquinas de estado
 extern DrumPadState currentState;
