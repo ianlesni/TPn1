@@ -1,9 +1,7 @@
 /** @file rotary_encoder.h
 *
-* @brief A description of the module’s purpose.
+* @brief Modulo para el manejo del encoder rotativo.
 *
-* 
-* 
 */
 
 //=====[#include guards - begin]===============================================
@@ -16,24 +14,30 @@
 //=====[Declaration of public defines]=========================================
 
 //=====[Declaration of public data types]======================================
+/**
+ * @brief Estados del encoder rotativo.
+*/
 typedef enum{
-    READY = 0,
-    DEBOUNCING = 1
+    READY = 0,      //Encoder listo
+    DEBOUNCING = 1  //Procesando antirebote
 }ENCODER_STATUS;
 
-
+/**
+ * @class rotaryEncoder
+ * 
+ * @brief Clase para gestionar el encoder rotativo.
+ * 
+ * Proporciona funciones para inicializar el encoder, realizar la 
+ * rutina antirebote y gestionar la navegación de menús.
+ */
 class rotaryEncoder{
     public:
     rotaryEncoder(PinName CLKPin,PinName DTPin, Ticker * encoderDebounceTicker);
-    void rotaryEncoderInit(uint8_t maxCountValue);
-    void rotaryEncoderDebounceResetCount();
-    uint8_t rotaryEncoderGetCount();
-    void handleMenuNavigation(int8_t * submenuIndex, int8_t maxIndex);
-    int8_t * rotationCounter;
+    void rotaryEncoderInit(uint8_t maxCountValue);                      //Inicializa el encoder con un valor máximo de conteo    
+    void handleMenuNavigation(int8_t * submenuIndex, int8_t maxIndex);  //Recibe por referencia la variable a incrementar/decrementar y el valor máximo que puede tomar
+    int8_t * rotationCounter;                                           //Contador del encoder
     private:
     uint8_t encoderDebounceStatus;
-    uint8_t debounceCounter;
-    int8_t auxCounter;
     void rotaryEncoderCallback();
     void encoderDeounceCallback();
     DigitalIn DTDigitalPin;
@@ -52,12 +56,6 @@ class rotaryEncoder{
 */
 void rotaryEncoderInit();
 
-/** Defino el estado inicial de cada pulsador y lo incializo
-*  para su posterior uso en la máquina de estados que
-*  gestiona la rutina antirebote.
-*  @param buttons Estructura para la representación del pulsador.
-*/
-void debounceButtonUpdate ();
 //=====[#include guards - end]=================================================
 
 #endif // _ROTARY_ENCODER_H_
