@@ -39,28 +39,14 @@ typedef struct{
 
 } button_t; 
 
-/*!
- * \struct buttonsArray_t
- * \brief Estructura para almacenar todos los pulsadores
- *
- */
+
 typedef struct {
-    button_t button[NUM_BUTTONS];
+    button_t button[NUM_BUTTONS];           /**< Arreglo de pulsadores */
 } buttonsArray_t;
 //=====[Declarations (prototypes) of public functions]=========================
 
-/** Defino el estado inicial de cada pulsador y lo incializo
-*  para su posterior uso en la máquina de estados que
-*  gestiona la rutina antirebote.
-*  @param buttons Estructura para la representación de los pulsadores.
-*/
 void debounceButtonInit (buttonsArray_t * buttonsArray);
 
-/** Defino el estado inicial de cada pulsador y lo incializo
-*  para su posterior uso en la máquina de estados que
-*  gestiona la rutina antirebote.
-*  @param buttons Estructura para la representación del pulsador.
-*/
 void debounceButtonUpdate (buttonsArray_t * buttonsArray);
 //=====[#include guards - end]=================================================
 

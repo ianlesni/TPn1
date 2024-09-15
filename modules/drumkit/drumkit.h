@@ -29,7 +29,6 @@ typedef enum{
 //=====[Declaration of public data types]======================================
 class drumkit {
     public:
-        
         drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort, UnbufferedSerial * BTserialPort, bool commMode); 
         void init(); 
         void processHits(void); 

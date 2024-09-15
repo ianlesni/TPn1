@@ -43,9 +43,12 @@ void debounceButtonInit(buttonsArray_t * buttonsArray)
 {
     for (int buttonIndex = 0; buttonIndex < NUM_BUTTONS; buttonIndex++) 
     {
-        if (1 == buttonsArray->button[buttonIndex].alias->read()) {
+        if (1 == buttonsArray->button[buttonIndex].alias->read())
+        {
             buttonsArray->button[buttonIndex].currentState = BUTTON_DOWN;
-        } else {
+        } 
+        else 
+        {
             buttonsArray->button[buttonIndex].currentState = BUTTON_UP;
         }
         buttonsArray->button[buttonIndex].accumulatedDebounceTime = 0;
@@ -63,19 +66,25 @@ void debounceButtonUpdate(buttonsArray_t * buttonsArray)
     {
         button_t * button = &buttonsArray->button[buttonIndex];
         button->releasedEvent = false;
-        switch (button->currentState) {
+        switch (button->currentState) 
+        {
             case BUTTON_UP:
-                if (1 == button->alias->read()) {
+                if (1 == button->alias->read()) 
+                {
                     button->currentState = BUTTON_FALLING;
                     button->accumulatedDebounceTime = 0;
                 }
                 break;
 
             case BUTTON_FALLING:
-                if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) {
-                    if (1 == button->alias->read()) {
+                if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) 
+                {
+                    if (1 == button->alias->read()) 
+                    {
                         button->currentState = BUTTON_DOWN;
-                    } else {
+                    } 
+                    else 
+                    {
                         button->currentState = BUTTON_UP;
                     }
                 }
@@ -83,18 +92,23 @@ void debounceButtonUpdate(buttonsArray_t * buttonsArray)
                 break;
 
             case BUTTON_DOWN:
-                if (0 == button->alias->read()) {
+                if (0 == button->alias->read()) 
+                {
                     button->currentState = BUTTON_RISING;
                     button->accumulatedDebounceTime = 0;
                 }
                 break;
 
             case BUTTON_RISING:
-                if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) {
-                    if (0 == button->alias->read()) {
+                if (button->accumulatedDebounceTime >= DEBOUNCE_BUTTON_TIME_MS) 
+                {
+                    if (0 == button->alias->read()) 
+                    {
                         button->currentState = BUTTON_UP;
                         button->releasedEvent = true;
-                    } else {
+                    } 
+                    else 
+                    {
                         button->currentState = BUTTON_DOWN;
                     }
                 }
