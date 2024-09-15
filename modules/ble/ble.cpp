@@ -12,11 +12,7 @@
 
 //=====[Declaration of private defines]========================================
 
-
-
 //=====[Declaration of private data types]=====================================
-
-
 
 //=====[Declaration and initialization of public global objects]===============
 
@@ -27,8 +23,6 @@
 //=====[Declaration and initialization of public global variables]=============
 
 //=====[Declarations (prototypes) of private functions]========================
-
-
 
 //=====[Implementations of public functions]===================================
 

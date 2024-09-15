@@ -20,8 +20,8 @@ drumkit::drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort,
     : numOfPads(numPads), drumPads(pads), drumkitUARTSerial(UARTserialPort), drumkitBTSerial(BTserialPort){}
 
 
-void drumkit::init() {
-
+void drumkit::init() 
+{
     communicationMode = UART;
     drumkitChannel = 1;
     drumkitVolume = 64;
@@ -53,12 +53,11 @@ void drumkit::drumkitVolumeUpdate()
         switch(communicationMode)
     {
         case UART:
-
-        midiControlChangeVolume(drumkitVolume, drumkitChannel, drumkitUARTSerial);
+            midiControlChangeVolume(drumkitVolume, drumkitChannel, drumkitUARTSerial);
         break;
 
         case BT:
-        midiControlChangeVolume(drumkitVolume, drumkitChannel, drumkitBTSerial);
+            midiControlChangeVolume(drumkitVolume, drumkitChannel, drumkitBTSerial);
         break;
         
     }
@@ -77,12 +76,11 @@ void drumkit::processHits()
                     switch(communicationMode)
                 {
                     case UART:
-                    midiSendNoteOn(drumPads[0]->drumpadmidiMessage, drumkitUARTSerial);
-
+                        midiSendNoteOn(drumPads[0]->drumpadmidiMessage, drumkitUARTSerial);
                     break;
 
                     case BT:
-                    midiSendNoteOn(drumPads[0]->drumpadmidiMessage, drumkitBTSerial);
+                        midiSendNoteOn(drumPads[0]->drumpadmidiMessage, drumkitBTSerial);
                     break;               
                 }
             }
@@ -91,40 +89,35 @@ void drumkit::processHits()
         {
             if(drumpadIndex == 0) //Si es el hiHat actualizo la nota en funcion de la apertura del pedal de control
             {   
+                uint8_t hiHatPos = drumPads[drumpadIndex]->hiHatControllerPedal->hiHatGetAperture();
+                switch(hiHatPos)
+                {
+                    case OPEN:
+                        drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_OPEN;                 
+                        break;
 
+                    case HALF_OPEN:
+                        drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_HALF_OPEN;
+                        break;
 
-                    uint8_t hiHatPos = drumPads[drumpadIndex]->hiHatControllerPedal->hiHatGetAperture();
-                    switch(hiHatPos)
-                    {
-                        case OPEN:
-                            drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_OPEN;                 
-                            break;
+                    case CLOSE:
+                        drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_CLOSED;
+                        break;
 
-                        case HALF_OPEN:
-                            drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_HALF_OPEN;
-                            break;
-
-                        case CLOSE:
-                            drumPads[drumpadIndex]->drumpadmidiMessage->note = HI_HAT_CLOSED;
-                            break;
-
-                        default:
-                            drumPads[drumpadIndex]->drumpadmidiMessage->note = CRASH_R_CHOKED; 
-                            break;                
-                    }
-                
-
+                    default:
+                        drumPads[drumpadIndex]->drumpadmidiMessage->note = CRASH_R_CHOKED; 
+                        break;                
+                }
             }
 
             switch(communicationMode)
             {
                 case UART:
-                midiSendNoteOn(drumPads[drumpadIndex]->drumpadmidiMessage, drumkitUARTSerial);
-
+                    midiSendNoteOn(drumPads[drumpadIndex]->drumpadmidiMessage, drumkitUARTSerial);
                 break;
 
                 case BT:
-                midiSendNoteOn(drumPads[drumpadIndex]->drumpadmidiMessage, drumkitBTSerial);
+                    midiSendNoteOn(drumPads[drumpadIndex]->drumpadmidiMessage, drumkitBTSerial);
                 break;               
             }
 
@@ -143,7 +136,6 @@ void drumkit::processHits()
 
 //=====[Declaration and initialization of private global variables]============
    
-
 //=====[Declarations (prototypes) of private functions]========================
 
 //=====[Implementations of public functions]===================================

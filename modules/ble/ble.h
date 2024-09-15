@@ -20,8 +20,6 @@ namespace mbed {
     class UnbufferedSerial;
 }
 
-
-
 //=====[Declarations (prototypes) of public functions]=========================
 
 /** Seteo las propiedades de la comuniación serie 
@@ -33,7 +31,6 @@ namespace mbed {
 void initializateBlePort(mbed::UnbufferedSerial * alias);
 
 void BLESetATConfig (mbed::UnbufferedSerial * alias);
-
 
 //=====[#include guards - end]=================================================
 
