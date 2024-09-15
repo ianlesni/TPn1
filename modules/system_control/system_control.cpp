@@ -1,6 +1,6 @@
 /** @file system_control.h.cpp
 *
-* @brief A description of the module’s purpose.
+* @brief Modulo para el control del sistema
 *
 */
 

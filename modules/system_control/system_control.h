@@ -1,9 +1,7 @@
 /** @file system_control.h
 *
-* @brief A description of the module’s purpose.
+* @brief Modulo para el control del sistema
 *
-* 
-* 
 */
 
 //=====[#include guards - begin]===============================================
