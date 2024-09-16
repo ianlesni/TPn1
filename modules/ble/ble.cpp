@@ -1,6 +1,6 @@
-/** @file midi_uart.cpp
+/** @file ble.cpp
 *
-* @brief A description of the module’s purpose.
+* @brief Modulo para implementar la comunicacion Bluetooth
 *
 */
 

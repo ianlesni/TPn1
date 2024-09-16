@@ -1,4 +1,4 @@
-/** @file piezo.h
+/** @file hi_hat.h
 *
 * @brief A description of the module’s purpose.
 *

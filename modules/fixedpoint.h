@@ -2,8 +2,6 @@
 *
 * @brief A description of the module’s purpose.
 *
-* 
-* 
 */
 //=====[#include guards - begin]===============================================
 

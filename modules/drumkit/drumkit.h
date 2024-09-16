@@ -1,12 +1,9 @@
 /** @file drumkit.h
 *
-* @brief A description of the module’s purpose.
-*
-* 
-* 
+* @brief Modulo para la implementación de los drumkits. 
 */
-//=====[#include guards - begin]===============================================
 
+//=====[#include guards - begin]===============================================
 #ifndef _DRUMKIT_H_
 #define _DRUMKIT_H_
 
@@ -14,8 +11,6 @@
 #include "drumpad.h"
 #include "midi_serial.h"
 #include "mbed.h"
-
-
 //=====[Declaration of public defines]=========================================
 #define NUMBER_OF_DRUMPADS_MAX 3
 

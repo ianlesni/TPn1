@@ -1,9 +1,7 @@
 /** @file button.h
 *
-* @brief A description of the module’s purpose.
+* @brief Modulo para la implementación de pulsadores
 *
-* 
-* 
 */
 
 //=====[#include guards - begin]===============================================
@@ -15,8 +13,8 @@
 //=====[Declaration of public defines]=========================================
 
 #define DEBOUNCE_BUTTON_TIME_MS 30       /**< Tiempo de espera asociado al rebote típico de los pulsadores */
-#define TIME_INCREMENT_MS 2              /**< Intervalo incremental del contador de tiempo de rebote  */
-#define NUM_BUTTONS 2                    /**< Número de pulsadores activos de mi sistema  */  
+#define TIME_INCREMENT_MS       2        /**< Intervalo incremental del contador de tiempo de rebote  */
+#define NUM_BUTTONS             2        /**< Número de pulsadores activos de mi sistema  */  
 //=====[Declaration of public data types]======================================
 
 namespace mbed{

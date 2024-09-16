@@ -1,4 +1,4 @@
-/** @file piezo.cpp
+/** @file hi_hat.cpp
 *
 * @brief A description of the module’s purpose.
 *

@@ -1,4 +1,4 @@
-/** @file midi_uart.cpp
+/** @file instrument.cpp
 *
 * @brief A description of the module’s purpose.
 *

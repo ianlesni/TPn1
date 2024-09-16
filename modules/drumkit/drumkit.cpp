@@ -1,7 +1,6 @@
-/** @file piezo.cpp
+/** @file drumkit.cpp
 *
-* @brief A description of the module’s purpose.
-*
+* @brief Modulo para la implementación de los drumkits. 
 */
 
 //=====[Libraries]=============================================================

@@ -1,9 +1,7 @@
 /** @file ble.h
 *
-* @brief A description of the module’s purpose.
+* @brief Modulo para implementar la comunicacion Bluetooth
 *
-* 
-* 
 */
 
 //=====[#include guards - begin]===============================================

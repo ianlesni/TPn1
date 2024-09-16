@@ -1,6 +1,6 @@
-/** @file midi_uart.cpp
+/** @file button.cpp
 *
-* @brief A description of the module’s purpose.
+* @brief Modulo para la implementación de pulsadores
 *
 */
 

@@ -1,4 +1,4 @@
-/** @file system_control.h.cpp
+/** @file system_control.cpp
 *
 * @brief Modulo para el control del sistema
 *
@@ -71,6 +71,7 @@ char Note[3] = " ";
 //=====[Declarations (prototypes) of private functions]========================
 
 //=====[Implementations of public functions]===================================
+
 void initDisplay()
 {
     displayInit(DISPLAY_TYPE_GLCD_ST7920, DISPLAY_CONNECTION_SPI); 
@@ -547,7 +548,6 @@ void confirmSelection(drumkit * activedrumkit)
         case DRUMKIT_MENU:
             if (drumkitMenuIndex == DRUMKIT_MENU_NUMBER) 
             {
-                //Selección de numero de drumkit
                 currentState = SET_DRUMKIT_NUMBER;  
             } 
             else if (drumkitMenuIndex == DRUMKIT_MENU_PADS) 
@@ -560,7 +560,6 @@ void confirmSelection(drumkit * activedrumkit)
             }
             else if (drumkitMenuIndex == DRUMKIT_MENU_SAVE) 
             {
-                //Si apreto aca tengo que guardar en la sd, mostrarlo en pantalla y nada mas
                 currentState = SAVE_OPTION;
             }            
         break;
@@ -583,12 +582,12 @@ void confirmSelection(drumkit * activedrumkit)
         case SET_DRUMPAD_NUMBER:
             if(previousState == SET_DRUMPAD_NUMBER)
             {
-                selectedDrumpad = drumpadNumber;//Selección de numero de drumpad
+                selectedDrumpad = drumpadNumber;    //Selección de numero de drumpad
                 returnToPreviousMenu(activedrumkit);
             }
             else
             {
-                encoder.handleMenuNavigation(&drumpadNumber, 10);  //Sacar esto de aca
+                handleMenuNavigation(); 
             }
         break;
 
@@ -596,12 +595,12 @@ void confirmSelection(drumkit * activedrumkit)
             if(previousState == SET_DRUMPAD_NOTE)
             {
                 selectedNote = drumpadNote;
-                activedrumkit->updateDrumkit(0,selectedDrumpad, selectedNote);               
+                activedrumkit->updateDrumkit(0,selectedDrumpad, selectedNote);  //Actualizo la nota del drumpad              
                 returnToPreviousMenu(activedrumkit);
             }
             else
             {
-                encoder.handleMenuNavigation(&drumpadNote, NUMBER_OF_NOTES);  //Que sea con un define
+                handleMenuNavigation();
             }
         break;
 
@@ -609,12 +608,12 @@ void confirmSelection(drumkit * activedrumkit)
             if(previousState == SET_DRUMPAD_SENSIBILITY)
             {
                 selectedSensibility = drumpadSensibility;
-                activedrumkit->drumPads[selectedDrumpad]->drumpadPiezo->setPiezoSensibility(piezoSensibility[drumpadSensibility]);
+                activedrumkit->drumPads[selectedDrumpad]->drumpadPiezo->setPiezoSensibility(piezoSensibility[drumpadSensibility]);  //Actualizo la sensibilidad del drumpad
                 returnToPreviousMenu(activedrumkit);
             }
             else
             {
-                encoder.handleMenuNavigation(&drumpadSensibility, SENSIBILITY_LEVELS);  
+                handleMenuNavigation(); 
             }
         break;
 
@@ -628,20 +627,20 @@ void confirmSelection(drumkit * activedrumkit)
             {
                 currentState = SET_DRUMKIT_VOLUME;
             }      
-            activedrumkit->drumkitVolumeUpdate();
+            activedrumkit->drumkitVolumeUpdate();   //Actualizo el volumen
         break;
 
         case CONNECTION_MENU:
             if (connectionMenuIndex == CONNECTION_MENU_USB) 
             { 
                 selectedConn = UART;
-                activedrumkit->communicationMode = selectedConn;
+                activedrumkit->communicationMode = selectedConn;    //Actualizo el modo de comunicación
                 returnToPreviousMenu(activedrumkit);
             } 
             else if (connectionMenuIndex == CONNECTION_MENU_BT) 
             {  
                 selectedConn = BT;
-                activedrumkit->communicationMode = selectedConn;
+                activedrumkit->communicationMode = selectedConn;    //Actualizo el modo de comunicación
                 returnToPreviousMenu(activedrumkit);
             }      
         break;
@@ -650,13 +649,12 @@ void confirmSelection(drumkit * activedrumkit)
             if(previousState == SET_DRUMKIT_CHANNEL)
             {
                 activedrumkit->drumkitChannel = drumkitChannel;
-                setMIDIChannel(activedrumkit->drumkitChannel);
+                setMIDIChannel(activedrumkit->drumkitChannel);  //Defino el canal del instrumento
                 returnToPreviousMenu(activedrumkit);
             }
             else
             {
-
-                encoder.handleMenuNavigation(&drumkitChannel, 10);  //Sacar esto de aca
+                handleMenuNavigation();
             }
         break;
 
@@ -669,7 +667,7 @@ void confirmSelection(drumkit * activedrumkit)
             }
             else
             {
-                encoder.handleMenuNavigation(&drumkitVolume, 127);  //Sacar esto de aca
+                handleMenuNavigation();
             }
         break;
 
@@ -711,7 +709,7 @@ void returnToPreviousMenu(drumkit * activedrumkit)
         break;
 
         case SET_DRUMKIT_VOLUME:  
-          if(volumeFromMainMenu == true)
+          if(volumeFromMainMenu == true)    //Si el ajuste de volumen se realizó desde el menu principal->regresa al menu principal
           {
             currentState = MAIN_MENU;              
           }
@@ -738,8 +736,6 @@ void returnToPreviousMenu(drumkit * activedrumkit)
 
 
 
-//=====[Implementations of private functions]==================================
 
-//=====[Implementations of public functions]===================================
 
 /*** end of file ***/
