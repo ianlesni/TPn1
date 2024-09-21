@@ -32,7 +32,7 @@ Desde una perspectiva de utilidad, el sistema ofrece una aplicación directa en 
 
 ### Diagrama en bloques del sistema
 
-![Diagrama en bloques](https://github.com/user-attachments/assets/f28c5ccb-20cd-4d31-93cf-401ee9897b42)
+![Diagrama simplificado](https://github.com/user-attachments/assets/6ac06ecf-2314-44e4-bda9-30e8d5383e90)
 
 ### Estado del arte
 
@@ -192,7 +192,7 @@ Los mensajes de cambio de control (CC) se utilizan para controlar las diversas f
 
 ![image](https://github.com/user-attachments/assets/f4beb6ba-36f9-4bb6-8643-edf217a8a40b)
 
-El priemr byte es el byte de status compuesto por el comando de cambio de control = 0xB y el número de canal afectado por el cambio (el canal MIDI que es un atributo del drumkit).
+El priemr byte es el byte de status compuesto por el comando de cambio de control = 0xB y el número de canal afectado por el cambio (el canal MIDI es un atributo del drumkit).
 El segundo byte es el numero de control.Para esta aplicación se adopto como número de control = 0x3F o 63 en decimal, aprovechando que su función no está definida por el protocolo MIDI. 
 
 ![image](https://github.com/user-attachments/assets/ca9251c7-1490-4470-b62e-17c08bc10a5a)
@@ -202,6 +202,17 @@ Por ultimo, el tercer byte es el valor del volumen del track y es un número del
 # CAPÍTULO 3
 ## Diseño e implementación
 
+En esta sección se detallan las caracteristicas del sistema, sus componentes y las conexiones. A continuación se presenta un diagrama en bloques detallado para comprender la interaccion entre los componentes principales y el microcontrolador, y una imagen de la implementación del sistema con sus respectivas referencias para una asociación directa con el diagrama en bloques.
+
+![Diagrama en bloques](https://github.com/user-attachments/assets/f28c5ccb-20cd-4d31-93cf-401ee9897b42)
 
 
+![Implementacion](https://github.com/user-attachments/assets/06fff157-ff0f-4d7d-8673-89ec883d4c52)
 
+#### Referencias
+- 1: Placa Nucleo F429ZI
+- 2: PC ejecutando los programas Hairless-MIDI, loopMIDI y Reaper
+- 3: Interfaz de control compuesta por un encoder, el pulsador integrado en la placa Nucleo y un display GLCD
+- 4: Drumpads y circuito acondicionador de señal
+- 5: Modulo Bluetooth
+- 6: Pedal de control de hi-hat
