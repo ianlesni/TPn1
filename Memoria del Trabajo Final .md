@@ -5,7 +5,7 @@
 # Ing. Ian Lesnianski
 
 # Resumen
-  Este trabajo presenta el desarrollo de un sistema electrónico que captura acciones musicales mediante drum pads con transductores piezoeléctricos, los cuales convierten los golpes en señales eléctricas que se procesan y transforman en mensajes MIDI. Estos mensajes se transmiten a una computadora vía UART o Bluetooth, donde se interpretan con el software Hairless-MIDI y se envían a una Estación de Audio Digital (DAW), como Reaper, para generar el sonido del instrumento.
+  Este trabajo presenta el desarrollo de un instrumento percusivo electrónico.Es un sistema electrónico que captura acciones musicales mediante drum pads con transductores piezoeléctricos, los cuales convierten los golpes en señales eléctricas que se procesan y transforman en mensajes MIDI. Estos mensajes se transmiten a una computadora, donde se interpretan y se envían a una Estación de Audio Digital (DAW) para generar el sonido del instrumento.
 El sistema incluye una interfaz de usuario con display gráfico, encoder rotativo y pulsadores para facilitar la configuración del drumkit, así como un pedal de control para el hi-hat.
   Este trabajo integra hardware y software para la creación de un dispositivo funcional orientado a la producción musical.
 
@@ -115,23 +115,35 @@ Precondición             | El sistema está encendido, conectado a la PC vía U
 Flujo básico             | El usuario golpea uno de los drum pads del equipo. El display indica en pantalla el nombre del drum pad que se golpeó y los atributos previamente configurados. El usuario utiliza el encoder rotativo para mover el cursor hasta el campo "MIDI Note". El usuario presiona el pulsador del encoder para editar el campo y rotando el encoder selecciona el nuevo valor de nota MIDI. El usuario presiona nuevamente el pulsador del encoder y la configuración finaliza                                                                                                                                      |
 Flujo alternativo        | 2.a El usuario cancela la configuración antes de confirmar, presionando el botón back, y el sistema descarta los cambios y regresa al menú principal                                                                                                                                      |
 
-Elemento del caso de uso | Definición                                                                                                                            |
--------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-N°                       | 3  
-Título                   | Conexión Bluetooth con la PC                                                                                                                                      |
-Disparador               | El usuario habilita el Bluetooth del sistema                                                                                                                                      |
-Precondición             | El sistema está encendido, en el menú de configuración general                                                                                                                                      |
-Flujo básico             | El usuario selecciona la opción "Bluetooth en el menú. El usuario busca desde la PC al "MIDI Drum pad" en la sección de dispositivos Bluetooth y lo empareja. Se establece la conexión y el sistema comienza a enviar los mensajes MIDI vía Bluetooth |                                                                                                                                      |
-Flujo alternativo        | 3.a La conexión falla. El sistema muestra en su display un mensaje de error y regresa al menú principal                                                                                                                             |
+####PONER ACA OTRO CASO DE USO
 
 ### Descripción del hardware empleado
 
 En esta sección se plasmaran los detalles de los módulos de hardware que componen al trabajo final:
 - 1: Transductor piezoeléctirco
-- 2:
-- 3:
-- 4:
-- 5:
+- 2: Circuito acondicionador de señal
+- 3: Sensor infrarrojo TCRT5000
+- 4: Display Gráfico LCD
+- 5: Encoder rotativo
+- 6: Modulo BT HC-06
+
+#### Transductor piezoeléctrico
+El transductor piezoelectrico el el elemento sensor de cada uno de los drum pads. Este genera una diferencia de potencial eléctrica propocional a la intensidad del golpe, lo que permite una interpretación realista de la ejecución del instrumento.
+Debido a la magnitud y caracteristicas de la señal generada por el transductor, es necesario adaptarla a los rangos de voltaje y caracteristicas de la entrada del conversor analogico-digital(ADC) previamente mediante un circuito acondicionador de señal.
+![image](https://github.com/user-attachments/assets/735a64b0-05f1-485f-8945-4def7d6eeb6f)
+
+#### Circuito acondicionador de señal
+La función de este circuito es escalar y ajustar la señal proveniente del transductor piezoelectrico a valores compatibles con la entrada del ADC de la placa Nucleo. Y simultaneamente generar una interrupción para indicar que la señal proveniente del pad corresponde a un golpe sobre el instrumento y no a el ruido ambiente. Esta interrupción es la encargada de indicarle a la placa Nucleo que es momento de realizar una conversion analógica digital.
+![image](https://github.com/user-attachments/assets/97758565-5580-490b-ad3d-eb135b31eeba)
+
+#### Sensor infrarrojo TCRT5000
+Este sensor infrarrojo es el componente principal del control de hi-hat. El mismo cuenta con una salida analógica proporcional a la distancia a la que se encuentra el pedal, permitiendo modificar el sonido asociado al hi-hat correspondiente a las distintas separaciones de sus platillos. Adicionalmente, el sensor cuenta con un circuito comparador configurado para proporcionar una salida digital que se activa cuando el pedal se presiona al máximo, indicando que los platillos se cierran completamente.
+Esto permite un mayor realismo en la ejecución al emular de manera más precisa el comportamiento de un hi-hat tradicional.
+![image](https://github.com/user-attachments/assets/ee7e3b46-d574-493f-97aa-4af5779906f0)
+
+#### Display Gráfico LCD
+El display LCD gráfico de 128x64 bits de conforma la parte visual de la interfaz con el usuario, permitiendo la visualización de las configuraciones y los distintos menús del sistema. Este display utiliza el bus SPI para comunicarse con la placa Nucleo.
+![image](https://github.com/user-attachments/assets/01975f8a-5e48-4673-aa24-58b3550cf648)
 
 ### Introducción al protocolo MIDI
 
