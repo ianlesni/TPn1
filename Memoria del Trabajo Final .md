@@ -202,7 +202,10 @@ Por ultimo, el tercer byte es el valor del volumen del track y es un número del
 # CAPÍTULO 3
 ## Diseño e implementación
 
-En esta sección se detallan las caracteristicas del sistema, sus componentes y las conexiones. A continuación se presenta un diagrama en bloques detallado para comprender la interaccion entre los componentes principales y el microcontrolador, y una imagen de la implementación del sistema con sus respectivas referencias para una asociación directa con el diagrama en bloques.
+En esta sección se detallan las caracteristicas del sistema, sus componentes y conexiones.
+
+### Diagramas de la implementación
+A continuación se presenta un diagrama en bloques detallado para comprender la interaccion entre los componentes principales y el microcontrolador, y una imagen de la implementación del sistema con sus respectivas referencias para una asociación directa con el diagrama en bloques.
 
 ![Diagrama en bloques](https://github.com/user-attachments/assets/f28c5ccb-20cd-4d31-93cf-401ee9897b42)
 
@@ -216,3 +219,23 @@ En esta sección se detallan las caracteristicas del sistema, sus componentes y 
 - 4: Drumpads y circuito acondicionador de señal
 - 5: Modulo Bluetooth
 - 6: Pedal de control de hi-hat
+
+### Conexiones con la placa Nucleo 
+En esta subsección se encuentra la asignación de pines para cada módulo que compone al drumkit.
+
+HC - 06         | Nucleo - F429ZI |  
+----------------|-----------------|
+RX              | PD_5            | 
+TX              | PD_6            | 
++5 V            | 5 V             | 
+GND             | GND             | 
+
+HY - 040        | Nucleo - F429ZI |  
+----------------|-----------------|
+CLK             | PF_8            | 
+DT              | PE_3            | 
+SW              | PG_14           | 
+3,3 V           | 3,3 V           | 
+GND             | GND             | 
+
+
