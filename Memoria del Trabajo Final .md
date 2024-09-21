@@ -125,27 +125,79 @@ En esta sección se plasmaran los detalles de los módulos de hardware que compo
 - 3: Sensor infrarrojo TCRT5000
 - 4: Display Gráfico LCD
 - 5: Encoder rotativo
-- 6: Modulo BT HC-06
+- 6: Pulsaodor
+- 7: Modulo BT HC-06
 
 #### Transductor piezoeléctrico
 El transductor piezoelectrico el el elemento sensor de cada uno de los drum pads. Este genera una diferencia de potencial eléctrica propocional a la intensidad del golpe, lo que permite una interpretación realista de la ejecución del instrumento.
 Debido a la magnitud y caracteristicas de la señal generada por el transductor, es necesario adaptarla a los rangos de voltaje y caracteristicas de la entrada del conversor analogico-digital(ADC) previamente mediante un circuito acondicionador de señal.
+
 ![image](https://github.com/user-attachments/assets/735a64b0-05f1-485f-8945-4def7d6eeb6f)
 
 #### Circuito acondicionador de señal
 La función de este circuito es escalar y ajustar la señal proveniente del transductor piezoelectrico a valores compatibles con la entrada del ADC de la placa Nucleo. Y simultaneamente generar una interrupción para indicar que la señal proveniente del pad corresponde a un golpe sobre el instrumento y no a el ruido ambiente. Esta interrupción es la encargada de indicarle a la placa Nucleo que es momento de realizar una conversion analógica digital.
+
 ![image](https://github.com/user-attachments/assets/97758565-5580-490b-ad3d-eb135b31eeba)
 
 #### Sensor infrarrojo TCRT5000
 Este sensor infrarrojo es el componente principal del control de hi-hat. El mismo cuenta con una salida analógica proporcional a la distancia a la que se encuentra el pedal, permitiendo modificar el sonido asociado al hi-hat correspondiente a las distintas separaciones de sus platillos. Adicionalmente, el sensor cuenta con un circuito comparador configurado para proporcionar una salida digital que se activa cuando el pedal se presiona al máximo, indicando que los platillos se cierran completamente.
 Esto permite un mayor realismo en la ejecución al emular de manera más precisa el comportamiento de un hi-hat tradicional.
+
 ![image](https://github.com/user-attachments/assets/ee7e3b46-d574-493f-97aa-4af5779906f0)
 
 #### Display Gráfico LCD
 El display LCD gráfico de 128x64 bits de conforma la parte visual de la interfaz con el usuario, permitiendo la visualización de las configuraciones y los distintos menús del sistema. Este display utiliza el bus SPI para comunicarse con la placa Nucleo.
+
 ![image](https://github.com/user-attachments/assets/01975f8a-5e48-4673-aa24-58b3550cf648)
 
+### Encoder Rotativo
+Se utilizó un módulo KY-040 que incluye el encoder rotativo con un pulsador integrado. Gracias a este dispositivo,el sistema cuenta con la posibilidad de navegar por las configuraciones y menús, y modificar los valores de los atributos configurables del instrumento. Este encoder complementa la interfaz de usuario y permite configurar el instrumento.
+
+![image](https://github.com/user-attachments/assets/82967340-bac3-429d-a5dd-3dc493c77e1c)
+
+#### Pulsador
+Se hizo uso del pulsador de la placa nucleo como parte del control de la interfaz de usuario. Este pulsador permite retroceder dentro del menu y cancelar las configuraciones.
+
+#### Modulo BT HC-06
+Este módulo bluetooth permite conectar el instrumento a la PC sin la necesidad de calbes, lo que le da mayor versatilida y comodidad en el uso cotidiano. Una vez seleccionado el modo de comunicacion bluetooth, este módulo es el encargado de enviar los mensajes MIDI a la PC mediante una conxión bluetooth. El HC-06 se conecta a la placa Nucleo a traves de una interfaz UART.
+
+![image](https://github.com/user-attachments/assets/ab1bdb41-eb6f-4fdc-93ee-600315e17eb5)
+
+
 ### Introducción al protocolo MIDI
+
+#### MIDI
+MIDI es un acrónimo para "Musical Instrumen Digital Interface". Es principalmente una especificación para conectar y controlar instrumentos musicales electrónicos. La especificación está propiamente detallada en el documento "MIDI 1.0 DETAILED SPECIFICATION" (disponible en https://midi.org/midi-1-0-detailed-specification).
+En este proyecto el controlador MIDI envía tres tipos de mensajes MIDI. Un mensaje encargado de hacer sonar una nota y otro es el encargado de apagarla, asi como tambien un mensaje para el control de volumen del instrumento.
+
+#### Mensajes de canal de voz 
+Los mensajes de activacion y desactivación de la nota pertenecen a los mensajes de canal de voz, y están compuestos por tres bytes:
+
+![ejemplo mensaje MIDI](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/55e81f52-99b3-476d-929b-04a91e87af98)
+
+El primer byte de status se define con el comando Note On = 0x9 o Note Off = 0x8 y el canal MIDI. Por ejemplo, para encender o apagar el canal 0 el byte de estatus debería ser 0x90 y 0x80 respectivamente.
+En el caso de este desarrollo el canal para transmitir la información requerida es configurable, pudiendo adoptar cualquiera de los 16 canales MIDI disponibles.
+Cada vez que se golpea el drum pad se genera un mensaje de Note On. A qué suena ese golpe lo define el segundo byte de datos, la ""nota"" de ese mensaje MIDI. Esa nota no es una nota musical, es un número que representa un instrumento percusivo:
+
+![Mapeo de notas midi](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/2c08b594-ac7b-4a3d-b11f-0a8a383687f4)
+
+Por último, el tercer byte de datos es el parámetro "velocity" que define qué tan fuerte suena el instrumento virtual. En los instrumentos percusivos se asocia a la intensidad del golpe. Este valor se calcula a partir de la medición de la entrada conectada al transductor piezoeléctrico. La diferencia de potencial medida por el ADC se convierte en un valor digital, el cual se escala para producir un número en dentro del rango de 0 a 127, correspondiente al parámetro velocity del protocolo MIDI:
+
+![Velocity](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/8a8005aa-990d-452e-abca-52719e0e45f9)
+
+Para esta versión del desarrollo, las notas se apagan de manera alternativa, de acuerdo con el estándar MIDI. Este método consiste en enviar un mensaje MIDI con el comando Note On y una velocity de 0 (0x00) para la nota que está ejecutándose.
+
+### Mensajes de cambio de control
+Los mensajes de cambio de control (CC) se utilizan para controlar las diversas funciones y parámetros de los instrumentos MIDI. El mensaje de control de volumen es en escencia un mensaje de cambio de control MIDI y está compuesto por tres bytes: 
+
+![image](https://github.com/user-attachments/assets/f4beb6ba-36f9-4bb6-8643-edf217a8a40b)
+
+El priemr byte es el byte de status compuesto por el comando de cambio de control = 0xB y el número de canal afectado por el cambio (el canal MIDI que es un atributo del drumkit).
+El segundo byte es el numero de control.Para esta aplicación se adopto como número de control = 0x3F o 63 en decimal, aprovechando que su función no está definida por el protocolo MIDI. 
+
+![image](https://github.com/user-attachments/assets/ca9251c7-1490-4470-b62e-17c08bc10a5a)
+
+Por ultimo, el tercer byte es el valor del volumen del track y es un número del 0 al 127 que se configura desde la interfaz de usuario del sistema.
 
 # CAPÍTULO 3
 ## Diseño e implementación
