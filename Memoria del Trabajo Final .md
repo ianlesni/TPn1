@@ -223,6 +223,37 @@ A continuación se presenta un diagrama en bloques detallado para comprender la 
 ### Conexiones con la placa Nucleo 
 En esta subsección se encuentra la asignación de pines para cada módulo que compone al drumkit.
 
+DRUMPAD 0       | Nucleo - F429ZI |  
+----------------|-----------------|
+Vout            | PC_3            | 
+Int             | PE_6            | 
+LED             | PB_0            | 
+3,3 V           | 3,3 V           | 
+GND             | GND             | 
+
+DRUMPAD 1       | Nucleo - F429ZI |  
+----------------|-----------------|
+Vout            | PA_3            | 
+Int             | PF_9            | 
+LED             | PB_7            | 
+3,3 V           | 3,3 V           | 
+GND             | GND             | 
+
+DRUMPAD 2       | Nucleo - F429ZI |  
+----------------|-----------------|
+Vout            | PF_3            | 
+Int             | PG_1            | 
+LED             | PB_14           | 
+3,3 V           | 3,3 V           | 
+GND             | GND             | 
+
+TCRT 5000       | Nucleo - F429ZI |  
+----------------|-----------------|
+D0              | PF_7            | 
+A0              | PC_0            | 
+3,3 V           | 3,3 V           | 
+GND             | GND             | 
+
 HC - 06         | Nucleo - F429ZI |  
 ----------------|-----------------|
 RX              | PD_5            | 
@@ -238,4 +269,17 @@ SW              | PG_14           |
 3,3 V           | 3,3 V           | 
 GND             | GND             | 
 
+PULSADOR        | Nucleo - F429ZI |  
+----------------|-----------------|
+USER            | PC_13           |
 
+GLCD            | Nucleo - F429ZI |  
+----------------|-----------------|
+RS              | PD_10           | 
+R/W             | PD_11           | 
+E               | PD_13           |
+PSB             | GND             | 
+VCC             | 5 V             | 
+GND             | GND             |
+BLA             | 5 V             | 
+BLK             | GND             |
