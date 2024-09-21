@@ -282,3 +282,19 @@ VCC             | 5 V             |
 GND             | GND             |
 BLA             | 5 V             | 
 BLK             | GND             |
+
+### Firmware del sistema
+
+#### Lógica y estructura
+
+Aca va un diagrama en bloques de los módulos, main, sistema, subsistema, driver
+
+Aca va un diagrama de los archivos de cada modulo
+
+Aca va una descricpion y rol de cada modulo
+
+Aca va un diagrama de flujo general del main
+
+#### Modulos
+
+Acá va una explicaion más detallada de los modulos y el diagrama de la maquina de estados si es que tiene, y una tabla con las funciones que lo componen explicando para que son y quienes las usan
