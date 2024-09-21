@@ -298,3 +298,19 @@ Aca va un diagrama de flujo general del main
 #### Modulos
 
 Acá va una explicaion más detallada de los modulos y el diagrama de la maquina de estados si es que tiene, y una tabla con las funciones que lo componen explicando para que son y quienes las usan
+
+## CAPITULO 4
+### Ensayos y resultados
+
+#### Pruebas funcionales de hardware
+#### Pruebas de integracion con software
+#### Cumplimiento de requisitos
+
+## CAPITULO 5
+### Conclusiones
+
+#### Resultados obtenidos
+#### Oportunidades de mejora
+
+
+
