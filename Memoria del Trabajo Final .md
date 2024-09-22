@@ -345,13 +345,13 @@ display         |                              |
 rotary_encoder  |                              | 
 button          |                              | 
 
-#### Modulos
+### Modulos
 
 **system_control**
 
 El módulo de código system_control.cpp se encarga de gestionar el control del sistema, incluyendo la interacción con el usuario, la navegación por los menús y la configuración de los parámetros del drumkit.
 
-Dentro de sus funcionalidades principales se encuentran:
+Funcionalidades principales:
 * Interfaz de usuario: Maneja la interacción con el usuario mediante los pulsadores y el encoder rotativo, permitiendo la navegación por los menús y la selección de opciones. El encoder rotativo es el encargado de modificar el indice de navegacion de cada menu y los valores de los atributos configurables.
 * Máquina de estados: Implementa una máquina de estados para controlar el flujo de la aplicación, gestionando los diferentes estados y las transiciones entre ellos.
 * Configuración del sistema: Permite configurar parámetros del sistema, como el canal MIDI del instrumento, el volumen, el sonido de cada drumpad, entre otros.
@@ -398,12 +398,26 @@ updateMenuAndDisplay(drumkit * activedrumkit)|Actualiza el menú y la pantalla e
 initDisplay(void)	|Inicializa los dispositivos de salida (display y LED)|
 visualInterfaceUpdate(void)	| Imprime en el display la nota actual con la que se configuró el drum pad|
 
+**instrument**
 
+El módulo instrument.cpp define un conjunto de datos y funciones relacionadas con la representación de instrumentos musicales, específicamente instrumentos de percusión. Su principal objetivo es proporcionar una interfaz para mapear notas MIDI a instrumentos específicos y obtener información sobre los instrumentos disponibles.
 
+Funcionalidades Principales:
+* Definición de notas MIDI: Establece constantes que representan las notas MIDI correspondientes a diferentes instrumentos de percusión.
+* Arreglos de nombres: Almacena los nombres de los instrumentos asociados a cada nota MIDI.
+* Cálculo del número de instrumentos: Proporciona una función para determinar la cantidad total de instrumentos definidos.
+* Obtención del índice de una nota: Ofrece una función para obtener el índice de un instrumento en los arreglos, dado un valor de nota MIDI.
 
+Función | Descripcion|
+-------|------------|
+getNumOfInstrumentNotes()|Devuelve el número total de instrumentos definidos|
+getNoteIndex(uint8_t midiNote)|Devuelve el índice del instrumento correspondiente a la nota MIDI dada|
 
-
-
+Variable|Tipo|Descripción|
+--------|-----|----------|
+instrumentNote[]|uint8_t|Arreglo que contiene los valores de las notas MIDI para cada instrumento|
+instrumentNoteName[]| const char *	|	Arreglo que contiene los nombres de los instrumentos|
+noteIndex|int8_t	|Índice utilizado para navegar por los arreglos de notas|
 
 
 
