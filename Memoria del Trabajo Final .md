@@ -216,7 +216,7 @@ A continuación se presenta un diagrama en bloques detallado para comprender la 
 - 5: Modulo Bluetooth
 - 6: Pedal de control de hi-hat
 
-### Conexiones con la placa Nucleo 
+### Detalles de módulos y conexiones con la placa Nucleo 
 En esta subsección se encuentra la asignación de pines para cada módulo que compone al drumkit.
 #### Drumpads
 Cada uno de los pads cuenta con un circuito acondicionador de señal como se mencionó previamente. El mismo puede apreciarse en la siguiente imagen:
@@ -249,7 +249,6 @@ El módulo cuenta con un comparador de nivel que ,propiamente ajustado, genera u
 El circuito esquemático del módulo y las conexiones con la placa Nucleo se detallan a continuación:
 ![image](https://github.com/user-attachments/assets/5902c9f9-a0c0-4b07-bf7a-083be03eb319)
 
-
 TCRT 5000       | Nucleo - F429ZI |  
 ----------------|-----------------|
 D0              | PF_7            | 
@@ -257,7 +256,8 @@ A0              | PC_0            |
 3,3 V           | 3,3 V           | 
 GND             | GND             | 
 
-
+#### Conexión bluetooth
+El módulo Bluetooth HC-06 utilizado en este trabajo es un dispositivo esclavo de clase 2 diseñado para la comunicación serial inalámbrica transparente. Una vez emparejado con un dispositivo maestro como una PC, todos los datos recibidos a través de la entrada serial se transmiten inmediatamente por aire. La implementación del módulo HC-06 resultó sencilla debido a su naturaleza transparente y a la facilidad de uso.
 
 HC - 06         | Nucleo - F429ZI |  
 ----------------|-----------------|
@@ -266,28 +266,26 @@ TX              | PD_6            |
 +5 V            | 5 V             | 
 GND             | GND             | 
 
-HY - 040        | Nucleo - F429ZI |  
-----------------|-----------------|
-CLK             | PF_8            | 
-DT              | PE_3            | 
-SW              | PG_14           | 
-3,3 V           | 3,3 V           | 
-GND             | GND             | 
+#### Intefaz de contorl
+La conexión de los elementos que componen la interfaz de control del trabajo final se presenta en la siguiente tabla:
 
-PULSADOR        | Nucleo - F429ZI |  
-----------------|-----------------|
-USER            | PC_13           |
-
-GLCD            | Nucleo - F429ZI |  
-----------------|-----------------|
-RS              | PD_10           | 
-R/W             | PD_11           | 
-E               | PD_13           |
-PSB             | GND             | 
-VCC             | 5 V             | 
+GLCD            | Nucleo - F429ZI |HY - 040        | Nucleo - F429ZI |PULSADOR        | Nucleo - F429ZI |  
+----------------|-----------------|----------------|-----------------|----------------|-----------------|
+RS              | PD_10           |CLK             | PF_8            |USER            | PC_13           | 
+R/W             | PD_11           |DT              | PE_3            | 
+E               | PD_13           |SW              | PG_14           | 
+PSB             | GND             |3,3 V           | 3,3 V           | 
+VCC             | 5 V             |GND             | GND             | 
 GND             | GND             |
-BLA             | 5 V             | 
+BLA             | 5 V             |
 BLK             | GND             |
+
+Tanto el pulsador de usuario como el pulsador incroporado en el módulo HY-040 requieren de una rutina anti rebote para su implementación dado que son pulsadores de caracteristicas similares. 
+Por otro lado, el encoder rotativo permite incrementar o decrementar los valores configurables del sistema y para ello se analiza la aparición de flancos y el estado de los pines del módulo. En el siguiente diagrama se muestran las caracteristicas de las señales frente a una rotacion horaia o antihoraria:
+
+ ![image](https://github.com/user-attachments/assets/b903350d-07f7-4e03-8c25-347a0cf98809)
+
+ Debido a las caracteristicas mecánicas del encoder, esos flancos presentan múltiples rebotes, por lo cual fue necesario un algoritmo de lectura que contemple dicho fenómeno.
 
 ### Firmware del sistema
 
