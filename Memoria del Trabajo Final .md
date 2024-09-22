@@ -251,8 +251,8 @@ El circuito esquemático del módulo y las conexiones con la placa Nucleo se det
 
 TCRT 5000       | Nucleo - F429ZI |  
 ----------------|-----------------|
-D0              | PF_7            | 
-A0              | PC_0            | 
+D               | PF_7            | 
+A               | PC_0            | 
 3,3 V           | 3,3 V           | 
 GND             | GND             | 
 
