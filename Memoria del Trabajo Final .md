@@ -349,7 +349,7 @@ button          |                              |
 
 **system_control**
 
-El módulo de código system_control.cpp se encarga de gestionar el control del sistema, incluyendo la interacción con el usuario, la navegación por los menús y la configuración de los parámetros del drumkit.
+El módulo de código system_control se encarga de gestionar el control del sistema, incluyendo la interacción con el usuario, la navegación por los menús y la configuración de los parámetros del drumkit.
 
 Funcionalidades principales:
 * Interfaz de usuario: Maneja la interacción con el usuario mediante los pulsadores y el encoder rotativo, permitiendo la navegación por los menús y la selección de opciones. El encoder rotativo es el encargado de modificar el indice de navegacion de cada menu y los valores de los atributos configurables.
@@ -400,7 +400,7 @@ visualInterfaceUpdate(void)	| Imprime en el display la nota actual con la que se
 
 **instrument**
 
-El módulo instrument.cpp define un conjunto de datos y funciones relacionadas con la representación de instrumentos musicales, específicamente instrumentos de percusión. Su principal objetivo es proporcionar una interfaz para mapear notas MIDI a instrumentos específicos y obtener información sobre los instrumentos disponibles.
+El módulo instrument define un conjunto de datos y funciones relacionadas con la representación de instrumentos musicales, específicamente instrumentos de percusión. Su principal objetivo es proporcionar una interfaz para mapear notas MIDI a instrumentos específicos y obtener información sobre los instrumentos disponibles.
 
 Funcionalidades Principales:
 * Definición de notas MIDI: Establece constantes que representan las notas MIDI correspondientes a diferentes instrumentos de percusión.
@@ -418,6 +418,96 @@ Variable|Tipo|Descripción|
 instrumentNote[]|uint8_t|Arreglo que contiene los valores de las notas MIDI para cada instrumento|
 instrumentNoteName[]| const char *	|	Arreglo que contiene los nombres de los instrumentos|
 noteIndex|int8_t	|Índice utilizado para navegar por los arreglos de notas|
+
+**Drumkit**
+
+El módulo drumkit implementa la funcionalidad de un conjunto de pads de batería (drumkit) para un sistema MIDI. Este módulo se encarga de la inicialización, gestión de eventos, envío de mensajes MIDI y control de volumen para los pads de batería.
+
+Funcionalidades Principales
+* Inicialización: Configura los parámetros iniciales del drumkit, como el canal MIDI, el volumen y el modo de comunicación (UART o Bluetooth).
+* Procesamiento de Eventos: Detecta y procesa los eventos de golpe en los pads de batería, generando los correspondientes mensajes MIDI.
+* Actualización de Volumen: Permite modificar el volumen general del drumkit.
+* Control de Hi-Hat: Gestiona el control del pedal de control del hi-hat para cambiar su estado (abierto, cerrado, medio abierto).
+
+Función | Descripcion|
+-------|------------|
+drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort, UnbufferedSerial * BTserialPort, bool commMode)|Constructor del objeto drumkit, recibe como parámetros el número de pads, los pads en sí, los puertos seriales UART y Bluetooth, y el modo de comunicación|
+init()|Inicializa el drumkit, configurando los parámetros iniciales y los estados de los pads|
+processHits()	|Procesa los eventos de golpe en los pads, generando los mensajes MIDI correspondientes|
+updateDrumkit(uint8_t drumkitNum, uint8_t drumpadNum, uint8_t drumpadNote)|Actualiza los parámetros de un pad de batería específico|
+drumkitVolumeUpdate()	|Actualiza el volumen del drumkit en función del modo de comunicación|
+
+Variable|	Tipo	|Propósito
+--------|-----|----------|
+numOfPads|	int	|Número de pads de batería|
+drumPads| drumpad**| Puntero a un arreglo de objetos drumpad|
+drumkitUARTSerial	|UnbufferedSerial *| Puntero a un objeto UnbufferedSerial para la comunicación UART|
+drumkitBTSerial|	UnbufferedSerial *|	Puntero a un objeto UnbufferedSerial para la comunicación Bluetooth|
+drumkitNumber|	uint8_t|	Número del drumkit|
+drumkitVolume|	uint8_t|	Volumen del drumkit|
+drumkitChannel|	uint8_t|	Canal MIDI del drumkit|
+communicationMode|	uint8_t|	Modo de comunicación (UART o Bluetooth)|
+
+**Drumpad**
+
+El módulo drumpad es una clase que representa un pad de batería electrónica. Su objetivo principal es detectar golpes en el pad, procesar la señal del golpe y enviar un mensaje MIDI correspondiente al instrumento virtual asociado.
+
+Funcionalidades Principales
+*Inicialización: Configura los parámetros iniciales del pad, como el número, el estado, la nota MIDI asociada y la sensibilidad.
+*Detección de Golpe: Utiliza un sensor piezoeléctrico para detectar golpes en el pad.
+*Procesamiento de Golpe: Calcula el parametro de velocity asociado a la intensidad del golpe y envía un mensaje MIDI con la nota y velocidad correspondientes.
+*Control de LED: Enciende y apaga un LED indicador de golpe.
+*Control de Hi-Hat: Si está habilitado, controla un módulo de hi-hat para simular el pedal de control.
+
+Función | Descripcion|
+-------|------------|
+drumpadInit(uint8_t dpNumber)|Inicializa el pad con el número especificado|
+getDrumpadCheck()|Verifica si se ha detectado un golpe y devuelve el estado actual del pad|
+drumpadProcessHit()|Procesa un golpe detectado, calcula la velocidad y envía el mensaje MID|
+drumpadLedOn()|Enciende el LED indicador de golpe|
+drumpadLedOff()|Apaga el LED indicador de golpe|
+drumpadSetNote(uint8_t note)|Establece la nota MIDI asociada al pad|
+
+Variable|	Tipo	|Propósito
+--------|-----|----------|
+drumpadStatus|	uint8_t|	Estado actual del pad (IDLE o ACTIVE)|
+drumpadLed|	DigitalOut|	Objeto para controlar el LED indicador|
+drumpadNumber|	uint8_t|	Número del pad|
+drumpadmidiMessage|	midiMessage_t *|	Puntero al mensaje MIDI que se enviará|
+drumpadPiezo|	piezoTransducer *|	Puntero al sensor piezoeléctrico|
+hiHatControllerPedal|	hiHat *|	Puntero al módulo de control de hi-hat|
+drumpadSens|	uint8_t|	Sensibilidad del pad|
+hiHatControl|	bool|	Indica si se está controlando el hi-hat|
+
+**hi_hat**
+
+Este módulo se encarga de leer el estado del Hi-Hat de un instrumento electrónico a través de un pin analógico. En base a la tensión leída, determina si el Hi-Hat está abierto, semi-abierto o cerrado. Además, detecta los golpes del pedal mediante una interrupción.
+
+Funcionalidades principales:
+* Inicialización del Hi-Hat
+* Lectura del estado del Hi-Hat (abierto, semi-abierto, cerrado)
+* Detección del golpe del pedal
+* Reseteo de la bandera de golpe del pedal
+
+Función | Descripcion|
+-------|------------|
+hiHat(PinName hiHatADPin, PinName hiHatIntPin, Ticker * hiHatChickPedalTicker)|	Constructor de la clase hiHat. Inicializa los pines y el timer asociado al Hi-Hat|
+hiHatInit()|	Inicializa el estado del Hi-Hat y variables bandera|
+gethiHatStatus()|	Devuelve el estado del Hi-Hat (abierto, semi-abierto, cerrado)|
+hiHatGetAperture()|	Lee el voltaje del Hi-Hat y actualiza su estado|
+resetPedalChick()|	Resetea la bandera que indica si se ha golpeado el pedal del Hi-Hat|
+hiHatTickerCallback()|	Rutina del timer asociado al Hi-Hat. Se encarga de detectar el rebote del pedal|
+hiHatIntCallback()|	Rutina de la interrupción asociada al pin del Hi-Hat. Inicia el timer para detectar rebote|
+
+Variable|	Tipo	|Propósito
+--------|-----|----------|
+hiHatAperture|	Almacena el valor leído del ADC correspondiente al Hi-Hat|
+pedalChick|	Flag que indica si se ha golpeado el pedal del Hi-Hat|
+hiHatInterruptPin|	Pin de interrupción conectado al Hi-Hat para detectar el golpe del pedal|
+hiHatAD|	Pin analógico conectado al Hi-Hat para leer su voltaje|
+hiHatChickPedalTicker|	Timer utilizado para detectar el rebote del pedal del Hi-Hat|
+hiHatStatus|	Variable que almacena el estado del Hi-Hat (abierto, semi-abierto, cerrado)|
+hHflag|	Flag auxiliar utilizada internamente en el código (propósito no detallado en el código proporcionado)|
 
 
 
