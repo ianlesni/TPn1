@@ -131,28 +131,28 @@ En esta sección se plasmaran los detalles de los módulos de hardware que compo
 El transductor piezoelectrico el el elemento sensor de cada uno de los drum pads. Este genera una diferencia de potencial eléctrica propocional a la intensidad del golpe, lo que permite una interpretación realista de la ejecución del instrumento.
 Debido a la magnitud y caracteristicas de la señal generada por el transductor, es necesario adaptarla a los rangos de voltaje y caracteristicas de la entrada del conversor analogico-digital(ADC) previamente mediante un circuito acondicionador de señal.
 
-![image](https://github.com/user-attachments/assets/735a64b0-05f1-485f-8945-4def7d6eeb6f)
+<img src="https://github.com/user-attachments/assets/735a64b0-05f1-485f-8945-4def7d6eeb6f" width="300" height="300">
 
 #### Circuito acondicionador de señal
 La función de este circuito es escalar y ajustar la señal proveniente del transductor piezoelectrico a valores compatibles con la entrada del ADC de la placa Nucleo. Y simultaneamente generar una interrupción para indicar que la señal proveniente del pad corresponde a un golpe sobre el instrumento y no a el ruido ambiente. Esta interrupción es la encargada de indicarle a la placa Nucleo que es momento de realizar una conversion analógica digital.
 
-![image](https://github.com/user-attachments/assets/97758565-5580-490b-ad3d-eb135b31eeba)
+![image|10](https://github.com/user-attachments/assets/97758565-5580-490b-ad3d-eb135b31eeba)
 
 #### Sensor infrarrojo TCRT5000
 Este sensor infrarrojo es el componente principal del control de hi-hat. El mismo cuenta con una salida analógica proporcional a la distancia a la que se encuentra el pedal, permitiendo modificar el sonido asociado al hi-hat correspondiente a las distintas separaciones de sus platillos. Adicionalmente, el sensor cuenta con un circuito comparador configurado para proporcionar una salida digital que se activa cuando el pedal se presiona al máximo, indicando que los platillos se cierran completamente.
 Esto permite un mayor realismo en la ejecución al emular de manera más precisa el comportamiento de un hi-hat tradicional.
 
-![image](https://github.com/user-attachments/assets/ee7e3b46-d574-493f-97aa-4af5779906f0)
+<img src="https://github.com/user-attachments/assets/ee7e3b46-d574-493f-97aa-4af5779906f0" width="300" height="300">
 
 #### Display Gráfico LCD
 El display LCD gráfico de 128x64 bits de conforma la parte visual de la interfaz con el usuario, permitiendo la visualización de las configuraciones y los distintos menús del sistema. Este display utiliza el bus SPI para comunicarse con la placa Nucleo.
 
-![image](https://github.com/user-attachments/assets/01975f8a-5e48-4673-aa24-58b3550cf648)
+<img src="https://github.com/user-attachments/assets/01975f8a-5e48-4673-aa24-58b3550cf648" width="400" height="400">
 
 ### Encoder Rotativo
 Se utilizó un módulo KY-040 que incluye el encoder rotativo con un pulsador integrado. Gracias a este dispositivo,el sistema cuenta con la posibilidad de navegar por las configuraciones y menús, y modificar los valores de los atributos configurables del instrumento. Este encoder complementa la interfaz de usuario y permite configurar el instrumento.
 
-![image](https://github.com/user-attachments/assets/82967340-bac3-429d-a5dd-3dc493c77e1c)
+<img src="https://github.com/user-attachments/assets/82967340-bac3-429d-a5dd-3dc493c77e1c" width="300" height="400">
 
 #### Pulsador
 Se hizo uso del pulsador de la placa nucleo como parte del control de la interfaz de usuario. Este pulsador permite retroceder dentro del menu y cancelar las configuraciones.
@@ -160,8 +160,7 @@ Se hizo uso del pulsador de la placa nucleo como parte del control de la interfa
 #### Modulo BT HC-06
 Este módulo bluetooth permite conectar el instrumento a la PC sin la necesidad de calbes, lo que le da mayor versatilida y comodidad en el uso cotidiano. Una vez seleccionado el modo de comunicacion bluetooth, este módulo es el encargado de enviar los mensajes MIDI a la PC mediante una conxión bluetooth. El HC-06 se conecta a la placa Nucleo a traves de una interfaz UART.
 
-![image](https://github.com/user-attachments/assets/ab1bdb41-eb6f-4fdc-93ee-600315e17eb5)
-
+<img src="https://github.com/user-attachments/assets/ab1bdb41-eb6f-4fdc-93ee-600315e17eb5" width="300" height="400">
 
 ### Introducción al protocolo MIDI
 
@@ -221,30 +220,17 @@ A continuación se presenta un diagrama en bloques detallado para comprender la 
 
 ### Conexiones con la placa Nucleo 
 En esta subsección se encuentra la asignación de pines para cada módulo que compone al drumkit.
+#### Drumpads
 
-DRUMPAD 0       | Nucleo - F429ZI |  
-----------------|-----------------|
-Vout            | PC_3            | 
-Int             | PE_6            | 
-LED             | PB_0            | 
-3,3 V           | 3,3 V           | 
-GND             | GND             | 
+DRUMPAD 0       | Nucleo - F429ZI |DRUMPAD 1       | Nucleo - F429ZI |DRUMPAD 2       | Nucleo - F429ZI |  
+----------------|-----------------|----------------|-----------------|----------------|-----------------|
+Vout            | PC_3            |Vout            | PA_3            |Vout            | PF_3            | 
+Int             | PE_6            |Int             | PF_9            |Int             | PG_1            | 
+LED             | PB_0            |LED             | PB_7            |LED             | PB_14           | 
+3,3 V           | 3,3 V           |3,3 V           | 3,3 V           |3,3 V           | 3,3 V           | 
+GND             | GND             |GND             | GND             |GND             | GND             | 
 
-DRUMPAD 1       | Nucleo - F429ZI |  
-----------------|-----------------|
-Vout            | PA_3            | 
-Int             | PF_9            | 
-LED             | PB_7            | 
-3,3 V           | 3,3 V           | 
-GND             | GND             | 
 
-DRUMPAD 2       | Nucleo - F429ZI |  
-----------------|-----------------|
-Vout            | PF_3            | 
-Int             | PG_1            | 
-LED             | PB_14           | 
-3,3 V           | 3,3 V           | 
-GND             | GND             | 
 
 TCRT 5000       | Nucleo - F429ZI |  
 ----------------|-----------------|
