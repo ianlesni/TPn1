@@ -191,8 +191,8 @@ Los mensajes de cambio de control (CC) se utilizan para controlar las diversas f
 
 ![image](https://github.com/user-attachments/assets/f4beb6ba-36f9-4bb6-8643-edf217a8a40b)
 
-El priemr byte es el byte de status compuesto por el comando de cambio de control = 0xB y el número de canal afectado por el cambio (el canal MIDI es un atributo del drumkit).
-El segundo byte es el numero de control.Para esta aplicación se adopto como número de control = 0x3F o 63 en decimal, aprovechando que su función no está definida por el protocolo MIDI. 
+El primer byte es el byte de status compuesto por el comando de cambio de control = 0xB y el número de canal afectado por el cambio (el canal MIDI es un atributo del drumkit).
+El segundo byte es el numero de control y para esta aplicación se adopto como número de control = 0x3F o 63 en decimal, aprovechando que su función no está definida por el protocolo MIDI. Dicho número de control se asocia al control de volumen del trak asociado al instrumento desde la estación digital de audio.
 
 ![image](https://github.com/user-attachments/assets/ca9251c7-1490-4470-b62e-17c08bc10a5a)
 
