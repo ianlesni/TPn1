@@ -288,20 +288,104 @@ Por otro lado, el encoder rotativo permite incrementar o decrementar los valores
  Debido a las caracteristicas mecánicas del encoder, esos flancos presentan múltiples rebotes, por lo cual fue necesario un algoritmo de lectura que contemple dicho fenómeno.
 
 ### Firmware del sistema
-
+En este trabajo se utilizó Mbed-OS y sus APIs para lograr las funcionalidades requeridas. La premisa fue construir firmware modular y de facil mantenimiento, con el proposito de continuar desarrollando el sistema a futuro.
 #### Lógica y estructura
+A continuación se presenta un diagrama de flujo del codigo main.cpp.
 
-Aca va un diagrama en bloques de los módulos, main, sistema, subsistema, driver
+```mermaid
+flowchart LR
+    A(Inicio) --> B(Inicializar pantalla)
+    B --> C(Crear objetos)
+    C --> D(Inicializar kit de batería)
+    D --> E(Ciclo principal)
+    E --> F(Actualizar botones)
+    F --> G(Procesar estado actual)
+    G --> H(Caso PLAY_SCREEN)
+    H --> I(Manejar eventos de botones)
+    H --> J(Procesar golpes)
+    G --> K(Caso DRUMPAD_MENU)
+    K --> L(Actualizar menú y pantalla)
+    K --> M(Manejar eventos de botones)
+    K --> N(Procesar golpes)
+    G --> O(Caso SET_DRUMPAD_NOTE)
+    O --> L
+    O --> M
+    O --> N
+    G --> P(Caso SET_DRUMPAD_SENSIBILITY)
+    P --> L
+    P --> M
+    P --> N
+    G --> Q(Caso SET_DRUMKIT_VOLUME)
+    Q --> L
+    Q --> M
+    Q --> N
+    G --> R(Caso default)
+    R --> L
+    R --> M
+    R --> N
+    N --> E
+```
+
+
+Los módulos que componen al firmware y su función se detalla como sigue:
 
 Aca va un diagrama de los archivos de cada modulo
 
-Aca va una descricpion y rol de cada modulo
-
-Aca va un diagrama de flujo general del main
+Módulo          | Descripción                  |  
+----------------|------------------------------|
+system_control  |                              | 
+instrument      |                              |
+drumkit         |                              | 
+drumpad         |                              | 
+hi_hat          |                              | 
+piezo           |                              |
+midi_serial     |                              |
+ble             |                              | 
+display         |                              |
+rotary_encoder  |                              | 
+button          |                              | 
 
 #### Modulos
 
-Acá va una explicaion más detallada de los modulos y el diagrama de la maquina de estados si es que tiene, y una tabla con las funciones que lo componen explicando para que son y quienes las usan
+**system_control**
+
+El módulo de código system_control.cpp se encarga de gestionar el control del sistema, incluyendo la interacción con el usuario, la navegación por los menús y la configuración de los parámetros del drumkit.
+
+Dentro de sus funcionalidades principales se encuentran:
+* Interfaz de usuario: Maneja la interacción con el usuario mediante los pulsadores y el encoder rotativo, permitiendo la navegación por los menús y la selección de opciones. El encoder rotativo es el encargado de modificar el indice de navegacion de cada menu y los valores de los atributos configurables.
+* Máquina de estados: Implementa una máquina de estados para controlar el flujo de la aplicación, gestionando los diferentes estados y las transiciones entre ellos.
+* Configuración del sistema: Permite configurar parámetros del sistema, como el canal MIDI del instrumento, el volumen, el sonido de cada drumpad, entre otros.
+* Contro del display: Actualiza la pantalla con la información relevante según el estado actual de la máquina de estados.
+
+```mermaid
+stateDiagram
+    [*] --> MAIN_MENU
+    MAIN_MENU --> PLAY_SCREEN : Select (when mainMenuIndex == MAIN_MENU_PLAY)
+    MAIN_MENU --> CONFIG_MENU : Select (when mainMenuIndex == MAIN_MENU_CONFIG)
+    MAIN_MENU --> SET_DRUMKIT_VOLUME : Select (when mainMenuIndex == MAIN_MENU_SET_VOLUME)
+    PLAY_SCREEN --> MAIN_MENU : Return
+    CONFIG_MENU --> DRUMKIT_MENU : Select (when configMenuIndex == CONFIG_MENU_DRUMKIT)
+    CONFIG_MENU --> CONNECTION_MENU : Select (when configMenuIndex == CONFIG_MENU_CONNECTION)
+    DRUMKIT_MENU --> SET_DRUMKIT_NUMBER : Select (when drumkitMenuIndex == DRUMKIT_MENU_NUMBER)
+    DRUMKIT_MENU --> DRUMPAD_MENU : Select (when drumkitMenuIndex == DRUMKIT_MENU_PADS)
+    DRUMKIT_MENU --> MIDI_DRUMKIT_MENU : Select (when drumkitMenuIndex == DRUMKIT_MENU_MIDI)
+    SET_DRUMKIT_NUMBER --> DRUMKIT_MENU : Return
+    DRUMPAD_MENU --> SET_DRUMPAD_NUMBER : Select (when drumpadMenuIndex == DRUMPAD_MENU_NUMBER)
+    DRUMPAD_MENU --> SET_DRUMPAD_NOTE : Select (when drumpadMenuIndex == DRUMPAD_MENU_NOTE)
+    DRUMPAD_MENU --> SET_DRUMPAD_SENSIBILITY : Select (when drumpadMenuIndex == DRUMPAD_MENU_SENSIBILITY)
+    SET_DRUMPAD_NOTE --> DRUMPAD_MENU : Return
+    SET_DRUMPAD_SENSIBILITY --> DRUMPAD_MENU : Return
+    SET_DRUMPAD_NUMBER --> DRUMPAD_MENU : Return
+    MIDI_DRUMKIT_MENU --> SET_DRUMKIT_CHANNEL : Select (when midiDrumkitMenuIndex == MIDI_DRUMKIT_MENU_CHANNEL)
+    MIDI_DRUMKIT_MENU --> SET_DRUMKIT_VOLUME : Select (when midiDrumkitMenuIndex == MIDI_DRUMKIT_MENU_VOLUME)
+    SET_DRUMKIT_CHANNEL --> MIDI_DRUMKIT_MENU : Return
+    SET_DRUMKIT_VOLUME --> MIDI_DRUMKIT_MENU : Return (if !volumeFromMainMenu)
+    SET_DRUMKIT_VOLUME --> MAIN_MENU : Return (if volumeFromMainMenu)
+    CONNECTION_MENU --> SET_USB_CONN : Select (when connectionMenuIndex == CONNECTION_MENU_USB)
+    CONNECTION_MENU --> SET_BT_CONN : Select (when connectionMenuIndex == CONNECTION_MENU_BT)
+    SET_USB_CONN --> CONNECTION_MENU : Return
+    SET_BT_CONN --> CONNECTION_MENU : Return
+```
 
 ## CAPITULO 4
 ### Ensayos y resultados
