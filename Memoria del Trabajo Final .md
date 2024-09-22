@@ -386,6 +386,26 @@ stateDiagram
     SET_USB_CONN --> CONNECTION_MENU : Return
     SET_BT_CONN --> CONNECTION_MENU : Return
 ```
+Función | Descripcion|
+-------|------------|
+updateDisplay(drumkit * activedrumkit) | Actualiza la pantalla en función del estado actual de la máquina de estados y los valores asociados al drumkit |
+handleMenuNavigation(void) | Maneja la navegación por los menús utilizando el encoder rotativo |
+confirmButtonPressed(void) | Confirma la selección de la opción actual cuando se presiona el botón de confirmación |
+confirmSelection(drumkit * activedrumkit)	| Realiza la acción correspondiente a la opción seleccionada en el menú actual|
+returnToPreviousMenu(drumkit * activedrumkit)	| Devuelve al menú anterior|
+handleButtonEvents(drumkit * activedrumkit, buttonsArray_t * drumPadButtons)|Maneja los eventos de los botones del panel de control|
+updateMenuAndDisplay(drumkit * activedrumkit)|Actualiza el menú y la pantalla en función del estado actual de la máquina de estados|
+initDisplay(void)	|Inicializa los dispositivos de salida (display y LED)|
+visualInterfaceUpdate(void)	| Imprime en el display la nota actual con la que se configuró el drum pad|
+
+
+
+
+
+
+
+
+
 
 ## CAPITULO 4
 ### Ensayos y resultados
