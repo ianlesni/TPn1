@@ -136,10 +136,8 @@ Debido a la magnitud y caracteristicas de la señal generada por el transductor,
 #### Circuito acondicionador de señal
 La función de este circuito es escalar y ajustar la señal proveniente del transductor piezoelectrico a valores compatibles con la entrada del ADC de la placa Nucleo. Y simultaneamente generar una interrupción para indicar que la señal proveniente del pad corresponde a un golpe sobre el instrumento y no a el ruido ambiente. Esta interrupción es la encargada de indicarle a la placa Nucleo que es momento de realizar una conversion analógica digital.
 
-![image|10](https://github.com/user-attachments/assets/97758565-5580-490b-ad3d-eb135b31eeba)
-
 #### Sensor infrarrojo TCRT5000
-Este sensor infrarrojo es el componente principal del control de hi-hat. El mismo cuenta con una salida analógica proporcional a la distancia a la que se encuentra el pedal, permitiendo modificar el sonido asociado al hi-hat correspondiente a las distintas separaciones de sus platillos. Adicionalmente, el sensor cuenta con un circuito comparador configurado para proporcionar una salida digital que se activa cuando el pedal se presiona al máximo, indicando que los platillos se cierran completamente.
+Este sensor infrarrojo es el componente principal del control de hi-hat. El mismo cuenta con una salida analógica proporcional a la distancia a la que se encuentra el pedal, permitiendo modificar el sonido asociado al hi-hat correspondiente a las distintas separaciones de sus platillos (cerrado, parcialmente abierto, completamente abierto). Adicionalmente, el sensor cuenta con un circuito comparador configurado para proporcionar una salida digital que se activa cuando el pedal se presiona al máximo, indicando que los platillos se cierran completamente.
 Esto permite un mayor realismo en la ejecución al emular de manera más precisa el comportamiento de un hi-hat tradicional.
 
 <img src="https://github.com/user-attachments/assets/ee7e3b46-d574-493f-97aa-4af5779906f0" width="300" height="300">
@@ -221,6 +219,13 @@ A continuación se presenta un diagrama en bloques detallado para comprender la 
 ### Conexiones con la placa Nucleo 
 En esta subsección se encuentra la asignación de pines para cada módulo que compone al drumkit.
 #### Drumpads
+Cada uno de los pads cuenta con un circuito acondicionador de señal como se mencionó previamente. El mismo puede apreciarse en la siguiente imagen:
+
+![image](https://github.com/user-attachments/assets/97758565-5580-490b-ad3d-eb135b31eeba)
+
+La implementación de este circuito resuelve la problematica de que los valores de tensión que genera el transductor piezoeléctrico supera ampliamente el rango de tensión que puede recibir el ADC de la placa núcleo. Ademas, gracias a la salida de interrupción que proviene de un circuito comparador, el acondicionador de señal proporciona una indicación a la placa Nucleo para comenzar a realizar la conversión analogica digital cuando se ejecuta el drumpad, evitando la necesidad de muestrear constantemente la entrada ADC para verificar la presencia de un golpe.
+
+La conexión entre los respectivos circuitos acondicionadores y la placa Nucleo se plasman en la siguiente tabla:
 
 DRUMPAD 0       | Nucleo - F429ZI |DRUMPAD 1       | Nucleo - F429ZI |DRUMPAD 2       | Nucleo - F429ZI |  
 ----------------|-----------------|----------------|-----------------|----------------|-----------------|
@@ -230,6 +235,19 @@ LED             | PB_0            |LED             | PB_7            |LED       
 3,3 V           | 3,3 V           |3,3 V           | 3,3 V           |3,3 V           | 3,3 V           | 
 GND             | GND             |GND             | GND             |GND             | GND             | 
 
+#### Pedal de control de hi-hat
+El módulo empleado para definir los distinto sonidos del hi-hat utiliza una sensor optico reflectivo TCRT5000:
+
+![image](https://github.com/user-attachments/assets/d9312e90-b987-43d5-8e58-8047264f9f38)
+
+El sensor se coloca debajo del pedal de hi-hat y el nivel de la señal analógica es proporcional a la distancia a la que se encuentra el pedal.
+
+![image](https://github.com/user-attachments/assets/9a5b0a37-a708-463d-b405-62badc9156d1)
+
+El módulo cuenta con un comparador de nivel que ,propiamente ajustado, genera una salida digital que pasa a nivel bajo cuando el pedal se presiona completamente. Esta señal permite ejecutar el sonido de "hi-hat chick" que es el sonido que se da cuando se presiona completamente el pedal de hi-hat y sus platos chocan. 
+
+El circuito esquemático del módulo y las conexiones con la placa Nucleo se detallan a continuación:
+![image](https://github.com/user-attachments/assets/5902c9f9-a0c0-4b07-bf7a-083be03eb319)
 
 
 TCRT 5000       | Nucleo - F429ZI |  
@@ -238,6 +256,8 @@ D0              | PF_7            |
 A0              | PC_0            | 
 3,3 V           | 3,3 V           | 
 GND             | GND             | 
+
+
 
 HC - 06         | Nucleo - F429ZI |  
 ----------------|-----------------|
@@ -289,6 +309,25 @@ Acá va una explicaion más detallada de los modulos y el diagrama de la maquina
 ### Ensayos y resultados
 
 #### Pruebas funcionales de hardware
+
+##### Drumpads
+
+Luego de un golpe sobre el pad, la respuesta típica del circuito acondicionador de señal se observa en la siguiente captura del osciloscopio:
+
+![image](https://github.com/user-attachments/assets/b8297ecc-34f3-4c12-8c79-e3bc952324b7)
+
+La salida del circuito comparador se encuentra en nivel alto, siempre y cuando la señal proviniente del piezoelectrico no supere el umbral de comparación. En caso de que la supere, la señal pasa a nivel bajo y el flanco negativo que se genera es la indicación para comenzar a procesar la señal del transductor piezoeléctrico.
+Durante el análisis de las señales, se identificaron patrones recurrentes característicos. En la mayoría de los eventos, se observó una secuencia de picos bien definidos.
+
+El primer pico, a menudo de mayor amplitud y superando el umbral establecido, se considera un espurio. Sin embargo, su presencia constante indica una respuesta sistemática del sensor piezoeléctrico. Posteriormente, se identifica un segundo pico, marcado en rojo, cuya amplitud se correlaciona directamente con la intensidad del golpe aplicado. Este pico representa el evento de interés principal y es el que se utiliza para caracterizar el sonido generado.
+En algunos casos, se observa un tercer pico de menor amplitud, interpretado como un segundo espurio.
+
+Si bien esta secuencia de picos es representativa de la mayoría de los eventos, se han observado variaciones en la amplitud relativa de los picos y la presencia de picos adicionales. En golpes suaves, el primer pico puede ser de mayor amplitud que el pico de interés. En otros casos, ambos picos presentan amplitudes similares.
+
+No obstante, las duraciones de los intervalos entre los picos se mantienen relativamente constantes, lo que sugiere una alta reproducibilidad del fenómeno.
+
+En general, la señal obtenida proporciona una buena referencia para la caracterización de los golpes.
+
 #### Pruebas de integracion con software
 #### Cumplimiento de requisitos
 
