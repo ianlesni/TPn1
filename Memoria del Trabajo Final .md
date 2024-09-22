@@ -101,9 +101,9 @@ Elemento del caso de uso | Definición                                          
 N°                       | 1                                                                                                                                                                                 |                                    
 Título                   | Generación de sonido al golpear un drum pad                                                                                                                                      |
 Disparador               | El usuario golpea uno de los drum pads del equipo                                                                                                                                      |
-Precondición             | El sistema está encendido, conectado a la PC vía USB o Bluetooth, en el menú de ejecución                                                                                                                                                          |
+Precondición             | El sistema está encendido, conectado a la PC vía USB o Bluetooth, en el menú de ejecución |
 Flujo básico             | El usuario golpea un drum pad. El sistema detecta el golpe a través de un transductor piezoeléctrico. El sistema genera el mensaje MIDI correspondiente. El mensaje MIDI es enviado a la PC. El software de la PC genera el sonido correspondiente |
-Flujo alternativo        | 1.a El sistema no está conectado a la PC. El drum pad detectará el golpe, pero no se generará el sonido correspondiente                                                                                                                                |
+Flujo alternativo        | 1.a El sistema no está conectado a la PC. El drum pad detectará el golpe, pero no se generará el sonido correspondiente |
 
 Elemento del caso de uso | Definición                                                                                                                            |
 -------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
