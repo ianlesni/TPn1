@@ -501,13 +501,13 @@ hiHatIntCallback()|	Rutina de la interrupción asociada al pin del Hi-Hat. Inici
 
 Variable|	Tipo	|Propósito
 --------|-----|----------|
-hiHatAperture|	Almacena el valor leído del ADC correspondiente al Hi-Hat|
-pedalChick|	Flag que indica si se ha golpeado el pedal del Hi-Hat|
-hiHatInterruptPin|	Pin de interrupción conectado al Hi-Hat para detectar el golpe del pedal|
-hiHatAD|	Pin analógico conectado al Hi-Hat para leer su voltaje|
-hiHatChickPedalTicker|	Timer utilizado para detectar el rebote del pedal del Hi-Hat|
-hiHatStatus|	Variable que almacena el estado del Hi-Hat (abierto, semi-abierto, cerrado)|
-hHflag|	Flag auxiliar utilizada internamente en el código (propósito no detallado en el código proporcionado)|
+hiHatAperture|uint16_t|	Almacena el valor leído del ADC correspondiente al Hi-Hat|
+pedalChick|bool|	Flag que indica si se ha golpeado el pedal del Hi-Hat|
+hiHatInterruptPin|InterruptIn|	Pin de interrupción conectado al Hi-Hat para detectar el golpe del pedal|
+hiHatAD|AnalogIn|	Pin analógico conectado al Hi-Hat para leer su voltaje|
+hiHatChickPedalTicker|Ticker*|	Timer utilizado para detectar el rebote del pedal del Hi-Hat|
+hiHatStatus|HI_HAT_STATE|	Variable que almacena el estado del Hi-Hat (abierto, semi-abierto, cerrado)|
+hHflag|uint8_t|	Flag auxiliar utilizada internamente en el código (propósito no detallado en el código proporcionado)|
 
 
 
