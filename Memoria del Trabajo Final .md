@@ -511,6 +511,38 @@ hiHatChickPedalTicker|Ticker*|	Timer utilizado para detectar el rebote del pedal
 hiHatStatus|HI_HAT_STATE|	Variable que almacena el estado del Hi-Hat (abierto, semi-abierto, cerrado)|
 hHflag|uint8_t|	Flag auxiliar utilizada internamente en el código (propósito no detallado en el código proporcionado)|
 
+**piezo**
+
+El módulo ha sido desarrollado para interactuar con un transductor piezoeléctrico.
+
+Funcionalidades Principales:
+* Inicialización: Configura los parámetros iniciales del transductor, como el umbral de detección y el valor máximo esperado.
+* Adquisición de datos: Muestrea la señal analógica del transductor y calcula el valor máximo.
+* Cálculo de velocidad: Convierte el valor máximo de voltaje en un valor de velocity representativo del impacto, utilizando una función de conversión lineal.
+* Gestión de estados: Mantiene un registro del estado del transductor para facilitar la sincronización con otras partes del sistema.
+* Configuración de sensibilidad: Permite ajustar la sensibilidad del transductor a diferentes niveles, adaptándose a diversas condiciones de uso.
+
+Función | Descripcion|
+-------|------------|
+piezoTransducerInit()|	Inicializa los parámetros del transductor|
+setPiezoSensibility()|	Configura la sensibilidad del transductor|
+getPiezoStatus()|	Devuelve el estado actual del transductor|
+piezoIntCallback()|	Maneja la interrupción generada por el transductor al detectar un golpe|
+piezoReadAndGetMax()|	Lee el valor del ADC y calcula el valor máximo|
+piezoTransducerReset()|	Resetea las variables del transductor|
+calculateSlopeIntercept()|	Calcula los parámetros de la función de conversión lineal|
+piezoConvertVoltToVel()|	Convierte el voltaje máximo en una velocidad de impacto|
+
+Variable|	Tipo	|Propósito
+--------|-----|----------|
+piezoThresholdmV|	int16_t|	Umbral de detección del golpe en milivoltios|
+piezoMaxPeakVoltmV|	int16_t|	Valor máximo de voltaje esperado|
+slopeFixedPoint|	int32_t|	Pendiente de la función de conversión lineal|
+interceptFixedPoint|	int32_t|	Ordenada al origen de la función de conversión lineal|
+piezoMaxSampleValue|	uint16_t|	Valor máximo de muestra registrado|
+piezoMaxVelocity|	uint16_t|	Máxima velocidad calculada|
+elapsedADConvertionTime|	uint16_t|	Contador de tiempo de conversión|
+piezoStatus|	PIEZO_STATE|	Estado actual del transductor|
 
 
 ## CAPITULO 4
