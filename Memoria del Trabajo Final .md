@@ -618,6 +618,38 @@ flowchart LR
     E --> A
 ```
 
+**button**
+
+El módulo de pulsadores implementa una máquina de estados finitos (FSM) para el manejo de pulsadores físicos. Esta FSM se encarga de eliminar los rebotes mecánicos que suelen ocurrir al presionar un botón, proporcionando una señal limpia y confiable.
+
+Funcionalidades Principales:
+* Inicialización: Configura los estados iniciales de los pulsadores y los valores de las variables internas.
+* Actualización: Realiza la transición de estados de los pulsadores en función de su estado actual y la lectura del pin físico.
+* Detección de eventos: Indica si un pulsador ha sido presionado o liberado.
+  
+Función | Descripcion|
+-------|------------|
+debounceButtonInit(buttonsArray_t * buttonsArray)|	Inicializa los estados de los pulsadores y las variables internas|
+debounceButtonUpdate(buttonsArray_t * buttonsArray)|	Actualiza los estados de los pulsadores y detecta eventos de presión y liberación|
+
+Variable|	Tipo	|Propósito
+--------|-----|----------|
+buttonsArray_t::button[NUM_BUTTONS]|	button_t|	Arreglo de pulsadores|
+
+```mermaid
+flowchart LR
+    A[BUTTON_UP] -->|read == 1| B{BUTTON_FALLING}
+    B -->|debounceTime >= DEBOUNCE_BUTTON_TIME_MS && read == 1| C(BUTTON_DOWN)
+    B -->|debounceTime >= DEBOUNCE_BUTTON_TIME_MS && read == 0| A
+    C -->|read == 0| D{BUTTON_RISING}
+    D -->|debounceTime >= DEBOUNCE_BUTTON_TIME_MS && read == 0| A
+    D -->|debounceTime >= DEBOUNCE_BUTTON_TIME_MS && read == 1| C
+```
+
+**display**
+
+Este módulo de código se encarga de controlar una pantalla LCD. Su función principal es permitir la interacción con la pantalla, como escribir texto, borrar la pantalla, y en algunos casos, mostrar imágenes en mapas de bits. El código fue tomado del repositorio de ejemplos del libro en el que esta basado este curso.
+
 ## CAPITULO 4
 ### Ensayos y resultados
 
