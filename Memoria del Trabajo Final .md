@@ -544,6 +544,43 @@ piezoMaxVelocity|	uint16_t|	Máxima velocidad calculada|
 elapsedADConvertionTime|	uint16_t|	Contador de tiempo de conversión|
 piezoStatus|	PIEZO_STATE|	Estado actual del transductor|
 
+**midi_serial**
+
+El módulo midi_serial ha sido diseñado para facilitar la comunicación serial MIDI desde el microcontrolador. Este módulo encapsula las funcionalidades necesarias para enviar mensajes MIDI estándar, como Note On y Note Off, a través de una conexión serial. 
+Funcionalidades Principales
+* Inicialización: Configura la comunicación serial según los parámetros establecidos (baud rate, formato de datos) y asigna valores iniciales a la estructura de mensajes MIDI.
+* Transmisión de Mensajes: Permite enviar mensajes MIDI de tipo Note On y Note Off, así como controlar el volumen de un track MIDI.
+* Configuración de Canales: Permite seleccionar el canal MIDI en el que se transmitirán los mensajes.
+
+Función | Descripcion|
+-------|------------|
+initializaMIDISerial|	Inicializa la comunicación serial y la estructura de mensajes MIDI|
+midiSendNoteOn|	Envía un mensaje MIDI de tipo Note On|
+midiSendNoteOff|	Envía un mensaje MIDI de tipo Note Off|
+setMIDIChannel|	Establece el canal MIDI para los mensajes|
+midiControlChangeVolume|	Controla el volumen de un track MIDI|
+initializaMIDISerialPort|	Inicializa los parámetros del puerto serial|
+
+Variable|	Tipo	|Propósito
+--------|-----|----------|
+noteOn, noteOff, controlChangeVolume|	uint8_t|	Bytes de comando para los diferentes tipos de mensajes MIDI|
+midiMessageStruct|	midiMessage_t|	Estructura que contiene los datos de un mensaje MIDI|
+serialPort|	UnbufferedSerial|	Objeto que representa el puerto serial|
+
+**ble**
+El módulo tiene como objetivo principal establecer y configurar la comunicación Bluetooth utilizando la librería mbed. Este módulo proporciona las funciones necesarias para inicializar el puerto serie y establecer los parámetros de configuración del módulo Bluetooth, permitiendo así la conexión con otros dispositivos compatibles.
+
+Funcionalidades Principales
+Inicialización del Puerto Serie: La función initializateBlePort configura los parámetros del puerto serie (baud rate, formato de datos) para establecer una comunicación serial adecuada con el módulo Bluetooth.
+
+Función | Descripcion|
+-------|------------|
+initializateBlePort|	Inicializa el puerto serie con los parámetros configurados|
+
+Variable|	Tipo	|Propósito
+--------|-----|----------|
+alias| UnbufferedSerial*|	Referencia al objeto que gestiona la comunicación serie|
+
 
 ## CAPITULO 4
 ### Ensayos y resultados
