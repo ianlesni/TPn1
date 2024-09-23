@@ -329,7 +329,9 @@ flowchart LR
 
 Los módulos que componen al firmware y su función se detalla como sigue:
 
-Aca va un diagrama de los archivos de cada modulo
+![Diagrama MÓDULOS](https://github.com/user-attachments/assets/b2aab16e-cc18-49d0-b7e9-395ba6f3f036)
+
+
 
 Módulo          | Descripción                  |  
 ----------------|------------------------------|
@@ -542,6 +544,4 @@ En general, la señal obtenida proporciona una buena referencia para la caracter
 
 #### Resultados obtenidos
 #### Oportunidades de mejora
-
-
 
