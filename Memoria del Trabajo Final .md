@@ -581,6 +581,42 @@ Variable|	Tipo	|Propósito
 --------|-----|----------|
 alias| UnbufferedSerial*|	Referencia al objeto que gestiona la comunicación serie|
 
+**rotary_encoder**
+
+El módulo rotary_encoder proporciona una interfaz para interactuar con un encoder rotativo incremental. Su principal función es contar los pulsos generados por el encoder y convertirlos en una señal digital que puede ser utilizada para controlar diversas funciones, como la navegación por menús o la medición de posiciones angulares.
+
+Funcionalidades Principales:
+* Inicialización: Configura los pines del microcontrolador para leer los pulsos del encoder y establece el valor máximo de conteo.
+* Conteo de pulsos: Detecta los flancos descendentes en el pin CLK del encoder y, en función del estado del pin DT, incrementa o decrementa un contador.
+* Antirebote: Implementa una rutina de antirebote para evitar conteos erróneos debido a los rebotes mecánicos del encoder.
+* Navegación de menús: Permite utilizar el encoder para navegar por menús incrementando o decrementando un índice.
+
+Función | Descripcion|
+-------|------------|
+rotaryEncoder(PinName CLKPin,PinName DTPin, Ticker * encoderDebounceTicker)|	Constructor de la clase. Inicializa los pines del encoder y el ticker para la rutina de antirebote|
+rotaryEncoderInit(uint8_t maxCountValue)|	Inicializa el encoder con un valor máximo de conteo|
+handleMenuNavigation(int8_t * submenuIndex, int8_t maxIndex)|	Asigna el contador del encoder a un índice de menú y establece el valor máximo del índice|
+rotaryEncoderCallback()|	Rutina de interrupción que se ejecuta cada vez que se detecta un flanco descendente en el pin CLK. Cuenta los pulsos y activa la rutina de antirebote|
+encoderDeounceCallback()|	Rutina de antirebote. Se ejecuta después de un tiempo determinado para evitar conteos erróneos|
+
+Variable|	Tipo	|Propósito
+--------|-----|----------|
+encoderDebounceStatus|	ENCODER_STATUS|	Indica si el encoder está listo para procesar un nuevo pulso o si se encuentra en la fase de antirebote|
+DTDigitalPin|	DigitalIn|	Lee el estado del pin DT del encoder para determinar el sentido de rotación|
+CLKInterruptPin|	InterruptIn|	Genera una interrupción cuando se detecta un flanco descendente en el pin CLK|
+encoderDebounceTicker|	Ticker *|	Ticker utilizado para programar la rutina de antirebote|
+maxRotationCounterValue|	uint8_t|	Almacena el valor máximo que puede tomar el contador del encoder|
+rotationCounter|	int8_t *|	Puntero al contador que almacena el valor actual del encoder|
+
+```mermaid
+flowchart LR
+    A[Flanco descendente en CLK] --> B{encoderDebounceStatus == READY?}
+    B -- Sí --> C[Contar pulso y activar antirebote]
+    C --> D[Iniciar timer de antirebote]
+    B -- No --> E[Esperar fin de antirebote]
+    D --> E
+    E --> A
+```
 
 ## CAPITULO 4
 ### Ensayos y resultados
