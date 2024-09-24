@@ -20,7 +20,7 @@ El desarrollo de este sistema involucró la captura y procesamiento de señales 
 
 Desde una perspectiva de utilidad, el sistema ofrece una aplicación directa en el ámbito de la recreación musical, permitiendo al usuario personalizar su set de drum pads y controlar los sonidos generados en tiempo real, lo que lo convierte en una herramienta de gran valor para el entretenimiento y la creación musical. Asimismo, este proyecto se destaca por ser una variante económica frente a los productos comerciales existentes en el mercado, ofreciendo una alternativa accesible.
 
-### Diagrama conceptual
+### Diagrama conceptual 
 
 ![Software empleado y vinculaciones](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/ad0bc1e4-109f-4ae2-be34-47d620211d29)
 #### Referencias:
@@ -653,14 +653,26 @@ Este módulo de código se encarga de controlar una pantalla LCD. Su función pr
 ## CAPITULO 4
 ### Ensayos y resultados
 
+En el siguiente enlace podrán ver el video de demostración del trabajo final para el curso:
+
+[![Alt text](https://img.youtube.com/vi/SOSdtuPKPjc/0.jpg)](https://www.youtube.com/watch?v=SOSdtuPKPjc)
+
 #### Pruebas funcionales de hardware
 
 ##### Drumpads
+
+En la siguiente captura del osciloscopio puede observarse un caso de multiples golpes consecutivos de distinta intensidad sobre el transductor piezoeléctrico:
+
+![Multiples golpes](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/159a578a-5959-40db-931a-65bbf495b904)
 
 Luego de un golpe sobre el pad, la respuesta típica del circuito acondicionador de señal se observa en la siguiente captura del osciloscopio:
 
 ![image](https://github.com/user-attachments/assets/b8297ecc-34f3-4c12-8c79-e3bc952324b7)
 
+Referencias:
+* Fd = Flanco descendente
+* Fa = Flanco ascendente
+  
 La salida del circuito comparador se encuentra en nivel alto, siempre y cuando la señal proviniente del piezoelectrico no supere el umbral de comparación. En caso de que la supere, la señal pasa a nivel bajo y el flanco negativo que se genera es la indicación para comenzar a procesar la señal del transductor piezoeléctrico.
 Durante el análisis de las señales, se identificaron patrones recurrentes característicos. En la mayoría de los eventos, se observó una secuencia de picos bien definidos.
 
@@ -671,9 +683,20 @@ Si bien esta secuencia de picos es representativa de la mayoría de los eventos,
 
 No obstante, las duraciones de los intervalos entre los picos se mantienen relativamente constantes, lo que sugiere una alta reproducibilidad del fenómeno.
 
-En general, la señal obtenida proporciona una buena referencia para la caracterización de los golpes.
+En general, la señal obtenida proporciona una buena referencia para la caracterización de los golpes, y la respuesta del circuito acondicionador de señal llevo al desarrollo del algoritmo para procesar los golpes descartando los picos espurios.
+
 
 #### Pruebas de integracion con software
+
+Las pruebas de interacción entre los programas involucrados para el funcionamiento del trabajo puede observarse en:
+
+
+
+Para verificar el correcto envío de mensajes MIDI a traves de bluetooth se realizaron pruebas de conexion:
+
+![image](https://github.com/user-attachments/assets/0eb8f3e8-7611-45d2-a7a6-7a629a1da482)
+![image](https://github.com/user-attachments/assets/092b1a85-1fa2-4ab7-b4b9-8c3b322519ef)
+
 #### Cumplimiento de requisitos
 
 ## CAPITULO 5
@@ -681,4 +704,8 @@ En general, la señal obtenida proporciona una buena referencia para la caracter
 
 #### Resultados obtenidos
 #### Oportunidades de mejora
+
+
+
+
 
