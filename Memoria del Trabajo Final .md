@@ -120,6 +120,7 @@ En esta sección se plasmaran los detalles de los módulos de hardware que compo
 #### Transductor piezoeléctrico
 El transductor piezoelectrico es el elemento sensor utilizado en cada uno de los drum pads. Este dispositivo genera una diferencia de potencial eléctrica propocional a la intensidad del golpe recibido, lo que permite una interpretación precisa y realista de la ejecución del instrumento.
 Debido a la magnitud y caracteristicas de la señal generada por el transductor,es necesario acondicionarla antes de ser procesada por el conversor analógico-digital (ADC). Para ello, se emplea un circuito acondicionador de señal que ajusta el rango de voltaje y adapta la señal a las características de entrada del ADC.
+
 <img src="https://github.com/user-attachments/assets/735a64b0-05f1-485f-8945-4def7d6eeb6f" width="300" height="300">
 
 #### Circuito acondicionador de señal
@@ -212,7 +213,7 @@ Cada uno de los pads del instrumento cuenta con un circuito acondicionador de se
 
 ![image](https://github.com/user-attachments/assets/97758565-5580-490b-ad3d-eb135b31eeba)
 
-La implementación de este circuito resuelve la problematica de que los valores de tensión que genera el transductor piezoeléctrico supera ampliamente el rango de tensión que puede recibir el ADC de la placa núcleo. Ademas, gracias a la salida de interrupción que proviene de un circuito comparador, el acondicionador de señal proporciona una indicación a la placa Nucleo para comenzar a realizar la conversión analogica digital cuando se ejecuta el drumpad, evitando la necesidad de muestrear constantemente la entrada ADC para verificar la presencia de un golpe.
+Si bien el circuito se diseñó utilizando componentes disponibles y no está optimizado, su implementación resuelve la problematica de que los valores de tensión que genera el transductor piezoeléctrico supera ampliamente el rango de tensión que puede recibir el ADC de la placa núcleo. Ademas, gracias a la salida de interrupción que proviene de un circuito comparador, el acondicionador de señal proporciona una indicación a la placa Nucleo para comenzar a realizar la conversión analogica digital cuando se ejecuta el drumpad, evitando la necesidad de muestrear constantemente la entrada ADC para verificar la presencia de un golpe.
 
 La conexión entre los respectivos circuitos acondicionadores y la placa Nucleo se plasman en la siguiente tabla:
 
@@ -227,16 +228,17 @@ GND             | GND             |GND             | GND             |GND       
 #### Pedal de control de hi-hat
 El módulo empleado para definir los distinto sonidos del hi-hat utiliza una sensor optico reflectivo TCRT5000:
 
-![image](https://github.com/user-attachments/assets/d9312e90-b987-43d5-8e58-8047264f9f38)
+<img src="https://github.com/user-attachments/assets/d9312e90-b987-43d5-8e58-8047264f9f38" width="300" height="300">
 
 El sensor se coloca debajo del pedal de hi-hat y el nivel de la señal analógica es proporcional a la distancia a la que se encuentra el pedal.
 
 ![image](https://github.com/user-attachments/assets/9a5b0a37-a708-463d-b405-62badc9156d1)
 
-El módulo cuenta con un comparador de nivel que ,propiamente ajustado, genera una salida digital que pasa a nivel bajo cuando el pedal se presiona completamente. Esta señal permite ejecutar el sonido de "hi-hat chick" que es el sonido que se da cuando se presiona completamente el pedal de hi-hat y sus platos chocan. 
+El módulo cuenta con un circuito comparador de nivel que ,propiamente ajustado, genera una salida digital que pasa a nivel bajo cuando el pedal se presiona completamente. Esta señal permite ejecutar el sonido de "hi-hat chick" que es el sonido que se da cuando se presiona completamente el pedal de hi-hat y sus platos chocan. 
 
 El circuito esquemático del módulo y las conexiones con la placa Nucleo se detallan a continuación:
-![image](https://github.com/user-attachments/assets/5902c9f9-a0c0-4b07-bf7a-083be03eb319)
+
+<img src="https://github.com/user-attachments/assets/5902c9f9-a0c0-4b07-bf7a-083be03eb319" width="400" height="400">
 
 TCRT 5000       | Nucleo - F429ZI |  
 ----------------|-----------------|
