@@ -118,42 +118,41 @@ En esta sección se plasmaran los detalles de los módulos de hardware que compo
 - 7: Modulo BT HC-06
 
 #### Transductor piezoeléctrico
-El transductor piezoelectrico el el elemento sensor de cada uno de los drum pads. Este genera una diferencia de potencial eléctrica propocional a la intensidad del golpe, lo que permite una interpretación realista de la ejecución del instrumento.
-Debido a la magnitud y caracteristicas de la señal generada por el transductor, es necesario adaptarla a los rangos de voltaje y caracteristicas de la entrada del conversor analogico-digital(ADC) previamente mediante un circuito acondicionador de señal.
-
+El transductor piezoelectrico es el elemento sensor utilizado en cada uno de los drum pads. Este dispositivo genera una diferencia de potencial eléctrica propocional a la intensidad del golpe recibido, lo que permite una interpretación precisa y realista de la ejecución del instrumento.
+Debido a la magnitud y caracteristicas de la señal generada por el transductor,es necesario acondicionarla antes de ser procesada por el conversor analógico-digital (ADC). Para ello, se emplea un circuito acondicionador de señal que ajusta el rango de voltaje y adapta la señal a las características de entrada del ADC.
 <img src="https://github.com/user-attachments/assets/735a64b0-05f1-485f-8945-4def7d6eeb6f" width="300" height="300">
 
 #### Circuito acondicionador de señal
-La función de este circuito es escalar y ajustar la señal proveniente del transductor piezoelectrico a valores compatibles con la entrada del ADC de la placa Nucleo. Y simultaneamente generar una interrupción para indicar que la señal proveniente del pad corresponde a un golpe sobre el instrumento y no a el ruido ambiente. Esta interrupción es la encargada de indicarle a la placa Nucleo que es momento de realizar una conversion analógica digital.
+La función de este circuito es escalar y ajustar la señal proveniente del transductor piezoelectrico para que sea compatible con la entrada del conversor analógico digital de la placa Nucleo. Simultaneamente, este circuito generar una interrupción que indica que la señal proveniente del pad corresponde a un golpe sobre el instrumento. Esta interrupción es la que notifica a la placa Nucleo el momento adecuado para de realizar una conversion analógica digital.
 
 #### Sensor infrarrojo TCRT5000
-Este sensor infrarrojo es el componente principal del control de hi-hat. El mismo cuenta con una salida analógica proporcional a la distancia a la que se encuentra el pedal, permitiendo modificar el sonido asociado al hi-hat correspondiente a las distintas separaciones de sus platillos (cerrado, parcialmente abierto, completamente abierto). Adicionalmente, el sensor cuenta con un circuito comparador configurado para proporcionar una salida digital que se activa cuando el pedal se presiona al máximo, indicando que los platillos se cierran completamente.
-Esto permite un mayor realismo en la ejecución al emular de manera más precisa el comportamiento de un hi-hat tradicional.
+El sensor infrarrojo TCRT5000 es el componente principal del control de hi-hat. Este sensor proporciona una salida analógica proporcional a la distancia a la que se encuentra el pedal, permitiendo modificar el sonido asociado al hi-hat de acuerdo con las distintas separaciones de sus platillos (cerrado, parcialmente abierto, completamente abierto). Además, el sensor incluye un circuito comparador que genera una salida digital cuando el pedal se presiona al máximo, indicando que los platillos se cierran por completo.
+Esto mejora el realismo de la ejecución al emular de manera más precisa el comportamiento de un hi-hat tradicional.
 
 <img src="https://github.com/user-attachments/assets/ee7e3b46-d574-493f-97aa-4af5779906f0" width="300" height="300">
 
 #### Display Gráfico LCD
-El display LCD gráfico de 128x64 bits de conforma la parte visual de la interfaz con el usuario, permitiendo la visualización de las configuraciones y los distintos menús del sistema. Este display utiliza el bus SPI para comunicarse con la placa Nucleo.
+El display LCD gráfico de 128x64 pixeles constituye la parte visual de la interfaz con el usuario, permitiendo la visualización de las configuraciones y los distintos menús del sistema. Este display utiliza el bus SPI para comunicarse con la placa Nucleo.
 
-<img src="https://github.com/user-attachments/assets/01975f8a-5e48-4673-aa24-58b3550cf648" width="400" height="400">
+<img src="https://github.com/user-attachments/assets/01975f8a-5e48-4673-aa24-58b3550cf648" width="500" height="400">
 
 ### Encoder Rotativo
-Se utilizó un módulo KY-040 que incluye el encoder rotativo con un pulsador integrado. Gracias a este dispositivo,el sistema cuenta con la posibilidad de navegar por las configuraciones y menús, y modificar los valores de los atributos configurables del instrumento. Este encoder complementa la interfaz de usuario y permite configurar el instrumento.
+Se utilizó un módulo KY-040 que incluye el encoder rotativo con un pulsador integrado. Este dispositivo permite al usuario navegar por las configuraciones y menús, además de modificar los valores de los atributos configurables del instrumento. El encoder complementa la interfaz de usuario, facilitando la configuración del instrumento.
 
 <img src="https://github.com/user-attachments/assets/82967340-bac3-429d-a5dd-3dc493c77e1c" width="300" height="400">
 
 #### Pulsador
-Se hizo uso del pulsador de la placa nucleo como parte del control de la interfaz de usuario. Este pulsador permite retroceder dentro del menu y cancelar las configuraciones.
+Se hizo uso del pulsador de la placa nucleo como parte del control de la interfaz de usuario, permitiendo retroceder dentro del menu y cancelar los cambios realizados.
 
 #### Modulo BT HC-06
-Este módulo bluetooth permite conectar el instrumento a la PC sin la necesidad de calbes, lo que le da mayor versatilida y comodidad en el uso cotidiano. Una vez seleccionado el modo de comunicacion bluetooth, este módulo es el encargado de enviar los mensajes MIDI a la PC mediante una conxión bluetooth. El HC-06 se conecta a la placa Nucleo a traves de una interfaz UART.
+Este módulo bluetooth permite conectar el instrumento a la PC sin la necesidad de calbes, lo que le da mayor versatilida y comodidad en el uso cotidiano. Una vez seleccionado el modo de comunicación bluetooth, este módulo es el encargado de enviar los mensajes MIDI a la PC mediante una conxión bluetooth. El HC-06 se conecta a la placa Nucleo a traves de una interfaz UART.
 
 <img src="https://github.com/user-attachments/assets/ab1bdb41-eb6f-4fdc-93ee-600315e17eb5" width="300" height="400">
 
 ### Introducción al protocolo MIDI
 
 #### MIDI
-MIDI es un acrónimo para "Musical Instrumen Digital Interface". Es principalmente una especificación para conectar y controlar instrumentos musicales electrónicos. La especificación está propiamente detallada en el documento "MIDI 1.0 DETAILED SPECIFICATION" (disponible en https://midi.org/midi-1-0-detailed-specification).
+MIDI es un acrónimo para "Musical Instrumen Digital Interface".Es principalmente una especificación para conectar y controlar instrumentos musicales electrónicos. La especificación está propiamente detallada en el documento "MIDI 1.0 DETAILED SPECIFICATION" (disponible en https://midi.org/midi-1-0-detailed-specification).
 En este proyecto el controlador MIDI envía tres tipos de mensajes MIDI. Un mensaje encargado de hacer sonar una nota y otro es el encargado de apagarla, asi como tambien un mensaje para el control de volumen del instrumento.
 
 #### Mensajes de canal de voz 
@@ -161,7 +160,7 @@ Los mensajes de activacion y desactivación de la nota pertenecen a los mensajes
 
 ![ejemplo mensaje MIDI](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/55e81f52-99b3-476d-929b-04a91e87af98)
 
-El primer byte de status se define con el comando Note On = 0x9 o Note Off = 0x8 y el canal MIDI. Por ejemplo, para encender o apagar el canal 0 el byte de estatus debería ser 0x90 y 0x80 respectivamente.
+El primer byte de status se define con el comando Note On = 0x9 o Note Off = 0x8 y el canal MIDI. Por ejemplo, para encender o apagar una nota en el canal 0 el byte de estatus debería ser 0x90 y 0x80 respectivamente.
 En el caso de este desarrollo el canal para transmitir la información requerida es configurable, pudiendo adoptar cualquiera de los 16 canales MIDI disponibles.
 Cada vez que se golpea el drum pad se genera un mensaje de Note On. A qué suena ese golpe lo define el segundo byte de datos, la ""nota"" de ese mensaje MIDI. Esa nota no es una nota musical, es un número que representa un instrumento percusivo:
 
@@ -209,7 +208,7 @@ A continuación se presenta un diagrama en bloques detallado para comprender la 
 ### Detalles de módulos y conexiones con la placa Nucleo 
 En esta subsección se encuentra la asignación de pines para cada módulo que compone al drumkit.
 #### Drumpads
-Cada uno de los pads cuenta con un circuito acondicionador de señal como se mencionó previamente. El mismo puede apreciarse en la siguiente imagen:
+Cada uno de los pads del instrumento cuenta con un circuito acondicionador de señal como se mencionó previamente. El mismo puede apreciarse en la siguiente imagen:
 
 ![image](https://github.com/user-attachments/assets/97758565-5580-490b-ad3d-eb135b31eeba)
 
@@ -753,6 +752,7 @@ El presente trabajo establece las bases para un sistema de drum pads MIDI versá
 
 * Almacenamiento de configuraciones: Implementar el almacenamiento de configuraciones en una tarjeta SD permitiría al usuario guardar múltiples drum kits con sus respectivas configuraciones, ampliando significativamente la versatilidad del sistema.
 * Optimización del procesamiento de señales: Profundizar en el análisis y optimización de los algoritmos de procesamiento de señales provenientes de los transductores piezoeléctricos permitiría reducir la latencia y mejorar la precisión en la detección de los golpes.
+* Optimización de hardware: El circuito acondicionador se diseñó con componentes con los que contaba previamente, y no es un diseño optimizado, si bien es funcional, podría mejorarse el circuito.
 * Expansión del número de pads: Una vez optimizado el procesamiento de señales, se podría explorar la integración de un mayor número de pads.
 * Generación de sonido autónoma: Una dirección interesante sería investigar la implementación de un sintetizador digital básico dentro del microcontrolador, lo que permitiría generar los sonidos del instrumento de manera autónoma, sin la necesidad de una computadora.
 
