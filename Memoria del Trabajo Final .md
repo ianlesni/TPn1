@@ -696,10 +696,16 @@ En la siguiente imagen se observa la interaccion de los distintos programas fren
 
 En la siguiente imagen se observa la interaccion de los distintos programas frente a un mensaje de cambio de control enviado por UART, mapeado a una acción especifica dentro de Reaper, en este caso un cambio de volumen del track del instrumento.
 
-![mensajes de control reaper](https://github.com/user-attachments/assets/9c2275a9-e938-422d-93e8-87996565cd3f)
+![mensajes de control reaper](https://github.com/user-attachments/assets/633e0a4b-b62b-46a7-8319-adfd3eacd5d3)
+**Referencias**
+- 1: Editor de atajo para el seteo del volumen del track 1 (track correspondiente al instrumento)
+- 2: Mensaje de cambio de control, proveniente de la placa Nucleo, asociado al atajo
+- 3: Valor de volumen envíado y la correspondiente representación sobre el control deslizante de volumen del track
+
 
 ##### Conexión bluetooth
-Para verificar el correcto envío de mensajes MIDI a traves de bluetooth se realizaron pruebas de conexion:
+
+Para verificar el correcto envío de mensajes MIDI a traves de bluetooth se realizaron pruebas de conexion, donde se seleccionó como puerto serial de entrada del Hairless-MIDI al puerto com correspondiente del módulo bluetooth y se verifica satisfactoriamente la transmisión de mensajes y su respectiva interpretación.
 
 ![conexion bt](https://github.com/user-attachments/assets/f024df4a-ef52-4332-8563-6a80a9a34857)
 
