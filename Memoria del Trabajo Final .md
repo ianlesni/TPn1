@@ -28,8 +28,8 @@ Desde una perspectiva práctica, el sistema ofrece una aplicación directa en el
 
 ### Estado del arte
 
-Para establecer un punto de referencia, se compararon características de productos similares de marcas líderes en el mercado, como Alesis, Roland y Yamaha. Es importante mencionar que este desarrollo no buscó superar las prestaciones de los productos listados a continuación, si no tomar sus características como referencias.
-El  foco del trabajo fué lograr una versión económica que tenga las prestaciónes básicas de este tipo de productos.
+Para establecer un punto de referencia, se compararon características de productos similares ofrecidos por marcas líderes en el mercado, como Alesis, Roland y Yamaha. Cabe destacar que el objetivo de este desarrollo no fué superar las prestaciones de los productos mencionados, si no tomar sus características como referencias para el diseño.
+El  foco del trabajo fué lograr una versión económica que incluyera las prestaciónes básicas de este tipo de productos.
 
 Marca | Alesis        | Roland | Yamaha       | 
 ------|---------------|--------|------------- |
@@ -58,7 +58,7 @@ Links:
 * [Roland-SPD-SX](https://www.roland.com/LATINAMERICA/products/spd-sx/)
 * [Yamaha-DTX-MULTI 12](https://es.yamaha.com/es/products/musical_instruments/drums/el_drums/drum_kits/dtx_multi_pad/features.html)
 
-A partir del análisis de las prestaciones expuestas se determinaron las funcionalidades escenciales del dispositivo en función de los conocimientos adquiridos a lo largo del curso, las limitaciones del hardware y la disponibilidad del mismo. Siendo el resultado un sistema de tres pads de prestaciones similares a un kit básico de batería, con capacidad de comunicación inalámbrica, interfaz de usuario y sonidos configurables.
+A partir del análisis de las características de estos productos comerciales, se determinaron las funcionalidades esenciales del dispositivo, tomando en cuenta los conocimientos adquiridos a lo largo del curso, las limitaciones del hardware disponible y su accesibilidad. Como resultado, se desarrolló un sistema compuesto por tres pads, con prestaciones similares a las de un kit básico de batería, que incluye capacidad de comunicación inalámbrica, interfaz de usuario y sonidos configurables.
 
 # CAPÍTULO 2
 ## Introducción específica
