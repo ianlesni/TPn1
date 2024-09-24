@@ -282,36 +282,35 @@ A continuación se presenta un diagrama de flujo del codigo main.cpp.
 
 ```mermaid
 flowchart LR
-    A(Inicio) --> B(Inicializar pantalla)
-    B --> C(Crear objetos)
-    C --> D(Inicializar kit de batería)
-    D --> E(Ciclo principal)
-    E --> F(Actualizar botones)
-    F --> G(Procesar estado actual)
-    G --> H(Caso PLAY_SCREEN)
-    H --> I(Manejar eventos de botones)
-    H --> J(Procesar golpes)
-    G --> K(Caso DRUMPAD_MENU)
-    K --> L(Actualizar menú y pantalla)
-    K --> M(Manejar eventos de botones)
-    K --> N(Procesar golpes)
-    G --> O(Caso SET_DRUMPAD_NOTE)
-    O --> L
-    O --> M
-    O --> N
-    G --> P(Caso SET_DRUMPAD_SENSIBILITY)
-    P --> L
-    P --> M
-    P --> N
-    G --> Q(Caso SET_DRUMKIT_VOLUME)
-    Q --> L
-    Q --> M
-    Q --> N
-    G --> R(Caso default)
-    R --> L
-    R --> M
-    R --> N
-    N --> E
+    A(Start) --> B(Debounce Buttons)
+    B --> C(Check Current State)
+    C --> D(PLAY_SCREEN)
+    D --> E(Handle Button Events)
+    E --> F(Process Hits)
+    F --> B
+    C --> G(DRUMPAD_MENU)
+    G --> H(Update Menu and Display)
+    H --> I(Handle Button Events)
+    I --> J(Process Hits)
+    J --> B
+    C --> K(SET_DRUMPAD_NOTE)
+    K --> H
+    K --> I
+    K --> J
+    C --> L(SET_DRUMPAD_SENSIBILITY)
+    L --> H
+    L --> I
+    L --> J
+    C --> M(SET_DRUMKIT_VOLUME)
+    M --> H
+    M --> I
+    M --> J
+    C --> N(Default)
+    N --> H
+    N --> I
+    N --> J
+    J --> O(Delay 1ms)
+    O --> B
 ```
 
 
