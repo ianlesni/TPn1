@@ -678,7 +678,11 @@ En general, la señal obtenida proporciona una buena referencia para la caracter
 
 #### Pruebas de integracion con software
 
-Las pruebas de interacción entre los programas involucrados para el funcionamiento del trabajo puede observarse en la siguiente imagen:
+Las pruebas de interacción entre los programas involucrados para el funcionamiento del trabajo puede observarse en los siguientes apartados.
+
+##### Mensajes de canal de voz envaidos desde la placa Nucleo
+
+En la siguiente imagen se observa la interaccion de los distintos programas frente a un mensaje de Note On enviado por UART.
 
 ![Software empleado y vinculaciones](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/ad0bc1e4-109f-4ae2-be34-47d620211d29)
 #### Referencias:
@@ -687,10 +691,18 @@ Las pruebas de interacción entre los programas involucrados para el funcionamie
 - 3: Instrumento virtual que recibe los mensajes MIDI y genera los sonidos acorde
 - 4: Parámetro velocity interpretado en la consola de Debug del Hairless-MIDI y su correspondiente volumen del golpe del instrumento
 - 5: Nota número 36 mapeada al pedal de bombo ejecutándose
+- 
+##### Mensajes de cambio de control enviados desde la placa Nucleo
 
+En la siguiente imagen se observa la interaccion de los distintos programas frente a un mensaje de cambio de control enviado por UART, mapeado a una acción especifica dentro de Reaper, en este caso un cambio de volumen del track del instrumento.
+
+![mensajes de control reaper](https://github.com/user-attachments/assets/9c2275a9-e938-422d-93e8-87996565cd3f)
+
+##### Conexión bluetooth
 Para verificar el correcto envío de mensajes MIDI a traves de bluetooth se realizaron pruebas de conexion:
 
 ![conexion bt](https://github.com/user-attachments/assets/f024df4a-ef52-4332-8563-6a80a9a34857)
+
 
 
 #### Cumplimiento de requisitos
