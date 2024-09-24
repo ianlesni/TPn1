@@ -736,10 +736,25 @@ Grupo de requisito     | ID  | Descripción                                     
 
 ## CAPITULO 5
 ### Conclusiones
-
 #### Resultados obtenidos
+
+A continuación, se detallan los principales logros alcanzados en el desarrollo de este sistema de drum pads MIDI:
+
+* Desarrollo integral de un sistema MIDI: Se diseñó y construyó un sistema electrónico completo, desde la captura de señales analógicas provenientes de los transductores piezoeléctricos hasta la generación de mensajes MIDI estándar, permitiendo su integración con software de producción musical profesional.
+* Flexibilidad en la configuración: Se implementó una interfaz de usuario intuitiva que permite al usuario personalizar diversos parámetros del sistema, como la nota MIDI asignada a cada pad, la sensibilidad al golpe, el canal MIDI, entre otros.
+* Múltiples opciones de conectividad: Se integraron dos métodos de comunicación con la computadora: UART y Bluetooth, brindando al usuario mayor flexibilidad en la elección del método de conexión según sus necesidades.
+* Diseño modular y escalable: La arquitectura del sistema se diseñó de manera modular, facilitando futuras ampliaciones y modificaciones. Por ejemplo, se podría agregar más pads, diferentes tipos de sensores o implementar nuevas funcionalidades.
+
 #### Oportunidades de mejora
 
+El presente trabajo establece las bases para un sistema de drum pads MIDI versátil y personalizable. Sin embargo, existen diversas oportunidades de mejora y funcionalidades adicionales que podrían explorarse en futuras iteraciones:
+
+* Almacenamiento de configuraciones: Implementar el almacenamiento de configuraciones en una tarjeta SD permitiría al usuario guardar múltiples drum kits con sus respectivas configuraciones, ampliando significativamente la versatilidad del sistema.
+* Optimización del procesamiento de señales: Profundizar en el análisis y optimización de los algoritmos de procesamiento de señales provenientes de los transductores piezoeléctricos permitiría reducir la latencia y mejorar la precisión en la detección de los golpes.
+* Expansión del número de pads: Una vez optimizado el procesamiento de señales, se podría explorar la integración de un mayor número de pads.
+* Generación de sonido autónoma: Una dirección interesante sería investigar la implementación de un sintetizador digital básico dentro del microcontrolador, lo que permitiría generar los sonidos del instrumento de manera autónoma, sin la necesidad de una computadora.
+
+La implementación de estas mejoras permitiría transformar este sistema de drum pads en un instrumento musical electrónico aún más potente capaz, acortando la brecha si se lo compara con los instrumentos similares que pueden adquirise en el mercado.
 
 
 
