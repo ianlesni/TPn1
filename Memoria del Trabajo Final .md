@@ -5,7 +5,7 @@
 # Ing. Ian Lesnianski
 
 # Resumen
-Este trabajo presenta el desarrollo de un instrumento de percusión electrónico. El sistema embebido captura acciones musicales mediante drum pads equipados con transductores piezoeléctricos, los cuales convierten los golpes en señales eléctricas. Estas señales se procesan y transforman en mensajes MIDI(Musical Instrument Digital Interface) que se transmiten a una computadora, donde son interpretados y enviados a una estación de audio digital (DAW) para generar el sonido del instrumento.
+Este trabajo presenta el desarrollo de un instrumento de percusión electrónico. El sistema embebido captura acciones musicales mediante drum pads equipados con transductores piezoeléctricos, los cuales convierten los golpes en señales eléctricas. Estas señales se procesan y transforman en mensajes MIDI (Musical Instrument Digital Interface) que se transmiten a una computadora, donde son interpretados y enviados a una estación de audio digital (DAW) para generar el sonido del instrumento.
 
 El sistema también incluye una interfaz de usuario con pantalla gráfica, encoder rotativo y pulsadores, que permiten configurar el drumkit de manera intuitiva, además de un pedal de control para el hi-hat.
 
