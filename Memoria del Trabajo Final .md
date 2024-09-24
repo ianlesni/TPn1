@@ -20,16 +20,6 @@ El desarrollo de este sistema involucró la captura y procesamiento de señales 
 
 Desde una perspectiva de utilidad, el sistema ofrece una aplicación directa en el ámbito de la recreación musical, permitiendo al usuario personalizar su set de drum pads y controlar los sonidos generados en tiempo real, lo que lo convierte en una herramienta de gran valor para el entretenimiento y la creación musical. Asimismo, este proyecto se destaca por ser una variante económica frente a los productos comerciales existentes en el mercado, ofreciendo una alternativa accesible.
 
-### Diagrama conceptual 
-
-![Software empleado y vinculaciones](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/ad0bc1e4-109f-4ae2-be34-47d620211d29)
-#### Referencias:
-- 1: Puerto de entrada del Hairless-MIDI, recibe el mensaje enviado desde la NUCLEO-429ZI
-- 2: Canal virtual que comunica al Hairless-MIDI con el Reaper
-- 3: Instrumento virtual que recibe los mensajes MIDI y genera los sonidos acorde
-- 4: Parámetro velocity interpretado en la consola de Debug del Hairless-MIDI y su correspondiente volumen del golpe del instrumento
-- 5: Nota número 36 mapeada al pedal de bombo ejecutándose
-
 ### Diagrama en bloques del sistema
 
 ![Diagrama simplificado](https://github.com/user-attachments/assets/6ac06ecf-2314-44e4-bda9-30e8d5383e90)
@@ -688,14 +678,20 @@ En general, la señal obtenida proporciona una buena referencia para la caracter
 
 #### Pruebas de integracion con software
 
-Las pruebas de interacción entre los programas involucrados para el funcionamiento del trabajo puede observarse en:
+Las pruebas de interacción entre los programas involucrados para el funcionamiento del trabajo puede observarse en la siguiente imagen:
 
-
+![Software empleado y vinculaciones](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/ad0bc1e4-109f-4ae2-be34-47d620211d29)
+#### Referencias:
+- 1: Puerto de entrada del Hairless-MIDI, recibe el mensaje enviado desde la NUCLEO-429ZI
+- 2: Canal virtual que comunica al Hairless-MIDI con el Reaper
+- 3: Instrumento virtual que recibe los mensajes MIDI y genera los sonidos acorde
+- 4: Parámetro velocity interpretado en la consola de Debug del Hairless-MIDI y su correspondiente volumen del golpe del instrumento
+- 5: Nota número 36 mapeada al pedal de bombo ejecutándose
 
 Para verificar el correcto envío de mensajes MIDI a traves de bluetooth se realizaron pruebas de conexion:
 
-![image](https://github.com/user-attachments/assets/0eb8f3e8-7611-45d2-a7a6-7a629a1da482)
-![image](https://github.com/user-attachments/assets/092b1a85-1fa2-4ab7-b4b9-8c3b322519ef)
+![conexion bt](https://github.com/user-attachments/assets/f024df4a-ef52-4332-8563-6a80a9a34857)
+
 
 #### Cumplimiento de requisitos
 
