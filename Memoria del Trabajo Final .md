@@ -228,7 +228,7 @@ GND             | GND             |GND             | GND             |GND       
 #### Pedal de control de hi-hat
 El módulo empleado para definir los distinto sonidos del hi-hat utiliza una sensor optico reflectivo TCRT5000 colocado debajo del pedal de hi-hat, y el nivel de la señal analógica generada por el módulo es proporcional a la distancia a la que se encuentra el pedal:
 
-![pedal de control de hihat](https://github.com/user-attachments/assets/a8d1fb17-de1c-4f93-8f40-8f1cc5848da0)
+![pedal de control de hihat](https://github.com/user-attachments/assets/93d62360-8321-4487-b2f1-688afc107005)
 
 El módulo cuenta con un circuito comparador de nivel que,propiamente ajustado, genera una salida digital que pasa a nivel bajo cuando el pedal se presiona completamente. Esta señal permite ejecutar el sonido de "hi-hat chick" que es el sonido que se da cuando se presiona completamente el pedal de hi-hat y sus platos chocan. 
 
@@ -253,8 +253,8 @@ TX              | PD_6            |
 +5 V            | 5 V             | 
 GND             | GND             | 
 
-#### Intefaz de contorl
-La conexión de los elementos que componen la interfaz de control del trabajo final se presenta en la siguiente tabla:
+#### Intefaz de usuario
+En esta sección se detallan las conexiones entre los componentes de la interfaz de usuario y la placa Nucleo. La interfaz está compuesta por un display gráfico de cristal líquido (GLCD), un encoder rotativo (HY-040) y un pulsador de usuario incorporado en la placa Nucleo.
 
 GLCD            | Nucleo - F429ZI |HY - 040        | Nucleo - F429ZI |PULSADOR        | Nucleo - F429ZI |  
 ----------------|-----------------|----------------|-----------------|----------------|-----------------|
@@ -267,12 +267,13 @@ GND             | GND             |
 BLA             | 5 V             |
 BLK             | GND             |
 
-Tanto el pulsador de usuario como el pulsador incroporado en el módulo HY-040 requieren de una rutina anti rebote para su implementación dado que son pulsadores de caracteristicas similares. 
-Por otro lado, el encoder rotativo permite incrementar o decrementar los valores configurables del sistema y para ello se analiza la aparición de flancos y el estado de los pines del módulo. En el siguiente diagrama se muestran las caracteristicas de las señales frente a una rotacion horaia o antihoraria:
+Se eligió un GLCD de 128x64 píxeles debido a su mayor tamaño, lo que permite mostrar menús más intuitivos y facilitar la interacción del usuario. 
+El pulsador incroporado en el módulo HY-040 se utiliza para ingresar en los distintos menús y confirmar selecciones, mientras que el pulsador de la placa nucleo se utiliza para retroceder y deshacer selecciones. Ambos pulsadores requieren de una rutina anti rebote para su implementación dado que cuentan con caracteristicas constructivas similares. 
+Por otro lado, el encoder rotativo permite incrementar o decrementar los valores configurables del sistema, y navegar por las distintas opciones presentadas en los menús. Para ello, se analiza la aparición de flancos y el estado de los pines del módulo. En el siguiente diagrama se muestran las caracteristicas de las señales frente a una rotacion horaia o antihoraria:
 
  ![image](https://github.com/user-attachments/assets/b903350d-07f7-4e03-8c25-347a0cf98809)
 
- Debido a las caracteristicas mecánicas del encoder, esos flancos presentan múltiples rebotes, por lo cual fue necesario un algoritmo de lectura que contemple dicho fenómeno.
+Debido a las caracteristicas mecánicas del encoder, esos flancos presentan múltiples rebotes, por lo cual fue necesario un algoritmo de lectura que contemple dicho fenómeno.
 
 ### Firmware del sistema
 En este trabajo se utilizó Mbed-OS y sus APIs para lograr las funcionalidades requeridas. La premisa fue construir firmware modular y de facil mantenimiento, con el proposito de continuar desarrollando el sistema a futuro.
