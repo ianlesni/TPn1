@@ -99,12 +99,10 @@ Elemento del caso de uso | Definición                                          
 -------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
 N°                       | 2  
 Título                   | Configuración de nota MIDI de un drum pad                                                                                                |
-Disparador               | El usuario golpea uno de los drum pads del equipo                                                                                     |
+Disparador               | El usuario selecciona desde el menu de configuración de drumpad el número de drumpad  a modificar                                                                                    |
 Precondición             | El sistema está encendido, conectado a la PC vía USB o Bluetooth, en el menú de configuración de drum pad                                                                                                                  |
-Flujo básico             | El usuario golpea uno de los drum pads del equipo. El display indica en pantalla el nombre del drum pad que se golpeó y los atributos previamente configurados. El usuario utiliza el encoder rotativo para mover el cursor hasta el campo "MIDI Note". El usuario presiona el pulsador del encoder para editar el campo y rotando el encoder selecciona el nuevo valor de nota MIDI. El usuario presiona nuevamente el pulsador del encoder y la configuración finaliza                                                                                                                                      |
+Flujo básico             | El usuario selecciona uno de los drum pads del equipo. El display indica en pantalla el nombre del drum pad y los atributos previamente configurados. El usuario utiliza el encoder rotativo para mover el cursor hasta el campo "MIDI Note". El usuario presiona el pulsador del encoder para editar el campo y rotando el encoder selecciona el nuevo valor de nota MIDI. El usuario presiona nuevamente el pulsador del encoder y la configuración finaliza                                                                                                                                      |
 Flujo alternativo        | 2.a El usuario cancela la configuración antes de confirmar, presionando el botón back, y el sistema descarta los cambios y regresa al menú principal                                                                                                                                      |
-
-####PONER ACA OTRO CASO DE USO
 
 ### Descripción del hardware empleado
 
@@ -685,19 +683,19 @@ Las pruebas de interacción entre los programas involucrados para el funcionamie
 En la siguiente imagen se observa la interaccion de los distintos programas frente a un mensaje de Note On enviado por UART.
 
 ![Software empleado y vinculaciones](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/ad0bc1e4-109f-4ae2-be34-47d620211d29)
-#### Referencias:
+ Referencias:
 - 1: Puerto de entrada del Hairless-MIDI, recibe el mensaje enviado desde la NUCLEO-429ZI
 - 2: Canal virtual que comunica al Hairless-MIDI con el Reaper
 - 3: Instrumento virtual que recibe los mensajes MIDI y genera los sonidos acorde
 - 4: Parámetro velocity interpretado en la consola de Debug del Hairless-MIDI y su correspondiente volumen del golpe del instrumento
 - 5: Nota número 36 mapeada al pedal de bombo ejecutándose
-- 
+  
 ##### Mensajes de cambio de control enviados desde la placa Nucleo
 
 En la siguiente imagen se observa la interaccion de los distintos programas frente a un mensaje de cambio de control enviado por UART, mapeado a una acción especifica dentro de Reaper, en este caso un cambio de volumen del track del instrumento.
 
 ![mensajes de control reaper](https://github.com/user-attachments/assets/633e0a4b-b62b-46a7-8319-adfd3eacd5d3)
-**Referencias**
+ Referencias:
 - 1: Editor de atajo para el seteo del volumen del track 1 (track correspondiente al instrumento)
 - 2: Mensaje de cambio de control, proveniente de la placa Nucleo, asociado al atajo
 - 3: Valor de volumen envíado y la correspondiente representación sobre el control deslizante de volumen del track
