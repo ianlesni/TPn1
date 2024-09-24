@@ -278,8 +278,9 @@ Debido a las caracteristicas mecánicas del encoder, esos flancos presentan múl
 ### Firmware del sistema
 En este trabajo se utilizó Mbed-OS y sus APIs para lograr las funcionalidades requeridas. La premisa fue construir firmware modular y de facil mantenimiento, con el proposito de continuar desarrollando el sistema a futuro.
 #### Lógica y estructura
-A continuación se presenta un diagrama de flujo del codigo main.cpp y del bucle principal
+A continuación se presenta un diagrama de flujo del codigo main.cpp y del bucle principal.
 
+**Diagrama de flujo main.cpp**
 ```mermaid
 flowchart TD
     A(Start) --> B[Initialize display]
@@ -295,6 +296,8 @@ flowchart TD
     K --> L[[Get number of instrument notes]]
     L --> M((Infinite loop))
 ```
+**Diagrama de flujo bucle principal**
+
 ```mermaid
 flowchart LR
     A(Start) --> B(Debounce Buttons)
