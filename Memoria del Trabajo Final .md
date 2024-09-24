@@ -226,19 +226,15 @@ LED             | PB_0            |LED             | PB_7            |LED       
 GND             | GND             |GND             | GND             |GND             | GND             | 
 
 #### Pedal de control de hi-hat
-El módulo empleado para definir los distinto sonidos del hi-hat utiliza una sensor optico reflectivo TCRT5000:
+El módulo empleado para definir los distinto sonidos del hi-hat utiliza una sensor optico reflectivo TCRT5000 colocado debajo del pedal de hi-hat, y el nivel de la señal analógica generada por el módulo es proporcional a la distancia a la que se encuentra el pedal:
 
-<img src="https://github.com/user-attachments/assets/d9312e90-b987-43d5-8e58-8047264f9f38" width="300" height="300">
+![pedal de control de hihat](https://github.com/user-attachments/assets/a8d1fb17-de1c-4f93-8f40-8f1cc5848da0)
 
-El sensor se coloca debajo del pedal de hi-hat y el nivel de la señal analógica es proporcional a la distancia a la que se encuentra el pedal.
-
-![image](https://github.com/user-attachments/assets/9a5b0a37-a708-463d-b405-62badc9156d1)
-
-El módulo cuenta con un circuito comparador de nivel que ,propiamente ajustado, genera una salida digital que pasa a nivel bajo cuando el pedal se presiona completamente. Esta señal permite ejecutar el sonido de "hi-hat chick" que es el sonido que se da cuando se presiona completamente el pedal de hi-hat y sus platos chocan. 
+El módulo cuenta con un circuito comparador de nivel que,propiamente ajustado, genera una salida digital que pasa a nivel bajo cuando el pedal se presiona completamente. Esta señal permite ejecutar el sonido de "hi-hat chick" que es el sonido que se da cuando se presiona completamente el pedal de hi-hat y sus platos chocan. 
 
 El circuito esquemático del módulo y las conexiones con la placa Nucleo se detallan a continuación:
 
-<img src="https://github.com/user-attachments/assets/5902c9f9-a0c0-4b07-bf7a-083be03eb319" width="400" height="400">
+<img src="https://github.com/user-attachments/assets/5902c9f9-a0c0-4b07-bf7a-083be03eb319" width="600" height="400">
 
 TCRT 5000       | Nucleo - F429ZI |  
 ----------------|-----------------|
