@@ -814,7 +814,7 @@ El presente trabajo establece las bases para un sistema de drum pads MIDI versá
 * Expansión del número de pads: Una vez optimizado el procesamiento de señales, se podría explorar la integración de un mayor número de pads.
 * Generación de sonido autónoma: Una dirección interesante sería investigar la implementación de un sintetizador digital básico dentro del microcontrolador, lo que permitiría generar los sonidos del instrumento de manera autónoma, sin la necesidad de una computadora.
 
-La implementación de estas mejoras permitiría transformar este sistema de drum pads en un instrumento musical electrónico aún más potente capaz, acortando la brecha si se lo compara con los instrumentos similares que pueden adquirise en el mercado.
+La implementación de estas mejoras permitiría transformar este sistema de drum pads en un instrumento musical electrónico aún más potente, acortando la brecha si se lo compara con los instrumentos similares que pueden adquirise en el mercado.
 
 
 
