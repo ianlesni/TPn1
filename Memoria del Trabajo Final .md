@@ -141,12 +141,12 @@ El display LCD gráfico de 128x64 pixeles constituye la parte visual de la inter
 <img src="https://github.com/user-attachments/assets/01975f8a-5e48-4673-aa24-58b3550cf648" width="500" height="400">
 
 ### Encoder Rotativo
-Se utilizó un módulo KY-040 que incluye el encoder rotativo con un pulsador integrado. Este dispositivo permite al usuario navegar por las configuraciones y menús, además de modificar los valores de los atributos configurables del instrumento. El encoder complementa la interfaz de usuario, facilitando la configuración del instrumento.
+Se utilizó un módulo KY-040 que incluye el encoder rotativo con un pulsador integrado (okButton). Este dispositivo permite al usuario navegar por las configuraciones y menús, además de modificar los valores de los atributos configurables del instrumento. El encoder complementa la interfaz de usuario, facilitando la configuración del instrumento.
 
 <img src="https://github.com/user-attachments/assets/82967340-bac3-429d-a5dd-3dc493c77e1c" width="300" height="400">
 
 #### Pulsador
-Se hizo uso del pulsador de la placa nucleo como parte del control de la interfaz de usuario, permitiendo retroceder dentro del menu y cancelar los cambios realizados.
+Se hizo uso del pulsador de la placa nucleo como parte del control de la interfaz de usuario (backButton), permitiendo retroceder dentro del menu y cancelar los cambios realizados.
 
 #### Modulo BT HC-06
 Este módulo bluetooth permite conectar el instrumento a la PC sin la necesidad de calbes, lo que le da mayor versatilida y comodidad en el uso cotidiano. Una vez seleccionado el modo de comunicación bluetooth, este módulo es el encargado de enviar los mensajes MIDI a la PC mediante una conxión bluetooth. El HC-06 se conecta a la placa Nucleo a traves de una interfaz UART.
