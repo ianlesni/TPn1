@@ -18,13 +18,13 @@ El presente trabajo consiste en el desarrollo de un sistema electrónico orienta
 
 La transmisión de los mensajes MIDI hacia una computadora se llevó a cabo utilizando dos opciones de comunicación: una interfaz UART o una conexión Bluetooth. Los mensajes recibidos en el puerto COM de la PC son interpretados por el software Hairless-MIDI, que reenvía estos datos a un puerto MIDI de salida virtual, creado mediante el uso del software loopMIDI. Esto permite la interacción con una Estación de Audio Digital (DAW, por sus siglas en inglés), en este caso Reaper, que fue utilizada para generar el sonido del instrumento.
 
-El desarrollo de este sistema involucró la captura y procesamiento de señales musicales, como también la implementación de una interfaz de usuario para facilitar la configuración de distintos atributos del instrumento. Dicha interfaz incluyó un display gráfico LCD, un encoder rotativo y dos pulsadores, que permiten al usuario navegar por los menús del sistema y ajustar las configuraciones según sus necesidades. Asimismo, se añadió un pedal de control de hi-hat, mejorando la capacidad del dispositivo para emular el comportamiento de un set de batería tradicional, brindando una experiencia más realista en la ejecución musical.
+El desarrollo de este sistema involucró la captura y procesamiento de señales musicales, como también la implementación de una interfaz de usuario para facilitar la configuración de distintos atributos del instrumento. Dicha interfaz incluyó un display gráfico LCD, un encoder rotativo y dos pulsadores, que permiten al usuario navegar por los menús del sistema y ajustar las configuraciones según sus necesidades. Asimismo, se añadió un pedal de control de hi-hat que permite modificar el sonido del pad asociado al hi-hat en función de la posición del pedal, mejorando la capacidad del dispositivo para emular el comportamiento de un set de batería tradicional, brindando una experiencia más realista en la ejecución musical.
 
 Desde una perspectiva práctica, el sistema ofrece una aplicación directa en el ámbito de la recreación musical, permitiendo al usuario personalizar su set de drum pads y controlar los sonidos generados en tiempo real, lo que lo convierte en una herramienta de gran valor para el entretenimiento y la creación musical. Asimismo, este proyecto se destaca por ser una variante económica frente a los productos comerciales existentes en el mercado, ofreciendo una alternativa accesible y funcional.
 
 ### Diagrama en bloques del sistema
 
-![Diagrama simplificado](https://github.com/user-attachments/assets/6ac06ecf-2314-44e4-bda9-30e8d5383e90)
+![Diagrama simple v2](https://github.com/user-attachments/assets/f2abd2d5-0c41-4cd9-863a-1e9ee2b54874)
 
 ### Estado del arte
 
@@ -193,8 +193,7 @@ En esta sección se detallan las caracteristicas del sistema, sus componentes y 
 ### Diagramas de la implementación
 A continuación se presenta un diagrama en bloques detallado para comprender la interaccion entre los componentes principales y el microcontrolador, y una imagen de la implementación del sistema con sus respectivas referencias para una asociación directa con el diagrama en bloques.
 
-![Diagrama en bloques](https://github.com/user-attachments/assets/f28c5ccb-20cd-4d31-93cf-401ee9897b42)
-
+![Diagrama simplificado v2](https://github.com/user-attachments/assets/1a277421-fd3b-43a6-b270-dce411d2a2b8)
 
 ![Implementacion](https://github.com/user-attachments/assets/06fff157-ff0f-4d7d-8673-89ec883d4c52)
 
