@@ -738,11 +738,11 @@ En general, la señal obtenida proporciona una buena referencia para la caracter
 
 #### Pruebas de integracion con software
 
-Las pruebas de interacción entre los programas involucrados para el funcionamiento del trabajo puede observarse en los siguientes apartados.
+A continuación, se detallan las pruebas realizadas para verificar la interacción entre los diferentes componentes del sistema y asegurar su correcto funcionamiento.
 
 ##### Mensajes de canal de voz envaidos desde la placa Nucleo
 
-En la siguiente imagen se observa la interaccion de los distintos programas frente a un mensaje de Note On enviado por UART.
+En la siguiente imagen puede apreciarse en detalle la interaccion de los distintos ivolucrados programas frente a un mensaje MIDI de Note On desde la placa Nucleo por UART.
 
 ![Software empleado y vinculaciones](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/ad0bc1e4-109f-4ae2-be34-47d620211d29)
  Referencias:
@@ -754,7 +754,7 @@ En la siguiente imagen se observa la interaccion de los distintos programas fren
   
 ##### Mensajes de cambio de control enviados desde la placa Nucleo
 
-En la siguiente imagen se observa la interaccion de los distintos programas frente a un mensaje de cambio de control enviado por UART, mapeado a una acción especifica dentro de Reaper, en este caso un cambio de volumen del track del instrumento.
+Esta imagen ilustra como los mensajes MIDI de cambio de control, enviados desde la placa Nucleo, son utilizados par amodificar parámetros en tiempo real dentro del software Reaper. En este caso, se muestra un cambio de volumen en un track específico.
 
 ![mensajes de control reaper](https://github.com/user-attachments/assets/633e0a4b-b62b-46a7-8319-adfd3eacd5d3)
  Referencias:
@@ -762,38 +762,35 @@ En la siguiente imagen se observa la interaccion de los distintos programas fren
 - 2: Mensaje de cambio de control, proveniente de la placa Nucleo, asociado al atajo
 - 3: Valor de volumen envíado y la correspondiente representación sobre el control deslizante de volumen del track
 
-
 ##### Conexión bluetooth
 
-Para verificar el correcto envío de mensajes MIDI a traves de bluetooth se realizaron pruebas de conexion, donde se seleccionó como puerto serial de entrada del Hairless-MIDI al puerto com correspondiente del módulo bluetooth y se verifica satisfactoriamente la transmisión de mensajes y su respectiva interpretación.
+Se realizaron pruebas de conectividad Bluetooth para validar la transmisión de mensajes MIDI. Se configuró el programa Hairless-MIDI para recibir datos a través del puerto COM correspondiente al módulo Bluetooth. Los resultados obtenidos confirmaron la recepción exitosa de los mensajes y su correcta interpretación por parte del software.
 
-![conexion bt](https://github.com/user-attachments/assets/f024df4a-ef52-4332-8563-6a80a9a34857)
-
-
+![conexion bt](https://github.com/user-attachments/assets/ea9910f3-f410-4785-9ca9-ebea5976a76a)
 
 #### Cumplimiento de requisitos
 
 Grupo de requisito     | ID  | Descripción                                                                                                                                                                                          | Cumplido| Comentarios|
 -----------------------|-----|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| --------|------------| 
-1.Sensado              | 1.1 | El sistema tendrá sensibilidad a los golpes sobre los 4 drum pads, detectando la intensidad de los golpes con una resolución de 12 bits                                                              |  No     | 3 drum pads|
-  ---                  | 1.2 | El sistema contará con un pedal de control de hi-hat, cuya posición será leída con una resolución de 12 bits                                                                                         |SI       |-|
-2.Configuraciones      | 2.1 | Podrá modificarse la nota MIDI asociada a cada uno de los drum pads de forma individual                                                                                                              |SI       |-|
-  ---                  | 2.2 | Podrá modificarse la sensibilidad al golpe de cada uno de los drum pads de forma individual                                                                                                          |SI       |-|
-  ---                  | 2.3 | Podrá modificarse la reverberación de cada uno de los drum pads de forma individual                                                                                                                  |NO       | El plugin utilizado no cuenta con dicha opción|
-  ---                  | 2.4 | Podrán configurarse 10 drum kits (Drum Kit: conjunto de 6 drum pads)                                                                                                                                 |N0       | 1 drumkit|
-  ---                  | 2.5 | Podrán configurarse los canales MIDI de cada drum kit                                                                                                                                                |SI       |-|
-  ---                  | 2.6 | Podrá configurarse el volumen general de cada drum kit                                                                                                                                               |SI|-|
-3.Interfaz de control  | 3.1 | El sistema dispondrá de un display LCD gráfico para mostrar las configuraciones y menús                                                                                                              |SI|-|
-  ---                  | 3.2 | El sistema contará con dos pulsadores: uno para confirmar las selecciones del menú y otro para cancelarlas y/o volver a la opción anterior                                                           |SI|-|
-  ---                  | 3.3 | El sistema contará con un encoder rotativo para navegar por las configuraciones y menús                                                                                                              |SI|-|
-  ---                  | 3.3 | El sistema contará con un led en cada drum pad que se ilumina cada vez que recibe un golpe                                                                                                           |SI|-|
-4.Conectividad         | 4.1 | El sistema podrá conectarse a la PC y enviar los mensajes MIDI mediante un cable USB, a través del conversor USB-UART de la placa Nucleo                                                             |SI|-|
-  ---                  | 4.2 | El sistema podrá conectarse a la PC y enviar los mensajes MIDI mediante conexión Bluetooth                                                                                                           |SI|-|
-5.Almacenamiento       | 5.1 | El sistema permitirá guardar configuraciones y drum kits en una tarjeta microSD de 2GB                                                                                                               |NO| Por falta de tiempo disponible para desarrollo|
-6.Alimentación         | 6.1 | El sistema se podrá alimentarse desde el puerto USB de la PC                                                                                                                                         |SI|-|
-  ---                  | 6.2 | El sistema se podrá alimentarse desde un cargador con salida USB de 5V 500mA(o superior)                                                                                                             |SI|-|
-7.Tiempo de desarrollo | 7.1 | El proyecto se entregará el día 17 de septiembre de 2024                                                                                                                                             | NO| Por falta de tiempo|  
-8.Documentación        | 8.1 | Se entregará el código del proyecto en un repositorio de GitHub, una lista de partes, un diagrama de conexiones detallada, y una nota de oportunidades de mejora con un balance de los resultados obtenidos | SI|-|
+1.Sensado              | 1.1 | El sistema tendrá sensibilidad a los golpes sobre los 4 drum pads, detectando la intensidad de los golpes con una resolución de 12 bits                                                              |🔄     | 3 drum pads|
+  ---                  | 1.2 | El sistema contará con un pedal de control de hi-hat, cuya posición será leída con una resolución de 12 bits                                                                                         |✅       |-|
+2.Configuraciones      | 2.1 | Podrá modificarse la nota MIDI asociada a cada uno de los drum pads de forma individual                                                                                                              |✅       |-|
+  ---                  | 2.2 | Podrá modificarse la sensibilidad al golpe de cada uno de los drum pads de forma individual                                                                                                          |✅       |-|
+  ---                  | 2.3 | Podrá modificarse la reverberación de cada uno de los drum pads de forma individual                                                                                                                  |❌       | El plugin utilizado no cuenta con dicha opción|
+  ---                  | 2.4 | Podrán configurarse 10 drum kits (Drum Kit: conjunto de 6 drum pads)                                                                                                                                 |🔄       | 1 drumkit|
+  ---                  | 2.5 | Podrán configurarse los canales MIDI de cada drum kit                                                                                                                                                |✅       |-|
+  ---                  | 2.6 | Podrá configurarse el volumen general de cada drum kit                                                                                                                                               |✅|-|
+3.Interfaz de control  | 3.1 | El sistema dispondrá de un display LCD gráfico para mostrar las configuraciones y menús                                                                                                              |✅|-|
+  ---                  | 3.2 | El sistema contará con dos pulsadores: uno para confirmar las selecciones del menú y otro para cancelarlas y/o volver a la opción anterior                                                           |✅|-|
+  ---                  | 3.3 | El sistema contará con un encoder rotativo para navegar por las configuraciones y menús                                                                                                              |✅|-|
+  ---                  | 3.3 | El sistema contará con un led en cada drum pad que se ilumina cada vez que recibe un golpe                                                                                                           |✅|-|
+4.Conectividad         | 4.1 | El sistema podrá conectarse a la PC y enviar los mensajes MIDI mediante un cable USB, a través del conversor USB-UART de la placa Nucleo                                                             |✅|-|
+  ---                  | 4.2 | El sistema podrá conectarse a la PC y enviar los mensajes MIDI mediante conexión Bluetooth                                                                                                           |✅|-|
+5.Almacenamiento       | 5.1 | El sistema permitirá guardar configuraciones y drum kits en una tarjeta microSD de 2GB                                                                                                               |❌| Por falta de tiempo disponible para desarrollo|
+6.Alimentación         | 6.1 | El sistema se podrá alimentarse desde el puerto USB de la PC                                                                                                                                         |✅|-|
+  ---                  | 6.2 | El sistema se podrá alimentarse desde un cargador con salida USB de 5V 500mA(o superior)                                                                                                             |✅|-|
+7.Tiempo de desarrollo | 7.1 | El proyecto se entregará el día 17 de septiembre de 2024                                                                                                                                             | ❌| Por falta de tiempo|  
+8.Documentación        | 8.1 | Se entregará el código del proyecto en un repositorio de GitHub, una lista de partes, un diagrama de conexiones detallada, y una nota de oportunidades de mejora con un balance de los resultados obtenidos | ✅|-|
 
 
 ## CAPITULO 5
