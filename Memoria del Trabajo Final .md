@@ -387,6 +387,33 @@ updateMenuAndDisplay(drumkit * activedrumkit)|Actualiza el menú y la pantalla e
 initDisplay(void)	|Inicializa los dispositivos de salida (display y LED)|
 visualInterfaceUpdate(void)	| Imprime en el display la nota actual con la que se configuró el drum pad|
 
+
+Pantalla de ejecución de instrumento:
+
+![image](https://github.com/user-attachments/assets/28acffcc-172f-42f1-9704-ae2759913272)
+
+Pantalla principal con modificación de volumen del drumkit:
+
+![image](https://github.com/user-attachments/assets/8f4398ac-d80f-47d7-a431-42c17d914f21)
+
+Pantalla de configuración general con modifiación de modo de comunicación:
+
+![image](https://github.com/user-attachments/assets/aace140b-f279-437e-8a16-cc76b1670ac9)
+
+Pantalla de menú de configuración de drumkit:
+
+![image](https://github.com/user-attachments/assets/768d443d-e7f7-499c-967f-99811c982e28)
+
+Pantalla de configuración de drum pad con modifiación de nota y sensibilidad:
+
+![image](https://github.com/user-attachments/assets/5ba3bd2b-20b0-468d-a823-075c8794b243)
+
+Pantalla de configuración de parámetros MIDI del drumkit con modificación de canal y volumen:
+
+![image](https://github.com/user-attachments/assets/92bd5ab0-6077-4db5-831c-1caeb54961fd)
+
+
+
 **instrument**
 
 El módulo instrument define un conjunto de datos y funciones relacionadas con la representación del instrumento de percusión virtual. Su principal objetivo es proporcionar una interfaz para mapear notas MIDI a instrumentos específicos y obtener información sobre los instrumentos disponibles.
