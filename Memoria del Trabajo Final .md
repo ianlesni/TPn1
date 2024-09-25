@@ -713,7 +713,7 @@ En el siguiente enlace podrán ver el video de demostración del trabajo final p
 
 [![Alt text](https://img.youtube.com/vi/SOSdtuPKPjc/0.jpg)](https://www.youtube.com/watch?v=SOSdtuPKPjc)
 
-#### Pruebas funcionales de hardware
+### Pruebas funcionales de hardware
 
 ##### drum pads
 
@@ -738,7 +738,7 @@ No obstante, las duraciones de los intervalos entre los picos se mantienen relat
 En general, la señal obtenida proporciona una buena referencia para la caracterización de los golpes, y la respuesta del circuito acondicionador de señal llevo al desarrollo del algoritmo para procesar los golpes descartando los picos espurios.
 
 
-#### Pruebas de integracion con software
+### Pruebas de integracion con software
 
 A continuación, se detallan las pruebas realizadas para verificar la interacción entre los diferentes componentes del sistema y asegurar su correcto funcionamiento.
 
