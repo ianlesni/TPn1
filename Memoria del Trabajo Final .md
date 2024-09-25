@@ -524,7 +524,35 @@ Funcionalidades Principales:
 * Gestión de estados: Mantiene un registro del estado del transductor para facilitar la sincronización con otras partes del sistema.
 * Configuración de sensibilidad: Permite ajustar la sensibilidad del transductor a diferentes niveles, adaptándose a diversas condiciones de uso.
 
-El diagrama de 
+Los diagramas presentados a continuación representan el algoritmo para procesar los golpes sobre el transuductor contemplando la aparición de espurios. La siguiente captura del osciloscopio permite comprender mejor la problemática:
+
+![image](https://github.com/user-attachments/assets/b8297ecc-34f3-4c12-8c79-e3bc952324b7)
+Referencias:
+* Fd = Flanco descendente
+* Fa = Flanco ascendente
+  
+```mermaid
+flowchart LR
+    subgraph Detección de Flanco Descendente
+        A[Flanco descendente detectado] --> B{Llama a piezoIntCallback}
+    end
+
+    subgraph piezoIntCallback
+        B --> C{Asigna Ticker a piezoReadAndGetMax}
+        C --> D((Llama a piezoReadAndGetMax cada 100us))
+    end
+
+    subgraph piezoReadAndGetMax
+        D --> E[Procesar lectura del ADC]
+        E --> F{Verificar condiciones de pico espurio o fin de medición}
+        F -- Sí --> G[Llama a piezoTransducerReset]
+        F -- No --> D
+    end
+
+    subgraph piezoTransducerReset
+        G --> H[Desvincula callback del Ticker]
+    end
+```
 
 ```mermaid
 flowchart LR
@@ -690,10 +718,6 @@ Durante el desarrollo se realizaron múltiples pruebas para encontrar la mejor f
 Luego de un golpe sobre el pad, la respuesta típica del circuito acondicionador de señal se observa en la siguiente captura del osciloscopio:
 
 ![image](https://github.com/user-attachments/assets/b8297ecc-34f3-4c12-8c79-e3bc952324b7)
-
-Referencias:
-* Fd = Flanco descendente
-* Fa = Flanco ascendente
   
 La salida del circuito comparador se encuentra en nivel alto, siempre y cuando la señal proviniente del piezoelectrico no supere el umbral de comparación. En caso de que la supere, la señal pasa a nivel bajo y el flanco negativo que se genera es la indicación para comenzar a procesar la señal del transductor piezoeléctrico.
 Durante el análisis de las señales, se identificaron patrones recurrentes característicos. En la mayoría de los eventos, se observó una secuencia de picos bien definidos.
