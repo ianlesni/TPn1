@@ -279,25 +279,7 @@ Debido a las caracteristicas mecánicas del encoder, esos flancos presentan múl
 En este trabajo se utilizó Mbed-OS y sus APIs para lograr las funcionalidades requeridas. La premisa fue construir firmware modular y de facil mantenimiento, con el proposito de continuar desarrollando el sistema a futuro.
 En este apartado se presenta un diagrama de flujo del codigo main.cpp y otro del bucle principal, así como también un esquema de la organizacion de los archivos .cpp y .h que componen a los módulos desarrollados.
 
-#### Diagramas de flujo
-
-**main.cpp**
-```mermaid
-flowchart TD
-    A(Start) --> B[Initialize display]
-    B --> C(Create serial ports)
-    C --> D[Initialize hi-hat controller]
-    D --> E[Initialize piezo transducers]
-    E --> F[Initialize MIDI messages]
-    F --> G(Create drum pads)
-    G --> H(Create drum kit)
-    H --> I[Initialize drum kit]
-    I --> J(Create buttons)
-    J --> K[Initialize buttons]
-    K --> L[[Get number of instrument notes]]
-    L --> M((Infinite loop))
-```
-**Bucle principal**
+#### Diagramas de flujo:Bucle principal.
 
 ```mermaid
 flowchart LR
@@ -433,6 +415,7 @@ Funcionalidades Principales
 * Actualización de Volumen: Permite modificar el volumen general del drumkit.
 * Control de Hi-Hat: Gestiona el control del pedal de control del hi-hat para cambiar su estado (abierto, cerrado, medio abierto).
 
+```mermaid
 flowchart LR
     A(Inicio) --> B((Iterar sobre pads))
     B --> D{Pedal chick presionado?}
@@ -448,6 +431,7 @@ flowchart LR
     H --> I[Enviar nota]
     I --> J[Apagar LED]
     J --> B
+```
 
 Función | Descripcion|
 -------|------------|
@@ -531,7 +515,7 @@ hHflag|uint8_t|	Flag auxiliar utilizada internamente en el código (propósito n
 
 **piezo**
 
-El módulo ha sido desarrollado para interactuar con un transductor piezoeléctrico.
+El módulo ha sido desarrollado para interactuar con un transductor piezoeléctrico utilizando el circuito acondicionador de señal.
 
 Funcionalidades Principales:
 * Inicialización: Configura los parámetros iniciales del transductor, como el umbral de detección y el valor máximo esperado.
@@ -539,6 +523,26 @@ Funcionalidades Principales:
 * Cálculo de velocidad: Convierte el valor máximo de voltaje en un valor de velocity representativo del impacto, utilizando una función de conversión lineal.
 * Gestión de estados: Mantiene un registro del estado del transductor para facilitar la sincronización con otras partes del sistema.
 * Configuración de sensibilidad: Permite ajustar la sensibilidad del transductor a diferentes niveles, adaptándose a diversas condiciones de uso.
+
+El diagrama de 
+
+```mermaid
+flowchart LR
+    subgraph piezoReadandGetMax
+        B[Leer valor del ADC]
+        B --> C{¿El valor es mayor al máximo actual?}
+        C -- Sí --> D[Actualizar máximo]
+        C -- No --> F[Incrementar contador de tiempo]
+        D --> F
+     
+        F --> G{¿Transcurrieron 400us y el pin está en alto?}
+        G -- Sí --> H[Reiniciar y establecer estado IDLE]
+        G -- No --> I{¿Transcurrieron 2ms?}
+        I -- Sí --> J[Reiniciar y establecer estado FINISHED]
+        H --> A[Espera la siguiente interrupción del ticker]
+        J --> A
+    end
+```
 
 Función | Descripcion|
 -------|------------|
@@ -588,7 +592,7 @@ serialPort|	UnbufferedSerial|	Objeto que representa el puerto serial|
 **ble**
 El módulo tiene como objetivo principal establecer y configurar la comunicación Bluetooth utilizando la librería mbed. Este módulo proporciona las funciones necesarias para inicializar el puerto serie y establecer los parámetros de configuración del módulo Bluetooth, permitiendo así la conexión con otros dispositivos compatibles.
 
-Funcionalidades Principales
+Funcionalidades Principales:
 Inicialización del Puerto Serie: La función initializateBlePort configura los parámetros del puerto serie (baud rate, formato de datos) para establecer una comunicación serial adecuada con el módulo Bluetooth.
 
 Función | Descripcion|
@@ -679,9 +683,9 @@ En el siguiente enlace podrán ver el video de demostración del trabajo final p
 
 ##### Drumpads
 
-En la siguiente captura del osciloscopio puede observarse un caso de multiples golpes consecutivos de distinta intensidad sobre el transductor piezoeléctrico:
+Durante el desarrollo se realizaron múltiples pruebas para encontrar la mejor forma de procesar la señal generada por los transductores piezoeléctricos. Se analizó la forma de onda de la señal y en función de sus caracteristicas se diseñó el circuito acondicionador de señal. En la siguiente captura del osciloscopio puede observarse un caso de multiples golpes consecutivos de distinta intensidad sobre un transductor piezoeléctrico:
 
-![Multiples golpes](https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/159a578a-5959-40db-931a-65bbf495b904)
+<img src="https://github.com/ianlesni/TPn-1-MIDI-Drum-Pad-v.0/assets/43219235/159a578a-5959-40db-931a-65bbf495b904" width="500" height="500">
 
 Luego de un golpe sobre el pad, la respuesta típica del circuito acondicionador de señal se observa en la siguiente captura del osciloscopio:
 
