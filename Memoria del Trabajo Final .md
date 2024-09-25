@@ -1,5 +1,5 @@
 ## Memoria de Trabajo Final:
-# MIDI Drum Kit
+# MIDI Drum pad v.1
 
 ## Autor:
 # Ian Lesnianski
@@ -101,7 +101,7 @@ Elemento del caso de uso | Definición                                          
 -------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
 N°                       | 2  
 Título                   | Configuración de nota MIDI de un drum pad                                                                                                |
-Disparador               | El usuario selecciona desde el menu de configuración de drumpad el número de drumpad  a modificar                                                                                    |
+Disparador               | El usuario selecciona desde el menu de configuración de drum pad el número de drum pad  a modificar                                                                                    |
 Precondición             | El sistema está encendido, conectado a la PC vía USB o Bluetooth, en el menú de configuración de drum pad                                                                                                                  |
 Flujo básico             | El usuario selecciona uno de los drum pads del equipo. El display indica en pantalla el nombre del drum pad y los atributos previamente configurados. El usuario utiliza el encoder rotativo para mover el cursor hasta el campo "MIDI Note". El usuario presiona el pulsador del encoder para editar el campo y rotando el encoder selecciona el nuevo valor de nota MIDI. El usuario presiona nuevamente el pulsador del encoder y la configuración finaliza                                                                                                                                      |
 Flujo alternativo        | 2.a El usuario cancela la configuración antes de confirmar, presionando el botón back, y el sistema descarta los cambios y regresa al menú principal                                                                                                                                      |
@@ -202,22 +202,22 @@ A continuación se presenta un diagrama en bloques detallado para comprender la 
 - 1: Placa Nucleo F429ZI
 - 2: PC ejecutando los programas Hairless-MIDI, loopMIDI y Reaper
 - 3: Interfaz de control compuesta por un encoder, el pulsador integrado en la placa Nucleo y un display GLCD
-- 4: Drumpads y circuito acondicionador de señal
+- 4: drum pads y circuito acondicionador de señal
 - 5: Modulo Bluetooth
 - 6: Pedal de control de hi-hat
 
 ### Detalles de módulos y conexiones con la placa Nucleo 
 En esta subsección se encuentra la asignación de pines para cada módulo que compone al drumkit.
-#### Drumpads
+#### drum pads
 Cada uno de los pads del instrumento cuenta con un circuito acondicionador de señal como se mencionó previamente. El mismo puede apreciarse en la siguiente imagen:
 
 ![image](https://github.com/user-attachments/assets/97758565-5580-490b-ad3d-eb135b31eeba)
 
-Si bien el circuito se diseñó utilizando componentes disponibles y no está optimizado, su implementación resuelve la problematica de que los valores de tensión que genera el transductor piezoeléctrico supera ampliamente el rango de tensión que puede recibir el ADC de la placa núcleo. Ademas, gracias a la salida de interrupción que proviene de un circuito comparador, el acondicionador de señal proporciona una indicación a la placa Nucleo para comenzar a realizar la conversión analogica digital cuando se ejecuta el drumpad, evitando la necesidad de muestrear constantemente la entrada ADC para verificar la presencia de un golpe.
+Si bien el circuito se diseñó utilizando componentes disponibles y no está optimizado, su implementación resuelve la problematica de que los valores de tensión que genera el transductor piezoeléctrico supera ampliamente el rango de tensión que puede recibir el ADC de la placa núcleo. Ademas, gracias a la salida de interrupción que proviene de un circuito comparador, el acondicionador de señal proporciona una indicación a la placa Nucleo para comenzar a realizar la conversión analogica digital cuando se ejecuta el drum pad, evitando la necesidad de muestrear constantemente la entrada ADC para verificar la presencia de un golpe.
 
 La conexión entre los respectivos circuitos acondicionadores y la placa Nucleo se plasman en la siguiente tabla:
 
-DRUMPAD 0       | Nucleo - F429ZI |DRUMPAD 1       | Nucleo - F429ZI |DRUMPAD 2       | Nucleo - F429ZI |  
+drum pad 0       | Nucleo - F429ZI |drum pad 1       | Nucleo - F429ZI |drum pad 2       | Nucleo - F429ZI |  
 ----------------|-----------------|----------------|-----------------|----------------|-----------------|
 Vout            | PC_3            |Vout            | PA_3            |Vout            | PF_3            | 
 Int             | PE_6            |Int             | PF_9            |Int             | PG_1            | 
@@ -289,16 +289,16 @@ flowchart LR
     D --> E(Handle Button Events)
     E --> F(Process Hits)
     F --> B
-    C --> G(DRUMPAD_MENU)
+    C --> G(drum pad_MENU)
     G --> H(Update Menu and Display)
     H --> I(Handle Button Events)
     I --> J(Process Hits)
     J --> B
-    C --> K(SET_DRUMPAD_NOTE)
+    C --> K(SET_drum pad_NOTE)
     K --> H
     K --> I
     K --> J
-    C --> L(SET_DRUMPAD_SENSIBILITY)
+    C --> L(SET_drum pad_SENSIBILITY)
     L --> H
     L --> I
     L --> J
@@ -325,7 +325,7 @@ El módulo de código system_control se encarga de gestionar el control del sist
 Funcionalidades principales:
 * Interfaz de usuario: Maneja la interacción con el usuario mediante los pulsadores y el encoder rotativo, permitiendo la navegación por los menús y la selección de opciones. El encoder rotativo es el encargado de modificar el indice de navegacion de cada menu y los valores de los atributos configurables.
 * Máquina de estados: Implementa una máquina de estados para controlar el flujo de la aplicación, gestionando los diferentes estados y las transiciones entre ellos.
-* Configuración del sistema: Permite configurar parámetros del sistema, como el canal MIDI del instrumento, el volumen, el sonido de cada drumpad, entre otros.
+* Configuración del sistema: Permite configurar parámetros del sistema, como el canal MIDI del instrumento, el volumen, el sonido de cada drum pad, entre otros.
 * Contro del display: Actualiza la pantalla con la información relevante según el estado actual de la máquina de estados.
 
 ```mermaid
@@ -341,17 +341,17 @@ stateDiagram
 
     CONFIG_MENU --> CONNECTION_MENU : Select (when configMenuIndex == CONFIG_MENU_CONNECTION)
     DRUMKIT_MENU --> SET_DRUMKIT_NUMBER : Select (when drumkitMenuIndex == DRUMKIT_MENU_NUMBER)
-    DRUMKIT_MENU --> DRUMPAD_MENU : Select (when drumkitMenuIndex == DRUMKIT_MENU_PADS)
+    DRUMKIT_MENU --> drum pad_MENU : Select (when drumkitMenuIndex == DRUMKIT_MENU_PADS)
     DRUMKIT_MENU --> MIDI_DRUMKIT_MENU : Select (when drumkitMenuIndex == DRUMKIT_MENU_MIDI)
     DRUMKIT_MENU --> CONFIG_MENU
     SET_DRUMKIT_NUMBER --> DRUMKIT_MENU : 
-    DRUMPAD_MENU --> SET_DRUMPAD_NUMBER : Select (when drumpadMenuIndex == DRUMPAD_MENU_NUMBER)
-    DRUMPAD_MENU --> SET_DRUMPAD_NOTE : Select (when drumpadMenuIndex == DRUMPAD_MENU_NOTE)
-    DRUMPAD_MENU --> SET_DRUMPAD_SENSIBILITY : Select (when drumpadMenuIndex == DRUMPAD_MENU_SENSIBILITY)
-    DRUMPAD_MENU --> DRUMKIT_MENU
-    SET_DRUMPAD_NOTE --> DRUMPAD_MENU : 
-    SET_DRUMPAD_SENSIBILITY --> DRUMPAD_MENU : 
-    SET_DRUMPAD_NUMBER --> DRUMPAD_MENU : 
+    drum pad_MENU --> SET_drum pad_NUMBER : Select (when drum padMenuIndex == drum pad_MENU_NUMBER)
+    drum pad_MENU --> SET_drum pad_NOTE : Select (when drum padMenuIndex == drum pad_MENU_NOTE)
+    drum pad_MENU --> SET_drum pad_SENSIBILITY : Select (when drum padMenuIndex == drum pad_MENU_SENSIBILITY)
+    drum pad_MENU --> DRUMKIT_MENU
+    SET_drum pad_NOTE --> drum pad_MENU : 
+    SET_drum pad_SENSIBILITY --> drum pad_MENU : 
+    SET_drum pad_NUMBER --> drum pad_MENU : 
     MIDI_DRUMKIT_MENU --> SET_DRUMKIT_CHANNEL : Select (when midiDrumkitMenuIndex == MIDI_DRUMKIT_MENU_CHANNEL)
     MIDI_DRUMKIT_MENU --> SET_DRUMKIT_VOLUME : Select (when midiDrumkitMenuIndex == MIDI_DRUMKIT_MENU_VOLUME)
     MIDI_DRUMKIT_MENU --> DRUMKIT_MENU
@@ -379,7 +379,7 @@ handleMenuNavigation(void) | Maneja la navegación por los menús utilizando el 
 confirmButtonPressed(void) | Confirma la selección de la opción actual cuando se presiona el botón de confirmación |
 confirmSelection(drumkit * activedrumkit)	| Realiza la acción correspondiente a la opción seleccionada en el menú actual|
 returnToPreviousMenu(drumkit * activedrumkit)	| Devuelve al menú anterior|
-handleButtonEvents(drumkit * activedrumkit, buttonsArray_t * drumPadButtons)|Maneja los eventos de los botones del panel de control|
+handleButtonEvents(drumkit * activedrumkit, buttonsArray_t * drum padButtons)|Maneja los eventos de los botones del panel de control|
 updateMenuAndDisplay(drumkit * activedrumkit)|Actualiza el menú y la pantalla en función del estado actual de la máquina de estados|
 initDisplay(void)	|Inicializa los dispositivos de salida (display y LED)|
 visualInterfaceUpdate(void)	| Imprime en el display la nota actual con la que se configuró el drum pad|
@@ -396,8 +396,8 @@ Funcionalidades Principales:
 
 Función | Descripcion|
 -------|------------|
-getNumOfInstrumentNotes()|Devuelve el número total de instrumentos definidos|
-getNoteIndex(uint8_t midiNote)|Devuelve el índice del instrumento correspondiente a la nota MIDI dada|
+uint8_t getNumOfInstrumentNotes()|Devuelve el número total de instrumentos definidos|
+uint8_t getNoteIndex(uint8_t midiNote)|Devuelve el índice del instrumento correspondiente a la nota MIDI dada|
 
 Variable|Tipo|Descripción|
 --------|-----|----------|
@@ -435,16 +435,16 @@ flowchart LR
 
 Función | Descripcion|
 -------|------------|
-drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort, UnbufferedSerial * BTserialPort, bool commMode)|Constructor del objeto drumkit, recibe como parámetros el número de pads, los pads en sí, los puertos seriales UART y Bluetooth, y el modo de comunicación|
+drumkit(int numPads, drum pad** pads, UnbufferedSerial * UARTserialPort, UnbufferedSerial * BTserialPort, bool commMode)|Constructor del objeto drumkit, recibe como parámetros el número de pads, los pads en sí, los puertos seriales UART y Bluetooth, y el modo de comunicación|
 init()|Inicializa el drumkit, configurando los parámetros iniciales y los estados de los pads|
 processHits()	|Procesa los eventos de golpe en los pads, generando los mensajes MIDI correspondientes|
-updateDrumkit(uint8_t drumkitNum, uint8_t drumpadNum, uint8_t drumpadNote)|Actualiza los parámetros de un pad de batería específico|
+updateDrumkit(uint8_t drumkitNum, uint8_t drum padNum, uint8_t drum padNote)|Actualiza los parámetros de un pad de batería específico|
 drumkitVolumeUpdate()	|Actualiza el volumen del drumkit en función del modo de comunicación|
 
 Variable|	Tipo	|Propósito
 --------|-----|----------|
 numOfPads|	int	|Número de pads de batería|
-drumPads| drumpad**| Puntero a un arreglo de objetos drumpad|
+drum pads| drum pad**| Puntero a un arreglo de objetos drum pad|
 drumkitUARTSerial	|UnbufferedSerial *| Puntero a un objeto UnbufferedSerial para la comunicación UART|
 drumkitBTSerial|	UnbufferedSerial *|	Puntero a un objeto UnbufferedSerial para la comunicación Bluetooth|
 drumkitNumber|	uint8_t|	Número del drumkit|
@@ -452,9 +452,9 @@ drumkitVolume|	uint8_t|	Volumen del drumkit|
 drumkitChannel|	uint8_t|	Canal MIDI del drumkit|
 communicationMode|	uint8_t|	Modo de comunicación (UART o Bluetooth)|
 
-**Drumpad**
+**drum pad**
 
-El módulo drumpad es una clase que representa un pad de batería electrónica. Su objetivo principal es detectar golpes en el pad, procesar la señal del golpe y enviar un mensaje MIDI correspondiente al instrumento virtual asociado.
+El módulo drum pad es una clase que representa un pad de batería electrónica. Su objetivo principal es detectar golpes en el pad, procesar la señal del golpe y enviar un mensaje MIDI correspondiente al instrumento virtual asociado.
 
 Funcionalidades Principales
 *Inicialización: Configura los parámetros iniciales del pad, como el número, el estado, la nota MIDI asociada y la sensibilidad.
@@ -465,22 +465,22 @@ Funcionalidades Principales
 
 Función | Descripcion|
 -------|------------|
-drumpadInit(uint8_t dpNumber)|Inicializa el pad con el número especificado|
-getDrumpadCheck()|Verifica si se ha detectado un golpe y devuelve el estado actual del pad|
-drumpadProcessHit()|Procesa un golpe detectado, calcula la velocidad y envía el mensaje MID|
-drumpadLedOn()|Enciende el LED indicador de golpe|
-drumpadLedOff()|Apaga el LED indicador de golpe|
-drumpadSetNote(uint8_t note)|Establece la nota MIDI asociada al pad|
+drum padInit(uint8_t dpNumber)|Inicializa el pad con el número especificado|
+getdrum padCheck()|Verifica si se ha detectado un golpe y devuelve el estado actual del pad|
+drum padProcessHit()|Procesa un golpe detectado, calcula la velocidad y envía el mensaje MID|
+drum padLedOn()|Enciende el LED indicador de golpe|
+drum padLedOff()|Apaga el LED indicador de golpe|
+drum padSetNote(uint8_t note)|Establece la nota MIDI asociada al pad|
 
 Variable|	Tipo	|Propósito
 --------|-----|----------|
-drumpadStatus|	uint8_t|	Estado actual del pad (IDLE o ACTIVE)|
-drumpadLed|	DigitalOut|	Objeto para controlar el LED indicador|
-drumpadNumber|	uint8_t|	Número del pad|
-drumpadmidiMessage|	midiMessage_t *|	Puntero al mensaje MIDI que se enviará|
-drumpadPiezo|	piezoTransducer *|	Puntero al sensor piezoeléctrico|
+drum padStatus|	uint8_t|	Estado actual del pad (IDLE o ACTIVE)|
+drum padLed|	DigitalOut|	Objeto para controlar el LED indicador|
+drum padNumber|	uint8_t|	Número del pad|
+drum padmidiMessage|	midiMessage_t *|	Puntero al mensaje MIDI que se enviará|
+drum padPiezo|	piezoTransducer *|	Puntero al sensor piezoeléctrico|
 hiHatControllerPedal|	hiHat *|	Puntero al módulo de control de hi-hat|
-drumpadSens|	uint8_t|	Sensibilidad del pad|
+drum padSens|	uint8_t|	Sensibilidad del pad|
 hiHatControl|	bool|	Indica si se está controlando el hi-hat|
 
 **hi_hat**
@@ -576,7 +576,7 @@ flowchart LR
 Función | Descripcion|
 -------|------------|
 piezoTransducerInit()|	Inicializa los parámetros del transductor|
-setPiezoSensibility()|	Configura la sensibilidad del transductor|
+setPiezoSensibility(uint8_t sensibility)|	Configura la sensibilidad del transductor|
 getPiezoStatus()|	Devuelve el estado actual del transductor|
 piezoIntCallback()|	Maneja la interrupción generada por el transductor al detectar un golpe|
 piezoReadAndGetMax()|	Lee el valor del ADC y calcula el valor máximo|
@@ -605,12 +605,12 @@ Funcionalidades Principales
 
 Función | Descripcion|
 -------|------------|
-initializaMIDISerial|	Inicializa la comunicación serial y la estructura de mensajes MIDI|
-midiSendNoteOn|	Envía un mensaje MIDI de tipo Note On|
-midiSendNoteOff|	Envía un mensaje MIDI de tipo Note Off|
-setMIDIChannel|	Establece el canal MIDI para los mensajes|
-midiControlChangeVolume|	Controla el volumen de un track MIDI|
-initializaMIDISerialPort|	Inicializa los parámetros del puerto serial|
+initializaMIDISerial(UnbufferedSerial * alias, midiMessage_t * midiMessage)|	Inicializa la comunicación serial y la estructura de mensajes MIDI|
+midiSendNoteOn(midiMessage_t * midiMessage, UnbufferedSerial * alias)|	Envía un mensaje MIDI de tipo Note On|
+midiSendNoteOff(midiMessage_t * midiMessage, UnbufferedSerial * alias)|	Envía un mensaje MIDI de tipo Note Off|
+setMIDIChannel(uint8_t channel)|	Establece el canal MIDI para los mensajes|
+midiControlChangeVolume(uint8_t volume, int8_t channel, UnbufferedSerial * alias)|	Controla el volumen de un track MIDI|
+initializaMIDISerialPort(UnbufferedSerial * alias)|	Inicializa los parámetros del puerto serial|
 
 Variable|	Tipo	|Propósito
 --------|-----|----------|
@@ -626,7 +626,7 @@ Inicialización del Puerto Serie: La función initializateBlePort configura los 
 
 Función | Descripcion|
 -------|------------|
-initializateBlePort|	Inicializa el puerto serie con los parámetros configurados|
+initializateBlePort(UnbufferedSerial * alias)|	Inicializa el puerto serie con los parámetros configurados|
 
 Variable|	Tipo	|Propósito
 --------|-----|----------|
@@ -683,7 +683,7 @@ flowchart LR
 
 **button**
 
-El módulo de pulsadores implementa una máquina de estados finitos (FSM) para el manejo de pulsadores físicos. Esta FSM se encarga de eliminar los rebotes mecánicos que suelen ocurrir al presionar un botón, proporcionando una señal limpia y confiable.
+El módulo de pulsadores implementa una máquina de estados finitos (FSM) para el manejo de pulsadores físicos. Esta FSM se encarga de eliminar los rebotes mecánicos que suelen ocurrir al presionar un botón, proporcionando una señal limpia y confiable. El código es una modificación del algoritmo para gestionar las rutinas de anti rebote presentado en el libro en el cual está basado este curso.
 
 Funcionalidades Principales:
 * Inicialización: Configura los estados iniciales de los pulsadores y los valores de las variables internas.
@@ -699,15 +699,6 @@ Variable|	Tipo	|Propósito
 --------|-----|----------|
 buttonsArray_t::button[NUM_BUTTONS]|	button_t|	Arreglo de pulsadores|
 
-```mermaid
-flowchart LR
-    A[BUTTON_UP] -->|read == 1| B{BUTTON_FALLING}
-    B -->|debounceTime >= DEBOUNCE_BUTTON_TIME_MS && read == 1| C(BUTTON_DOWN)
-    B -->|debounceTime >= DEBOUNCE_BUTTON_TIME_MS && read == 0| A
-    C -->|read == 0| D{BUTTON_RISING}
-    D -->|debounceTime >= DEBOUNCE_BUTTON_TIME_MS && read == 0| A
-    D -->|debounceTime >= DEBOUNCE_BUTTON_TIME_MS && read == 1| C
-```
 
 **display**
 
@@ -722,7 +713,7 @@ En el siguiente enlace podrán ver el video de demostración del trabajo final p
 
 #### Pruebas funcionales de hardware
 
-##### Drumpads
+##### drum pads
 
 Durante el desarrollo se realizaron múltiples pruebas para encontrar la mejor forma de procesar la señal generada por los transductores piezoeléctricos. Se analizó la forma de onda de la señal y en función de sus caracteristicas se diseñó el circuito acondicionador de señal. En la siguiente captura del osciloscopio puede observarse un caso de multiples golpes consecutivos de distinta intensidad sobre un transductor piezoeléctrico:
 
