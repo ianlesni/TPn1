@@ -2,7 +2,7 @@
 # MIDI Drum Kit
 
 ## Autor:
-# Ing. Ian Lesnianski
+# Ian Lesnianski
 
 # Resumen
 Este trabajo presenta el desarrollo de un instrumento de percusión electrónico. El sistema embebido captura acciones musicales mediante drum pads equipados con transductores piezoeléctricos, los cuales convierten los golpes en señales eléctricas. Estas señales se procesan y transforman en mensajes MIDI (Musical Instrument Digital Interface) que se transmiten a una computadora, donde son interpretados y enviados a una estación de audio digital (DAW) para generar el sonido del instrumento.
@@ -334,20 +334,6 @@ flowchart LR
 **Organización de los módulos**
 ![Diagrama MÓDULOS](https://github.com/user-attachments/assets/b2aab16e-cc18-49d0-b7e9-395ba6f3f036)
 
-Módulo          | Descripción                  |  
-----------------|------------------------------|
-system_control  |  Gestion y control del sistema | 
-instrument      |                              |
-drumkit         |                              | 
-drumpad         |                              | 
-hi_hat          |                              | 
-piezo           |                              |
-midi_serial     |                              |
-ble             |                              | 
-display         |                              |
-rotary_encoder  |                              | 
-button          |                              | 
-
 ### Descripción de los módulos de firmware
 
 **system_control**
@@ -366,29 +352,44 @@ stateDiagram
     MAIN_MENU --> PLAY_SCREEN : Select (when mainMenuIndex == MAIN_MENU_PLAY)
     MAIN_MENU --> CONFIG_MENU : Select (when mainMenuIndex == MAIN_MENU_CONFIG)
     MAIN_MENU --> SET_DRUMKIT_VOLUME : Select (when mainMenuIndex == MAIN_MENU_SET_VOLUME)
-    PLAY_SCREEN --> MAIN_MENU : Return
+    PLAY_SCREEN --> MAIN_MENU : 
+   
     CONFIG_MENU --> DRUMKIT_MENU : Select (when configMenuIndex == CONFIG_MENU_DRUMKIT)
+    CONFIG_MENU --> MAIN_MENU : 
+
     CONFIG_MENU --> CONNECTION_MENU : Select (when configMenuIndex == CONFIG_MENU_CONNECTION)
     DRUMKIT_MENU --> SET_DRUMKIT_NUMBER : Select (when drumkitMenuIndex == DRUMKIT_MENU_NUMBER)
     DRUMKIT_MENU --> DRUMPAD_MENU : Select (when drumkitMenuIndex == DRUMKIT_MENU_PADS)
     DRUMKIT_MENU --> MIDI_DRUMKIT_MENU : Select (when drumkitMenuIndex == DRUMKIT_MENU_MIDI)
-    SET_DRUMKIT_NUMBER --> DRUMKIT_MENU : Return
+    DRUMKIT_MENU --> CONFIG_MENU
+    SET_DRUMKIT_NUMBER --> DRUMKIT_MENU : 
     DRUMPAD_MENU --> SET_DRUMPAD_NUMBER : Select (when drumpadMenuIndex == DRUMPAD_MENU_NUMBER)
     DRUMPAD_MENU --> SET_DRUMPAD_NOTE : Select (when drumpadMenuIndex == DRUMPAD_MENU_NOTE)
     DRUMPAD_MENU --> SET_DRUMPAD_SENSIBILITY : Select (when drumpadMenuIndex == DRUMPAD_MENU_SENSIBILITY)
-    SET_DRUMPAD_NOTE --> DRUMPAD_MENU : Return
-    SET_DRUMPAD_SENSIBILITY --> DRUMPAD_MENU : Return
-    SET_DRUMPAD_NUMBER --> DRUMPAD_MENU : Return
+    DRUMPAD_MENU --> DRUMKIT_MENU
+    SET_DRUMPAD_NOTE --> DRUMPAD_MENU : 
+    SET_DRUMPAD_SENSIBILITY --> DRUMPAD_MENU : 
+    SET_DRUMPAD_NUMBER --> DRUMPAD_MENU : 
     MIDI_DRUMKIT_MENU --> SET_DRUMKIT_CHANNEL : Select (when midiDrumkitMenuIndex == MIDI_DRUMKIT_MENU_CHANNEL)
     MIDI_DRUMKIT_MENU --> SET_DRUMKIT_VOLUME : Select (when midiDrumkitMenuIndex == MIDI_DRUMKIT_MENU_VOLUME)
-    SET_DRUMKIT_CHANNEL --> MIDI_DRUMKIT_MENU : Return
-    SET_DRUMKIT_VOLUME --> MIDI_DRUMKIT_MENU : Return (if !volumeFromMainMenu)
-    SET_DRUMKIT_VOLUME --> MAIN_MENU : Return (if volumeFromMainMenu)
+    MIDI_DRUMKIT_MENU --> DRUMKIT_MENU
+    SET_DRUMKIT_CHANNEL --> MIDI_DRUMKIT_MENU : 
+    SET_DRUMKIT_VOLUME --> MIDI_DRUMKIT_MENU :  (if !volumeFromMainMenu)
+    SET_DRUMKIT_VOLUME --> MAIN_MENU :  (if volumeFromMainMenu)
     CONNECTION_MENU --> SET_USB_CONN : Select (when connectionMenuIndex == CONNECTION_MENU_USB)
     CONNECTION_MENU --> SET_BT_CONN : Select (when connectionMenuIndex == CONNECTION_MENU_BT)
-    SET_USB_CONN --> CONNECTION_MENU : Return
-    SET_BT_CONN --> CONNECTION_MENU : Return
+    CONNECTION_MENU --> CONFIG_MENU
+    SET_USB_CONN --> CONNECTION_MENU : 
+    SET_BT_CONN --> CONNECTION_MENU : 
 ```
+
+Notas:
+
+* El diagrama de flujo representa los estados principales y las transiciones entre ellos.
+* Se omiten los detalles de la interacción con el encoder rotativo y los botones.
+* Se asume que la lógica de actualización del display y la configuración del sistema se implementa en las funciones correspondientes, y se analizará en el código.
+* Los retrocesos entre estados se realizaon con el pulsador user de la placa Nucleo.
+
 Función | Descripcion|
 -------|------------|
 updateDisplay(drumkit * activedrumkit) | Actualiza la pantalla en función del estado actual de la máquina de estados y los valores asociados al drumkit |
@@ -403,7 +404,7 @@ visualInterfaceUpdate(void)	| Imprime en el display la nota actual con la que se
 
 **instrument**
 
-El módulo instrument define un conjunto de datos y funciones relacionadas con la representación de instrumentos musicales, específicamente instrumentos de percusión. Su principal objetivo es proporcionar una interfaz para mapear notas MIDI a instrumentos específicos y obtener información sobre los instrumentos disponibles.
+El módulo instrument define un conjunto de datos y funciones relacionadas con la representación del instrumento de percusión virtual. Su principal objetivo es proporcionar una interfaz para mapear notas MIDI a instrumentos específicos y obtener información sobre los instrumentos disponibles.
 
 Funcionalidades Principales:
 * Definición de notas MIDI: Establece constantes que representan las notas MIDI correspondientes a diferentes instrumentos de percusión.
