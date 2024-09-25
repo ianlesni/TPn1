@@ -4,14 +4,12 @@
 *
 */
 
-//=====[#include guards - begin]===============================================
-
 #ifndef _SYSTEM_CONTROL_H_
 #define _SYSTEM_CONTROL_H_
 #include <cstdint>
 #include "drumkit.h"
 #include "button.h"
-//=====[Declaration of public defines]=========================================
+
 #define NUM_OF_MAIN_MENU_OPTIONS 3
 #define NUM_OF_CONFIG_MENU_OPTIONS 2
 #define NUM_OF_DRUMKIT_MENU_OPTIONS 4
@@ -146,12 +144,6 @@ void initDisplay (void);
 *  drum pad.
  */
 void visualInterfaceUpdate (void);
-//=====[Declaration of public data types]======================================
-
-//=====[Declarations (prototypes) of public functions]=========================
-
-
-//=====[#include guards - end]=================================================
 
 #endif // _SYSTEM_CONTROL_H_
 

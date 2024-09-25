@@ -4,33 +4,18 @@
 *
 */
 
-//=====[Libraries]=============================================================
-
 #include "mbed.h"
 #include "arm_book_lib.h"
 #include "midi_serial.h"
 
-//=====[Declaration of private defines]========================================
-
 #define DEFAULT_CHANNEL 0           
 
-//=====[Declaration of private data types]=====================================
 uint8_t noteOn = 0x90;                  /**< Byte de comando Note On */
 uint8_t noteOff = 0x80;                 /**< Byte de comando Note Off */
 uint8_t controlChangeVolume = 0xB0;     /**< Byte de comando de control de volumen de track */
 
-//=====[Declaration and initialization of public global objects]===============
     UnbufferedSerial serialPort(USBTX, USBRX);                          
     midiMessage_t midiMessageStruct; 
-//=====[Declaration of external public global variables]=======================
-
-//=====[Declaration and initialization of private global variables]============
-
-//=====[Declaration and initialization of public global variables]=============
-
-//=====[Declarations (prototypes) of private functions]========================
-
-//=====[Implementations of public functions]===================================
 
 /*
 * Modifica los bytes de comando en función del canal seleccionado
@@ -89,7 +74,7 @@ void midiSendNoteOff(midiMessage_t * midiMessage, mbed::UnbufferedSerial * alias
     alias->write(&midiMessage->velocity, 1);          //Envío el valor de velocity de apagado        
 }
 
-//=====[Implementations of private functions]==================================
+
 void initializaMIDISerialPort(UnbufferedSerial * alias)
 {
     alias->baud(38400);

@@ -13,7 +13,7 @@
 #include "hi_hat.h"
 #include "button.h"
 #include "arm_book_lib.h"
-#include "ble.h"
+#include "bt.h"
 #include "drumpad.h"
 #include "drumkit.h"
 #include <cstdint>
@@ -21,18 +21,7 @@
 #include "midi_serial.h"
 #include "system_control.h"
 
-//=====[Declaration of defines]================================================
 
-//=====[Declaration and initialization of public global objects]===============
-
-//=====[Declaration of  public global variables]===============================
-
-//=====[Declarations (prototypes) of public functions]=========================
-
-//void piezoDetectorACallback (void);
-//void piezoReadAndGetMax(void);
-
-//=====[Main function]=========================================================
 int main(void)
 {
     initDisplay();
@@ -40,12 +29,17 @@ int main(void)
     UnbufferedSerial uartBle(PD_5, PD_6, 9600);
     UnbufferedSerial uartSerialPort(USBTX, USBRX, 115200); 
   
+    /** Creo el pedal de control de hi-hat    
+    */
     Ticker hHChickPedalTicker;
     hiHat hiHatController(PinName::A1,PinName::PF_7,&hHChickPedalTicker);
+    
+    /** Creo tres drumpads  
+    */
     Ticker piezo0ConvertionTicker;
     piezoTransducer piezo0(PinName::A2, PinName::PE_6, &piezo0ConvertionTicker);
     midiMessage_t midiMessage0;
-    drumpad pad0(LED1,&piezo0, &midiMessage0,&hiHatController);
+    drumpad pad0(LED1,&piezo0, &midiMessage0,&hiHatController); // Este drumpad tendrá asociado el control de hi-hat
     
     Ticker piezoAConvertionTicker;
     piezoTransducer piezo1(PinName::A0, PinName::PF_9, &piezoAConvertionTicker);
@@ -57,7 +51,8 @@ int main(void)
     midiMessage_t midiMessage2;
     drumpad pad2(LED3,&piezo2, &midiMessage2,NULL);
 
-
+    /** Creo el drumkit conformado por los tres drumpads     
+    */
     drumpad* pads[] = { &pad0,&pad1,&pad2};
     bool drumkitCommMode = 0;
     drumkit kit(3, pads, &uartSerialPort, &uartBle, drumkitCommMode);
@@ -67,12 +62,14 @@ int main(void)
     /** Creo los pulsadores necesarios para configurar el 
     *   sonido del drum pad    
     */
-    DigitalIn upButton(BUTTON1);                                                
-    DigitalIn downButton(D1);                                                   
+    DigitalIn okButton(BUTTON1);                                                
+    DigitalIn backButton(D1);                                                   
 
+    /** Creo los pulsadores de la interfaz de usuario  
+    */
     buttonsArray_t drumPadButtons;
-    drumPadButtons.button[0].alias = &upButton;
-    drumPadButtons.button[1].alias = &downButton;
+    drumPadButtons.button[0].alias = &okButton;
+    drumPadButtons.button[1].alias = &backButton;
     debounceButtonInit(&drumPadButtons);
 
     uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes();           //Obtengo el número total de notas midi de instrumentos percusivos disponibles
@@ -107,5 +104,5 @@ int main(void)
 
 }
 
-//=====[Implementations of public functions]===================================
+
 

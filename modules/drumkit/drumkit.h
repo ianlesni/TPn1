@@ -3,7 +3,6 @@
 * @brief Modulo para la implementación de los drumkits. 
 */
 
-//=====[#include guards - begin]===============================================
 #ifndef _DRUMKIT_H_
 #define _DRUMKIT_H_
 
@@ -11,7 +10,7 @@
 #include "drumpad.h"
 #include "midi_serial.h"
 #include "mbed.h"
-//=====[Declaration of public defines]=========================================
+
 #define NUMBER_OF_DRUMPADS_MAX 3
 
 typedef enum{
@@ -21,7 +20,7 @@ typedef enum{
 
 }COMM_MODE; 
 
-//=====[Declaration of public data types]======================================
+
 class drumkit {
     public:
         drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort, UnbufferedSerial * BTserialPort, bool commMode); 
@@ -39,8 +38,6 @@ class drumkit {
         UnbufferedSerial * drumkitUARTSerial;    
         UnbufferedSerial * drumkitBTSerial;    
 };
-
-//=====[#include guards - end]=================================================
 
 #endif // _DRUMKIT_H_
 

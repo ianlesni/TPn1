@@ -2,10 +2,7 @@
 *
 * @brief A description of the module’s purpose.
 *
-* 
-* 
 */
-//=====[#include guards - begin]===============================================
 
 #ifndef _HI_HAT_H_
 #define _HI_HAT_H_
@@ -13,10 +10,6 @@
 #include <cstdint>
 #include "piezo.h"
 #include "mbed.h"
-
-//=====[Declaration of public defines]=========================================
-
-//=====[Declaration of public data types]======================================
 
 /*!
  * \enum HI_HAT_STATE
@@ -29,7 +22,6 @@ typedef enum{
     CLOSE =2
 
 }HI_HAT_STATE; 
-
 
 
 class hiHat{
@@ -51,8 +43,6 @@ class hiHat{
         HI_HAT_STATE hiHatStatus;
 };
 
-
-//=====[#include guards - end]=================================================
 
 #endif // _HI_HAT_H_
 

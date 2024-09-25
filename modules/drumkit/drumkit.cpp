@@ -2,9 +2,6 @@
 *
 * @brief Modulo para la implementación de los drumkits. 
 */
-
-//=====[Libraries]=============================================================
-
 #include "mbed.h"
 #include "arm_book_lib.h"
 #include "drumkit.h"
@@ -12,25 +9,10 @@
 #include "midi_serial.h"
 #include <cstdint>
 
-//=====[Declaration of private defines]========================================
 
-//=====[Declaration of public classes]=====================================
 drumkit::drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort, UnbufferedSerial * BTserialPort, bool commMode)
     : numOfPads(numPads), drumPads(pads), drumkitUARTSerial(UARTserialPort), drumkitBTSerial(BTserialPort){}
 
-//=====[Declaration of private data types]=====================================
-
-//=====[Declaration and initialization of public global objects]===============
-
-//=====[Declaration of external public global variables]=======================
-
-//=====[Declaration and initialization of public global variables]=============
-
-//=====[Declaration and initialization of private global variables]============
-   
-//=====[Declarations (prototypes) of private functions]========================
-
-//=====[Implementations of public functions]===================================
 void drumkit::init() 
 {
     communicationMode = UART;
@@ -137,7 +119,5 @@ void drumkit::processHits()
         }
     }
 }
-//=====[Implementations of private functions]==================================
-
 
 /*** end of file ***/

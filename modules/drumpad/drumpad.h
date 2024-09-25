@@ -3,8 +3,6 @@
 * @brief A description of the module’s purpose.
 *
 */
-//=====[#include guards - begin]===============================================
-
 #ifndef _DRUMPAD_H_
 #define _DRUMPAD_H_
 
@@ -13,10 +11,6 @@
 #include "hi_hat.h"
 #include "midi_serial.h"
 #include "mbed.h"
-
-//=====[Declaration of public defines]=========================================
-
-//=====[Declaration of public data types]======================================
 
 /*!
  * \enum DRUMPAD_STATE
@@ -28,8 +22,6 @@ typedef enum{
     ACTIVE = 1
 
 }DRUMPAD_STATE; 
-
-
 
 class drumpad{
     public:
@@ -53,9 +45,6 @@ class drumpad{
         DigitalOut drumpadLed;
 
 };
-
-
-//=====[#include guards - end]=================================================
 
 #endif // _DRUMPAD_H_
 

@@ -4,7 +4,6 @@
 *
 */
 
-//=====[Libraries]=============================================================
 #include "mbed.h"
 #include "arm_book_lib.h"
 #include "midi_serial.h"
@@ -13,7 +12,6 @@
 #include "display.h"
 #include "instrument.h"
 #include "rotary_encoder.h"
-//=====[Declaration of private defines]========================================
 
 /** 
 * Creo el encoder rotativo 
@@ -58,19 +56,6 @@ char numOfInstrumentNotesstr [3] = " ";
 char drumpadSensibilitystr [3] = " ";
 char Note[3] = " "; 
 
-//=====[Declaration of private data types]=====================================
-
-//=====[Declaration and initialization of public global objects]===============
-
-//=====[Declaration of external public global variables]=======================
-
-//=====[Declaration and initialization of private global variables]============
-
-//=====[Declaration and initialization of public global variables]=============
-
-//=====[Declarations (prototypes) of private functions]========================
-
-//=====[Implementations of public functions]===================================
 
 void initDisplay()
 {
@@ -733,9 +718,6 @@ void returnToPreviousMenu(drumkit * activedrumkit)
     }
     updateDisplay(activedrumkit);
 }
-
-
-
 
 
 /*** end of file ***/

@@ -4,17 +4,10 @@
 *
 */
 
-//=====[Libraries]=============================================================
-
 #include "mbed.h"
 #include "arm_book_lib.h"
 #include "rotary_encoder.h"
 
-//=====[Declaration of private defines]========================================
-
-//=====[Declaration of private data types]=====================================
-
-//=====[Declaration and initialization of public global objects]===============
 rotaryEncoder::rotaryEncoder(PinName CLKPin, PinName DTPin, Ticker * encoderTicker)
     : CLKInterruptPin(CLKPin),       
       DTDigitalPin(DTPin),
@@ -22,15 +15,7 @@ rotaryEncoder::rotaryEncoder(PinName CLKPin, PinName DTPin, Ticker * encoderTick
 {
     CLKInterruptPin.fall(callback(this, &rotaryEncoder::rotaryEncoderCallback));
 }
-//=====[Declaration of external public global variables]=======================
 
-//=====[Declaration and initialization of private global variables]============
-
-//=====[Declaration and initialization of public global variables]=============
-
-//=====[Declarations (prototypes) of private functions]========================
-
-//=====[Implementations of public functions]===================================
 void rotaryEncoder::rotaryEncoderInit(uint8_t maxCountValue)
 {
     rotationCounter = 0;
@@ -87,7 +72,5 @@ void rotaryEncoder::handleMenuNavigation(int8_t * submenuIndex, int8_t maxIndex)
     rotationCounter = submenuIndex;
     maxRotationCounterValue = maxIndex;
 }
-//=====[Implementations of private functions]==================================
-
 
 /*** end of file ***/

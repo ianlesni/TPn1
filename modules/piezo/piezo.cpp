@@ -4,15 +4,12 @@
 *
 */
 
-//=====[Libraries]=============================================================
-
 #include "mbed.h"
 #include "arm_book_lib.h"
 #include "piezo.h"
 #include "fixedpoint.h"
 #include <cstdint>
 
-//=====[Declaration of private defines]========================================
 #define MAX_VEL 127                                                 /**< Máximo valor de velocity permitido */
 #define MIN_VEL 35                                                  /**< Máximo valor de velocity permitido (para valores menores se escucha muy poco) */
 #define DELTA_VEL (MAX_VEL - MIN_VEL)                               /**< Variacion entre el máximo y mínimo valor de velocity permitido*/
@@ -30,7 +27,6 @@
 #define SPURIOUS_PEAK_DURATION_US 400                               /**< Duración típica [us] de los picos espurios producto de las propagaciones del golpe sobre el pad  */
 #define PIEZO_SAMPLING_DURATION_US 2000                             /**< Duración [us] del muestreo del pico de interes  */
 
-//=====[Declaration of public classes]=====================================
 
 piezoTransducer::piezoTransducer(PinName piezoADPin, PinName piezoIntPin, Ticker* ticker)
     : piezoAD(piezoADPin),       
@@ -113,7 +109,6 @@ void piezoTransducer::piezoReadAndGetMax()
     }
 }
 
-
 /**
  * Ajusta los parámetros de sensibilidad del transductor y recalcula la recta de conversión.
  */
@@ -148,17 +143,6 @@ void piezoTransducer::setPiezoSensibility(uint8_t sensibility)
     }
     calculateSlopeIntercept();    // Recalculo los parametros luego de ajustar la sensibilidad
 }
-//=====[Declaration of private data types]=====================================
-
-//=====[Declaration and initialization of public global objects]===============
-
-//=====[Declaration of external public global variables]=======================
-
-//=====[Declaration and initialization of public global variables]=============
-
-//=====[Declaration and initialization of private global variables]============
-   
-//=====[Declarations (prototypes) of private functions]========================
 
 /**
  * Calcula la pendiente y la ordenada al origen de la recta de conversión.
@@ -175,9 +159,6 @@ void piezoTransducer::setPiezoSensibility(uint8_t sensibility)
  */
  uint16_t piezoSearchMax (piezo_t * piezo);
 
-//=====[Implementations of public functions]===================================
-
-//=====[Implementations of private functions]==================================
 uint16_t adcToMilliVolts(uint16_t adcValue) 
 {
     return ((adcValue * ADC_VOLTAGE_SCALE) / ADC_MAX_VALUE);

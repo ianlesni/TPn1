@@ -4,16 +4,11 @@
 *
 */
 
-//=====[#include guards - begin]===============================================
-
 #ifndef _ROTARY_ENCODER_H_
 #define _ROTARY_ENCODER_H_
 #include <cstdint>
 #include "mbed.h"
 
-//=====[Declaration of public defines]=========================================
-
-//=====[Declaration of public data types]======================================
 /**
  * @brief Estados del encoder rotativo.
 */
@@ -46,17 +41,12 @@ class rotaryEncoder{
     uint8_t maxRotationCounterValue;
 };
 
-
-//=====[Declarations (prototypes) of public functions]=========================
-
 /** Defino el estado inicial de cada pulsador y lo incializo
 *  para su posterior uso en la máquina de estados que
 *  gestiona la rutina antirebote.
 *  @param buttons Estructura para la representación de los pulsadores.
 */
 void rotaryEncoderInit();
-
-//=====[#include guards - end]=================================================
 
 #endif // _ROTARY_ENCODER_H_
 

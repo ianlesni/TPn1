@@ -3,17 +3,13 @@
 * @brief Módulo para gestionar el transductor piezoeléctrico.
 *
 */
-//=====[#include guards - begin]===============================================
-
 #ifndef _PIEZO_H_
 #define _PIEZO_H_
 
 #include <cstdint>
 #include "mbed.h"
 
-//=====[Declaration of public defines]=========================================
 #define SENSIBILITY_LEVELS 4            // Cantidad de niveles de sensibilidad para el transductor piezoeléctrico
-//=====[Declaration of public data types]======================================
 
 /*!
  * \enum PIEZO_STATE
@@ -95,7 +91,6 @@ typedef struct{
 
 } piezo_t; 
 
-//=====[Declarations (prototypes) of public functions]=========================
 
 /*!
  * \brief Convierte un valor ADC en milivoltios [mV].
@@ -106,7 +101,6 @@ uint16_t adcToMilliVolts (uint16_t adcValue);
  * \brief Convierte el voltaje máximo en un valor de velocidad (0-127).
  */
  uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue);
-//=====[#include guards - end]=================================================
 
 #endif // _PIEZO_H_
 

@@ -4,10 +4,7 @@
 *
 */
 
-//=====[Libraries]=============================================================
 #include "instrument.h"
-
-//=====[Declaration of external public global variables]=======================
 
 /*!
  * \brief Arreglo que contiene las notas de diferentes instrumentos.
@@ -66,14 +63,6 @@ const char * instrumentNoteName[] = {
     "SPLASH"                 /**< Platillo Splash */
 
 };
-
-//=====[Declaration and initialization of private global variables]============
-
-//=====[Declaration and initialization of public global variables]=============
-
-//=====[Declarations (prototypes) of private functions]========================
-
-//=====[Implementations of public functions]===================================
 
 /** Calculo el número total de instrumentos mini disponibles
 *  para asignarle al pad.

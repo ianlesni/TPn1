@@ -3,16 +3,10 @@
 * @brief Modulo para la implementación de pulsadores
 *
 */
-
-//=====[Libraries]=============================================================
-
 #include "mbed.h"
 #include "arm_book_lib.h"
 #include "button.h"
 
-//=====[Declaration of private defines]========================================
-
-//=====[Declaration of private data types]=====================================
 
 /*!
  * \enum BUTTON_STATE
@@ -28,17 +22,7 @@ typedef enum{
 
 }BUTTON_STATE;
 
-//=====[Declaration and initialization of public global objects]===============
 
-//=====[Declaration of external public global variables]=======================
-
-//=====[Declaration and initialization of private global variables]============
-
-//=====[Declaration and initialization of public global variables]=============
-
-//=====[Declarations (prototypes) of private functions]========================
-
-//=====[Implementations of public functions]===================================
 void debounceButtonInit(buttonsArray_t * buttonsArray) 
 {
     for (int buttonIndex = 0; buttonIndex < NUM_BUTTONS; buttonIndex++) 
@@ -121,8 +105,5 @@ void debounceButtonUpdate(buttonsArray_t * buttonsArray)
         }
     }    
 }
-
-//=====[Implementations of private functions]==================================
-
 
 /*** end of file ***/

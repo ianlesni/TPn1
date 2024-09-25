@@ -4,16 +4,10 @@
 *
 */
 
-//=====[#include guards - begin]===============================================
-
 #ifndef _MIDI_SERIAL_H_
 #define _MIDI_SERIAL_H_
 #include <cstdint>
 
-//=====[Declaration of public defines]=========================================
-
-
-//=====[Declaration of public data types]======================================
 namespace mbed {
     class UnbufferedSerial;
 }
@@ -33,7 +27,6 @@ typedef struct{
 
 } midiMessage_t; 
 
-//=====[Declarations (prototypes) of public functions]=========================
 
 /** Seteo las propiedades de la comuniación serie 
 *  acorde a las preferencias configuradas en el 
@@ -73,7 +66,6 @@ void setMIDIChannel(uint8_t channel);
 * Cambia el volumen del track asociado al instrumento 
 */
 void midiControlChangeVolume(uint8_t volume, int8_t channel, mbed::UnbufferedSerial * alias);
-//=====[#include guards - end]=================================================
 
 #endif // _MIDI_SERIAL_H_
 
