@@ -433,6 +433,22 @@ Funcionalidades Principales
 * Actualización de Volumen: Permite modificar el volumen general del drumkit.
 * Control de Hi-Hat: Gestiona el control del pedal de control del hi-hat para cambiar su estado (abierto, cerrado, medio abierto).
 
+flowchart LR
+    A(Inicio) --> B((Iterar sobre pads))
+    B --> D{Pedal chick presionado?}
+    D -- Sí --> E[Enviar sonido chick]
+    E --> F
+    D -- No --> F{Hay golpe en pad?}
+    F -- No --> B
+    F --Sí--> Z{Es el pad de hi-hat?}
+    Z -- Sí --> G[Obtener apertura hi-hat]
+    Z -- No --> I
+
+    G --> H[Asignar nota según apertura]
+    H --> I[Enviar nota]
+    I --> J[Apagar LED]
+    J --> B
+
 Función | Descripcion|
 -------|------------|
 drumkit(int numPads, drumpad** pads, UnbufferedSerial * UARTserialPort, UnbufferedSerial * BTserialPort, bool commMode)|Constructor del objeto drumkit, recibe como parámetros el número de pads, los pads en sí, los puertos seriales UART y Bluetooth, y el modo de comunicación|
