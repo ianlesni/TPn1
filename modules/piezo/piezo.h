@@ -1,36 +1,79 @@
 /** @file piezo.h
 *
-* @brief A description of the module’s purpose.
+* @brief Módulo para gestionar el transductor piezoeléctrico.
 *
-* 
-* 
 */
-//=====[#include guards - begin]===============================================
-
 #ifndef _PIEZO_H_
 #define _PIEZO_H_
 
 #include <cstdint>
+#include "mbed.h"
 
-namespace mbed {
-    class AnalogIn;
-}
-
-//=====[Declaration of public defines]=========================================
-
-//=====[Declaration of public data types]======================================
+#define SENSIBILITY_LEVELS 4            // Cantidad de niveles de sensibilidad para el transductor piezoeléctrico
 
 /*!
  * \enum PIEZO_STATE
- * \brief Enumeración de los estados del transductor piezoeléctrico.
- * 
+ * \brief Enumeración de los estados del transductor piezoeléctrico. 
  */
 typedef enum{
-    
-    PIEZO_INACTIVE = 0,     /**< El transductor no recibió ningun golpe */
+    PIEZO_IDLE = 0,         /**< El transductor no recibió ningun golpe */
     PIEZO_ACTIVE = 1,       /**< El transductor recibió un golpe que supera el umbral */
-
+    PIEZO_FINISHED =2       /**< Proceso de medición finalizado */
 }PIEZO_STATE; 
+
+/*!
+ * \enum piezoSensibility_t
+ * \brief Niveles de sensibilidad del transductor.
+ */
+typedef enum{
+    SENSITIVITY_LOW = 0,
+    SENSITIVITY_MEDIUM = 1,
+    SENSITIVITY_HIGH = 2,
+    SENSITIVITY_VERY_HIGH = 3
+}piezoSensibility_t; 
+
+// Niveles de sensibilidad disponibles
+const uint8_t piezoSensibility[]
+{
+    SENSITIVITY_LOW,
+    SENSITIVITY_MEDIUM,
+    SENSITIVITY_HIGH,
+    SENSITIVITY_VERY_HIGH 
+};
+
+/*!
+ * \class piezoTransducer
+ * \brief Clase para manejar un transductor piezoeléctrico.
+ * 
+ * Proporciona métodos para inicialización, ajuste de sensibilidad,
+ * y consulta del estado del piezo.
+ */
+class piezoTransducer{
+    public:
+        piezoTransducer(PinName piezoADPin, PinName piezoIntPin,Ticker * piezoConvertionTicker);   
+        void piezoTransducerInit();                     // Inicializa el transductor
+        void setPiezoSensibility(uint8_t sensibility);  // Configura la sensibilidad
+        PIEZO_STATE getPiezoStatus();                   // Devuelve el estado actual del transductor piezoeléctrico
+        
+        uint16_t piezoMaxSampleValue;                   // Valor máximo de muestra registrada
+        uint16_t piezoMaxVelocity;                      // Máxima velocidad calculada
+        int16_t piezoThresholdmV;                       // Umbral de detección en [mV]
+        int16_t piezoMaxPeakVoltmV;                     // Pico máximo registrado en [mV]
+
+    private:
+        void piezoIntCallback();                        // Callback de interrupción del comparador del transductor piezoeléctrico
+        void piezoReadAndGetMax();                      // Lee el ADC y calcula el valor máximo
+        void piezoTransducerReset();                    // Resetea las variables del transductor
+        void calculateSlopeIntercept();                 // Calcula pendiente e intersección para conversión
+
+        Ticker * piezoConvertionTicker;                 // Ticker para controlar las conversiones del ADC
+        AnalogIn piezoAD;                               // Objeto AnalogIn para leer el transductor piezoeléctrico
+        InterruptIn piezoInterruptPin;                  // Pin de interrupción del comparador del transductor piezoeléctrico
+
+        uint16_t elapsedADConvertionTime = 0;           //Contador necesario para determinar si se trata de un golpe de interes o un rebote espurio
+        PIEZO_STATE piezoStatus;                        // Estado actual del transductor
+};
+
 
 /*!
  * \struct piezo_t
@@ -44,35 +87,20 @@ typedef struct{
     mbed::AnalogIn * alias;         /**< Puntero a un objeto AnalogIn para implementar un transductor */
     uint8_t currentState;           /**< Estado actual del transductor */
     uint8_t MaxVelocity;            /**< Máximo valor de velocity registrado */
+    uint16_t MaxValue;              /**< Máximo valor de velocity registrado */
 
 } piezo_t; 
 
-//=====[Declarations (prototypes) of public functions]=========================
-/**
- * Inicializo el piezoelectrico y llamo a la función que calcula
- * la pendiente y ordenada al origen de la recta de conversión
- *  @param alias Puntero al objeto del transductor.
- *  @param piezo Puntero a la estructura que representa el mensaje.
+
+/*!
+ * \brief Convierte un valor ADC en milivoltios [mV].
  */
- void piezoInit (mbed::AnalogIn * alias, piezo_t * piezo);
+uint16_t adcToMilliVolts (uint16_t adcValue);
 
-
-/**
- * Actualizción del estado del transductor piezoeléctrico y envío de mensajes MIDI si se detecta un golpe.
- * 
- * Esta función realiza las siguientes operaciones:
- * 1- Lee el valor actual del transductor piezoeléctrico y lo convierte a [mV].
- * 2- Compara la lectura con el umbral de activación.
- * 3- Si el valor supera el umbral, busca y registra el valor máximo del golpe detectado.
- * 4- Convierte este valor máximo en un valor de velocity y guarda.
- * 5- Actualiza el estado del transductor
- *
- *  @param piezo Puntero a la estructura que representa el un transductor piezoeléctrico.
- *  
+/*!
+ * \brief Convierte el voltaje máximo en un valor de velocidad (0-127).
  */
-uint8_t piezoUpdate (piezo_t * piezo);
-
-//=====[#include guards - end]=================================================
+ uint8_t piezoConvertVoltToVel (uint16_t piezoMaxValue);
 
 #endif // _PIEZO_H_
 

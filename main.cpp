@@ -7,143 +7,102 @@
 
 #include "mbed.h" 
 #include "display.h"
-#include "midi_uart.h"
+#include "midi_serial.h"
 #include "instrument.h"
 #include "piezo.h"
+#include "hi_hat.h"
 #include "button.h"
 #include "arm_book_lib.h"
+#include "bt.h"
+#include "drumpad.h"
+#include "drumkit.h"
 #include <cstdint>
+#include "rotary_encoder.h"
+#include "midi_serial.h"
+#include "system_control.h"
 
-//=====[Declaration of defines]================================================
 
-//=====[Declaration and initialization of public global objects]===============
-
-//=====[Declaration of  public global variables]===============================
-
-int8_t noteIndex = 0;        /**< Indice para la navegación del arreglo de notas de intrumento */
-
-//=====[Declarations (prototypes) of public functions]=========================
-
-/**
- * Inicialización los dispositivos de salida.
- * 
- * Esta función inicializa el led y el display del drum pad.
- */
-void visualInterfaceInit (DigitalOut * Led);
-
-/**
-*   Esta función borra imprime en el display
-*  la nota actual con la que se configuró el 
-*  drum pad.
- */
-void visualInterfaceUpdate (void);
-
-//=====[Main function]=========================================================
 int main(void)
 {
-    DigitalOut ledPad(LED1);                                        //Creo un objeto DigitalOut como led testigo de interacción con el drum pad
-    /** Creo el transductor piezo eléctrico  
-    */
-    AnalogIn piezoA(A0);
-    piezo_t piezoAStruct;
-    piezoInit(&piezoA, &piezoAStruct);
+    initDisplay();
 
+    UnbufferedSerial uartBle(PD_5, PD_6, 9600);
+    UnbufferedSerial uartSerialPort(USBTX, USBRX, 115200); 
+  
+    /** Creo el pedal de control de hi-hat    
+    */
+    Ticker hHChickPedalTicker;
+    hiHat hiHatController(PinName::A1,PinName::PF_7,&hHChickPedalTicker);
+    
+    /** Creo tres drumpads  
+    */
+    Ticker piezo0ConvertionTicker;
+    piezoTransducer piezo0(PinName::A2, PinName::PE_6, &piezo0ConvertionTicker);
+    midiMessage_t midiMessage0;
+    drumpad pad0(LED1,&piezo0, &midiMessage0,&hiHatController); // Este drumpad tendrá asociado el control de hi-hat
+    
+    Ticker piezoAConvertionTicker;
+    piezoTransducer piezo1(PinName::A0, PinName::PF_9, &piezoAConvertionTicker);
+    midiMessage_t midiMessage1;
+    drumpad pad1(LED2,&piezo1, &midiMessage1,NULL);
+ 
+    Ticker piezoBConvertionTicker;
+    piezoTransducer piezo2(PinName::A3, PinName::PG_1, &piezoBConvertionTicker);
+    midiMessage_t midiMessage2;
+    drumpad pad2(LED3,&piezo2, &midiMessage2,NULL);
+
+    /** Creo el drumkit conformado por los tres drumpads     
+    */
+    drumpad* pads[] = { &pad0,&pad1,&pad2};
+    bool drumkitCommMode = 0;
+    drumkit kit(3, pads, &uartSerialPort, &uartBle, drumkitCommMode);
+
+    kit.init();
+    
     /** Creo los pulsadores necesarios para configurar el 
     *   sonido del drum pad    
     */
-    DigitalIn upButton(BUTTON1);                                                
-    DigitalIn downButton(D1);                                                   
+    DigitalIn okButton(BUTTON1);                                                
+    DigitalIn backButton(D1);                                                   
 
+    /** Creo los pulsadores de la interfaz de usuario  
+    */
     buttonsArray_t drumPadButtons;
-    drumPadButtons.button[0].alias = &upButton;
-    drumPadButtons.button[1].alias = &downButton;
+    drumPadButtons.button[0].alias = &okButton;
+    drumPadButtons.button[1].alias = &backButton;
     debounceButtonInit(&drumPadButtons);
 
-    /** Creo objeto UnbufferedSerial para realizar
-    *   la comunicación serie con la PC   
-    */
-    UnbufferedSerial serialPort(USBTX, USBRX);                          
-    midiMessage_t midiMessageStruct; 
-    initializaMIDISerial(&serialPort, &midiMessageStruct);
-
-    visualInterfaceInit(&ledPad);                                       //Inicializo el led del drum pad y display
-       
     uint8_t numOfInstrumentNotes = getNumOfInstrumentNotes();           //Obtengo el número total de notas midi de instrumentos percusivos disponibles
-                                            
+
     while (true)
     {
-        /** Actualizo la maquina de estados
-        *   que gestiona el debounce de los
-        *   pulsadores   
-        */
         debounceButtonUpdate(&drumPadButtons);
-
-        if(PIEZO_ACTIVE == piezoUpdate(&piezoAStruct))                          //Actualizo y verifico el estado del transductor piezoeléctrico
-        {  
-            ledPad = 1;                                                         //Enciendo el Led para confirmar que se realizó un golpe que superó el umbral de activación
-            midiSendNoteOff(&midiMessageStruct, &serialPort);                   //Envío el mensaje de Note Off para no superponer notas
-            midiMessageStruct.note = instrumentNote[noteIndex];                 //Cargo la nota del mensaje
-            midiMessageStruct.velocity = piezoAStruct.MaxVelocity;              //Cargo la velocity del mensaje               
-            midiSendNoteOn(&midiMessageStruct, &serialPort);                    //Envío el mensaje de Note On con el parámetro velocity proporcional a la intensidad del golpe
-            ledPad = 0;                                                         //Apago el Led para indicar que se envió el mensaje correspondiente
-        }
-
-        if(true == drumPadButtons.button[0].releasedEvent)                      //Verifico si el pulsador upButton fué presionado
+        switch (currentState)
         {
-            noteIndex++;                                                        //Incremento el indice de navegación de notas
-            if (noteIndex >= numOfInstrumentNotes) noteIndex = 0;               //Controlo que el indice no se vaya de rango     
-            visualInterfaceUpdate();
+            case PLAY_SCREEN:
+            handleButtonEvents(&kit,&drumPadButtons);
+            kit.processHits();
+            break;
+
+            case DRUMPAD_MENU:
+            case SET_DRUMPAD_NOTE:
+            case SET_DRUMPAD_SENSIBILITY:
+            case SET_DRUMKIT_VOLUME:
+                updateMenuAndDisplay(&kit);
+                handleButtonEvents(&kit,&drumPadButtons);
+                kit.processHits();
+            break;
+
+            default:
+                updateMenuAndDisplay(&kit);
+                handleButtonEvents(&kit,&drumPadButtons);
+            break;
         }
 
-        if(true == drumPadButtons.button[1].releasedEvent)                      //Verifico si el pulsador downButton fué presionado
-        {
-            noteIndex--;                                                        //Decremento el indice de navegación de notas
-            if (noteIndex < 0) noteIndex = numOfInstrumentNotes - 1;            //Controlo que el indice no se vaya de rango
-            visualInterfaceUpdate();
-        }
-
-        delay(TIME_INCREMENT_MS);
+        delay(1);
     }
 
 }
-
-//=====[Implementations of public functions]===================================
-void visualInterfaceInit(DigitalOut * Led)
-{
-    Led->write(0);                                                  //Inicializo el led del drum pad apagado
-
-    displayInit(DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER);        //Inicializo el display
-    /** Genero un mensaje de bienvenida
-    *   y el retardo para que pueda 
-    *   leerse
-    */
-    displayCharPositionWrite(0,0);
-    displayStringWrite("MIDI Drum Pad v0");                         
-    displayCharPositionWrite (0,1);
-    displayStringWrite("WELCOME!..."); 
-    delay(1000);                                                   
-    /** Limpio el display
-    *
-    */
-    displayCharPositionWrite(0,0);
-    displayStringWrite("                ");                            
-    /** Imprimo la pantalla 
-    *   de uso del instrumento
-    */
-    displayCharPositionWrite(0,0);
-    displayStringWrite("Drum Pad note:");
-    visualInterfaceUpdate();
-}
-
-void visualInterfaceUpdate()
-{
-    displayCharPositionWrite (0,1);                                     
-    displayStringWrite("                ");                             //Limpio la pantalla del display
-    displayCharPositionWrite (0,1);
-    displayStringWrite(instrumentNoteName[noteIndex]);                  //Imprimo el nombre de la nota a ejecutar
-}
-
-
 
 
 

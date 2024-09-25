@@ -2,21 +2,16 @@
 *
 * @brief A description of the module’s purpose.
 *
-* 
-* 
 */
-
-//=====[#include guards - begin]===============================================
 
 #ifndef _INSTRUMET_H_
 #define _INSTRUMET_H_
 #include <cstdint>
 
-//=====[Declaration of public defines]=========================================
+#define NUMBER_OF_NOTES 17
 
 
-//=====[Declaration of public data types]======================================
-
+extern int8_t noteIndex;        /**< Indice para la navegación del arreglo de notas de intrumento */
 /*!
  * \enum INSTRUMENT_NOTES
  * \brief Enumeración notas midi
@@ -46,15 +41,12 @@ const typedef enum{
 
 } INSTRUMENT_NOTES; 
 
-//=====[Declaration of external public global variables]=======================
 
 extern const uint8_t instrumentNote[];
 extern const char * instrumentNoteName[];
 
-//=====[Declarations (prototypes) of public functions]=========================
 uint8_t getNumOfInstrumentNotes (void);
-
-
+uint8_t getNoteIndex(uint8_t midiNote);
 
 #endif // _INSTRUMET_H_
 
