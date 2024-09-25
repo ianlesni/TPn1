@@ -524,7 +524,7 @@ Funcionalidades Principales:
 * Gestión de estados: Mantiene un registro del estado del transductor para facilitar la sincronización con otras partes del sistema.
 * Configuración de sensibilidad: Permite ajustar la sensibilidad del transductor a diferentes niveles, adaptándose a diversas condiciones de uso.
 
-Los diagramas presentados a continuación representan el algoritmo para procesar los golpes sobre el transuductor contemplando la aparición de espurios. La siguiente captura del osciloscopio permite comprender mejor la problemática:
+Los diagramas presentados a continuación representan el algoritmo para procesar los golpes sobre el transuductor contemplando la aparición de espurios. La siguiente captura del osciloscopio permite comprender mejor la problemática, en amarillo se grafica la señal del circuito comparador del acondicionador de señal, y en azul la señal del transductor piezoeléctirco:
 
 ![image](https://github.com/user-attachments/assets/b8297ecc-34f3-4c12-8c79-e3bc952324b7)
 
@@ -661,12 +661,24 @@ rotationCounter|	int8_t *|	Puntero al contador que almacena el valor actual del 
 
 ```mermaid
 flowchart LR
-    A[Flanco descendente en CLK] --> B{encoderDebounceStatus == READY?}
-    B -- Sí --> C[Contar pulso y activar antirebote]
-    C --> D[Iniciar timer de antirebote]
-    B -- No --> E[Esperar fin de antirebote]
-    D --> E
-    E --> A
+    subgraph CLKInterruptPin
+        z[Flanco descendente] 
+    end
+        z--> A
+    subgraph rotaryEncoderCallback
+        A{Status==READY?} --Sí -->  C{Leer pin DT}
+        A{Status==READY?} --No --> v[break]
+        C --> |DT=0| D[Decrementar contador]
+        C --> |DT=1| E[Incrementar contador]
+        D --> F[Entrar en debounce]
+        E --> F[Entrar en debounce]
+   
+    end
+     F --> y
+    subgraph encoderDebounceCallback
+        y((delay no bloqueante 100ms))
+        y --> x[Status=READY]
+    end
 ```
 
 **button**
