@@ -527,6 +527,7 @@ Funcionalidades Principales:
 Los diagramas presentados a continuación representan el algoritmo para procesar los golpes sobre el transuductor contemplando la aparición de espurios. La siguiente captura del osciloscopio permite comprender mejor la problemática:
 
 ![image](https://github.com/user-attachments/assets/b8297ecc-34f3-4c12-8c79-e3bc952324b7)
+
 Referencias:
 * Fd = Flanco descendente
 * Fa = Flanco ascendente
