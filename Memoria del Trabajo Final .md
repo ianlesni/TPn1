@@ -277,10 +277,11 @@ Debido a las caracteristicas mecánicas del encoder, esos flancos presentan múl
 
 ### Firmware del sistema
 En este trabajo se utilizó Mbed-OS y sus APIs para lograr las funcionalidades requeridas. La premisa fue construir firmware modular y de facil mantenimiento, con el proposito de continuar desarrollando el sistema a futuro.
-#### Lógica y estructura
-A continuación se presenta un diagrama de flujo del codigo main.cpp y del bucle principal.
+En este apartado se presenta un diagrama de flujo del codigo main.cpp y otro del bucle principal, así como también un esquema de la organizacion de los archivos .cpp y .h que componen a los módulos desarrollados.
 
-**Diagrama de flujo main.cpp**
+#### Diagramas de flujo
+
+**main.cpp**
 ```mermaid
 flowchart TD
     A(Start) --> B[Initialize display]
@@ -296,7 +297,7 @@ flowchart TD
     K --> L[[Get number of instrument notes]]
     L --> M((Infinite loop))
 ```
-**Diagrama de flujo bucle principal**
+**Bucle principal**
 
 ```mermaid
 flowchart LR
@@ -330,17 +331,12 @@ flowchart LR
     J --> O(Delay 1ms)
     O --> B
 ```
-
-
-Los módulos que componen al firmware y su función se detalla como sigue:
-
+**Organización de los módulos**
 ![Diagrama MÓDULOS](https://github.com/user-attachments/assets/b2aab16e-cc18-49d0-b7e9-395ba6f3f036)
-
-
 
 Módulo          | Descripción                  |  
 ----------------|------------------------------|
-system_control  |                              | 
+system_control  |  Gestion y control del sistema | 
 instrument      |                              |
 drumkit         |                              | 
 drumpad         |                              | 
@@ -352,7 +348,7 @@ display         |                              |
 rotary_encoder  |                              | 
 button          |                              | 
 
-### Modulos
+### Descripción de los módulos de firmware
 
 **system_control**
 
