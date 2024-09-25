@@ -390,7 +390,7 @@ visualInterfaceUpdate(void)	| Imprime en el display la nota actual con la que se
 
 Pantalla de ejecución de instrumento:
 
-![image](https://github.com/user-attachments/assets/28acffcc-172f-42f1-9704-ae2759913272)
+<img src="https://github.com/user-attachments/assets/28acffcc-172f-42f1-9704-ae2759913272" width="400" height="300">
 
 Pantalla principal con modificación de volumen del drumkit:
 
@@ -402,7 +402,7 @@ Pantalla de configuración general con modifiación de modo de comunicación:
 
 Pantalla de menú de configuración de drumkit:
 
-![image](https://github.com/user-attachments/assets/768d443d-e7f7-499c-967f-99811c982e28)
+<img src="https://github.com/user-attachments/assets/768d443d-e7f7-499c-967f-99811c982e28" width="400" height="300">
 
 Pantalla de configuración de drum pad con modifiación de nota y sensibilidad:
 
