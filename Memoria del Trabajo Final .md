@@ -316,7 +316,8 @@ flowchart LR
     O --> B
 ```
 **Organización de los módulos**
-![Diagrama MÓDULOS](https://github.com/user-attachments/assets/b2aab16e-cc18-49d0-b7e9-395ba6f3f036)
+
+![modulos](https://github.com/user-attachments/assets/f29f6a2e-5f06-4332-b67e-3de023d1c266)
 
 ### Descripción de los módulos de firmware
 
@@ -461,7 +462,7 @@ El módulo drum pad es una clase que representa un pad de batería electrónica.
 Funcionalidades Principales
 *Inicialización: Configura los parámetros iniciales del pad, como el número, el estado, la nota MIDI asociada y la sensibilidad.
 *Detección de Golpe: Utiliza un sensor piezoeléctrico para detectar golpes en el pad.
-*Procesamiento de Golpe: Calcula el parametro de velocity asociado a la intensidad del golpe y envía un mensaje MIDI con la nota y velocidad correspondientes.
+*Procesamiento de Golpe: Calcula el parametro de velocity asociado a la intensidad del golpe y envía un mensaje MIDI con la nota y velocity correspondientes.
 *Control de LED: Enciende y apaga un LED indicador de golpe.
 *Control de Hi-Hat: Si está habilitado, controla un módulo de hi-hat para simular el pedal de control.
 
@@ -522,7 +523,7 @@ El módulo ha sido desarrollado para interactuar con un transductor piezoeléctr
 Funcionalidades Principales:
 * Inicialización: Configura los parámetros iniciales del transductor, como el umbral de detección y el valor máximo esperado.
 * Adquisición de datos: Muestrea la señal analógica del transductor y calcula el valor máximo.
-* Cálculo de velocidad: Convierte el valor máximo de voltaje en un valor de velocity representativo del impacto, utilizando una función de conversión lineal.
+* Cálculo de velocity: Convierte el valor máximo de voltaje en un valor de velocity representativo del impacto, utilizando una función de conversión lineal.
 * Gestión de estados: Mantiene un registro del estado del transductor para facilitar la sincronización con otras partes del sistema.
 * Configuración de sensibilidad: Permite ajustar la sensibilidad del transductor a diferentes niveles, adaptándose a diversas condiciones de uso.
 
@@ -584,7 +585,7 @@ piezoIntCallback()|	Maneja la interrupción generada por el transductor al detec
 piezoReadAndGetMax()|	Lee el valor del ADC y calcula el valor máximo|
 piezoTransducerReset()|	Resetea las variables del transductor|
 calculateSlopeIntercept()|	Calcula los parámetros de la función de conversión lineal|
-piezoConvertVoltToVel()|	Convierte el voltaje máximo en una velocidad de impacto|
+piezoConvertVoltToVel()|	Convierte el voltaje máximo en el parámetro velocity asociado al impacto|
 
 Variable|	Tipo	|Propósito
 --------|-----|----------|
@@ -593,9 +594,13 @@ piezoMaxPeakVoltmV|	int16_t|	Valor máximo de voltaje esperado|
 slopeFixedPoint|	int32_t|	Pendiente de la función de conversión lineal|
 interceptFixedPoint|	int32_t|	Ordenada al origen de la función de conversión lineal|
 piezoMaxSampleValue|	uint16_t|	Valor máximo de muestra registrado|
-piezoMaxVelocity|	uint16_t|	Máxima velocidad calculada|
+piezoMaxVelocity|	uint16_t|	Máximo valor de velocity calculada|
 elapsedADConvertionTime|	uint16_t|	Contador de tiempo de conversión|
 piezoStatus|	PIEZO_STATE|	Estado actual del transductor|
+
+**fixedpoint.h**
+
+Para mejorar la eficiencia de las operaciones necesarias para el procesamiento de las señales analógicas del transductor piezoeléctirco, se adoptó una estrategia basada en la representación de punto fijo. A través del archivo fixedpoint.h, se definió un formato numérico personalizado que asigna un número específico de bits a la parte fraccionaria de un número. Esta elección permite realizar operaciones aritméticas directamente sobre enteros, evitando las operaciones de punto flotante que insumen muchos recursos del microcontrolador. 
 
 **midi_serial**
 
